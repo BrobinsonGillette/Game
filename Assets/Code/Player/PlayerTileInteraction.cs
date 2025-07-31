@@ -87,7 +87,7 @@ public class PlayerTileInteraction : MonoBehaviour
                         if (Vector3.Distance(transform.position, objWorldPos) <= interactionRange)
                         {
                             interactObj.InteractWithObject(checkPos, gameObject);
-                            Debug.Log($"Interacted with nearby object at {checkPos}");
+                           // Debug.Log($"Interacted with nearby object at {checkPos}");
                             return;
                         }
                     }
@@ -95,7 +95,7 @@ public class PlayerTileInteraction : MonoBehaviour
             }
         }
 
-        Debug.Log("No interactable objects found nearby");
+       // Debug.Log("No interactable objects found nearby");
     }
 
     Vector3 GetInteractionPoint()

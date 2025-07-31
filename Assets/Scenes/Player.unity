@@ -247,6 +247,7 @@ GameObject:
   - component: {fileID: 1954903872}
   - component: {fileID: 1954903873}
   - component: {fileID: 1954903874}
+  - component: {fileID: 1954903875}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -461,6 +462,34 @@ MonoBehaviour:
   interactionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &1954903875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954903869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e389451507958614483d9b4dd82aaeed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Might: 0
+  Agility: 0
+  Intellect: 0
+  Endurance: 0
+  Luck: 0
+  Sin: 0
+  level: 1
+  currentExp: 0
+  maxExp: 100
+  maxHealth: 100
+  currentHealth: 0
+  baseSpeed: 5
+  baseSprint: 10
+  healthPerLevel: 5
+  speedPerLevel: 0.5
+  expMultiplier: 1.5
 --- !u!1 &2108734101
 GameObject:
   m_ObjectHideFlags: 0

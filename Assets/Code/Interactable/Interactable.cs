@@ -25,7 +25,7 @@ public class Interactable : ScriptableObject
     // Virtual method that can be overridden in derived classes
     public virtual void OnInteract(Vector3Int tilePosition, GameObject player)
     {
-        Debug.Log($"Interacting with {name} at position {tilePosition}");
+        //Debug.Log($"Interacting with {name} at position {tilePosition}");
 
         // Default interaction behavior
         if (!string.IsNullOrEmpty(dialogueText))
