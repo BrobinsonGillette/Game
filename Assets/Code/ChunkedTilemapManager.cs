@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -11,6 +12,7 @@ public class ChunkData
     public TileBase[,] backgroundTiles;
     public bool isLoaded;
     public bool isGenerated;
+    public bool isDirty; // Track if chunk needs saving
 
     public ChunkData(Vector2Int position, int chunkSize)
     {
@@ -19,120 +21,286 @@ public class ChunkData
         backgroundTiles = new TileBase[chunkSize, chunkSize];
         isLoaded = false;
         isGenerated = false;
+        isDirty = false;
     }
+
+    public void MarkDirty() => isDirty = true;
+    public void MarkClean() => isDirty = false;
 }
 
 [System.Serializable]
-public class Tile
+public class WeightedTile
 {
-    public TileBase tiles;
-    public float probability = 1f; // Probability of selecting a tile from this set
+    public TileBase tile;
+    [Range(0f, 100)]
+    public int weight = 1;
 }
 
 [System.Serializable]
 public class TileSet
 {
-    public Tile[] tiles;
+    public WeightedTile[] tiles;
+    private float totalWeight = -1f;
+
+    private float GetTotalWeight()
+    {
+        if (totalWeight < 0)
+        {
+            totalWeight = 0f;
+            foreach (var weightedTile in tiles)
+            {
+                if (weightedTile?.tile != null)
+                {
+                    totalWeight += weightedTile.weight;
+                }
+            }
+        }
+        return totalWeight;
+    }
+
     public TileBase GetRandomTile()
     {
         if (tiles == null || tiles.Length == 0) return null;
-        foreach (Tile tile in tiles)
+
+        float total = GetTotalWeight();
+        if (total <= 0) return null;
+
+        // FIXED: Generate random value between 0 and total weight (not 1 to total)
+        float randomValue = Random.Range(0f, total);
+        float currentWeight = 0f;
+
+        // Iterate through tiles and find which one the random value falls into
+        foreach (var weightedTile in tiles)
         {
-            if (tile == null || tile.tiles == null) continue;
-            float probability = tile.probability;
-            if (Random.value <= probability)
+            if (weightedTile?.tile == null) continue;
+
+            currentWeight += weightedTile.weight;
+            if (randomValue <= currentWeight)
             {
-                return tile.tiles;
+                return weightedTile.tile;
             }
         }
-        return null; // No tile selected based on probability
+
+        // Fallback (shouldn't normally reach here)
+        return tiles.LastOrDefault(t => t?.tile != null)?.tile;
     }
+
+  
+  
+
 }
+
+
+
+[System.Serializable]
+public class NoiseSettings
+{
+    [Range(0.001f, 0.1f)]
+    public float scale = 0.05f;
+    [Range(1, 8)]
+    public int octaves = 3;
+    [Range(0f, 1f)]
+    public float persistence = 0.5f;
+    [Range(1f, 4f)]
+    public float lacunarity = 2f;
+    public Vector2 offset = Vector2.zero;
+}
+
 public class ChunkedTilemapManager : MonoBehaviour
 {
     [Header("Player Reference")]
-    public Transform player;
+    [SerializeField] private Transform player;
 
     [Header("Tilemaps")]
-    public Tilemap mainTilemap;
-    public Tilemap collisionTilemap;
-    public Tilemap backgroundTilemap;
+    [SerializeField] private Tilemap mainTilemap;
+    [SerializeField] private Tilemap collisionTilemap;
+    [SerializeField] private Tilemap backgroundTilemap;
 
     [Header("Chunk Settings")]
-    public int chunkSize = 16; // Size of each chunk (16x16 tiles)
-    public int loadRadius = 2; // How many chunks around player to keep loaded
-    public float updateInterval = 0.5f; // How often to check for chunk updates
+    [SerializeField] private int chunkSize = 16;
+    [SerializeField] private int loadRadius = 2;
+    [SerializeField] private float updateInterval = 0.5f;
 
-    [Header("Tiles for Auto-Fill")]
-    public TileSet rockTile;
-    public TileSet grassTile;
-    public TileBase[] collisionTiles;
-    public TileBase[] interactiveTiles;
+    [Header("Tile Generation")]
+    [SerializeField] private TileSet rockTiles;
+    [SerializeField] private TileSet grassTiles;
+    [SerializeField] private TileSet decorationTiles;
+    [SerializeField] private TileBase[] collisionTiles;
+    [SerializeField] private TileBase[] interactiveTiles;
 
     [Header("Generation Settings")]
+    [SerializeField] private NoiseSettings terrainNoise;
+    [SerializeField] private NoiseSettings decorationNoise;
     [Range(0f, 1f)]
-    public float rockProbability = 0.3f;
+    [SerializeField] private float grassThreshold = 0.4f;
     [Range(0f, 1f)]
-    public float grassProbability = 0.7f;
-    public bool generateChunksOnDemand = true;
+    [SerializeField] private float rockThreshold = 0.6f;
+    [Range(0f, 1f)]
+    [SerializeField] private float decorationThreshold = 0.8f;
+    [SerializeField] private bool generateChunksOnDemand = true;
+    [SerializeField] private int worldSeed = 12345;
 
     [Header("Performance Settings")]
-    public int maxChunksToLoadPerFrame = 1;
-    public int maxChunksToUnloadPerFrame = 2;
+    [SerializeField] private int maxChunksToLoadPerFrame = 1;
+    [SerializeField] private int maxChunksToUnloadPerFrame = 2;
+    [SerializeField] private int maxTilesPerFrame = 256;
+    [SerializeField] private bool usePooling = true;
 
-    private Dictionary<Vector2Int, ChunkData> chunks = new Dictionary<Vector2Int, ChunkData>();
-    private HashSet<Vector2Int> loadedChunks = new HashSet<Vector2Int>();
-    private Vector2Int lastPlayerChunk;
+    [Header("Debug")]
+    [SerializeField] private bool showDebugInfo = false;
+    [SerializeField] private bool showChunkBounds = true;
+
+    // Core data structures
+    private readonly Dictionary<Vector2Int, ChunkData> chunks = new Dictionary<Vector2Int, ChunkData>();
+    private readonly HashSet<Vector2Int> loadedChunks = new HashSet<Vector2Int>();
+    private readonly Dictionary<Vector3Int, TileBase> paintedTiles = new Dictionary<Vector3Int, TileBase>();
+
+    // Performance tracking
+    private Vector2Int lastPlayerChunk = Vector2Int.zero;
     private Coroutine chunkUpdateCoroutine;
+    private readonly Queue<Vector2Int> chunkLoadQueue = new Queue<Vector2Int>();
+    private readonly Queue<Vector2Int> chunkUnloadQueue = new Queue<Vector2Int>();
 
-    // For saving/loading painted tiles
-    private Dictionary<Vector3Int, TileBase> paintedTiles = new Dictionary<Vector3Int, TileBase>();
+    // Object pooling for better performance
+    private readonly Queue<TileBase[,]> tileArrayPool = new Queue<TileBase[,]>();
 
-    void Start()
+    // Events for extensibility
+    public System.Action<Vector2Int> OnChunkLoaded;
+    public System.Action<Vector2Int> OnChunkUnloaded;
+    public System.Action<Vector3Int, TileBase> OnTileInteracted;
+
+    #region Unity Lifecycle
+
+    private void Start()
     {
+        InitializeManager();
+    }
+
+    private void OnDestroy()
+    {
+        CleanupManager();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!showChunkBounds || player == null) return;
+        DrawChunkGizmos();
+    }
+
+    #endregion
+
+    #region Initialization
+
+    private void InitializeManager()
+    {
+        // Set random seed for consistent generation
+        Random.InitState(worldSeed);
+
+        // Find player if not assigned
         if (player == null)
         {
-            player = GameObject.FindGameObjectWithTag("Player")?.transform;
-            if (player == null)
+            var playerGO = GameObject.FindGameObjectWithTag("Player");
+            if (playerGO != null)
+                player = playerGO.transform;
+            else
             {
                 Debug.LogError("Player not found! Please assign player transform or add 'Player' tag.");
                 return;
             }
         }
 
-        // Save any pre-painted tiles
+        // Validate tilemaps
+        if (!ValidateTilemaps()) return;
+
+        // Save existing tiles
         SaveExistingTiles();
 
-        // Start the chunk update coroutine
-        chunkUpdateCoroutine = StartCoroutine(UpdateChunksAroundPlayer());
+        // Initialize object pools
+        if (usePooling)
+            InitializePools();
 
-        // Initial load
+        // Start chunk management
+        lastPlayerChunk = WorldToChunk(player.position);
+        chunkUpdateCoroutine = StartCoroutine(ChunkUpdateLoop());
+
+        // Initial chunk load
         UpdatePlayerChunk();
+
+        Debug.Log($"ChunkedTilemapManager initialized with seed: {worldSeed}");
     }
 
-    void SaveExistingTiles()
+    private bool ValidateTilemaps()
+    {
+        if (mainTilemap == null)
+        {
+            Debug.LogError("Main tilemap is not assigned!");
+            return false;
+        }
+
+        if (backgroundTilemap == null)
+            Debug.LogWarning("Background tilemap is not assigned.");
+
+        if (collisionTilemap == null)
+            Debug.LogWarning("Collision tilemap is not assigned.");
+
+        return true;
+    }
+
+    private void InitializePools()
+    {
+        // Pre-populate tile array pool
+        for (int i = 0; i < 10; i++)
+        {
+            tileArrayPool.Enqueue(new TileBase[chunkSize, chunkSize]);
+        }
+    }
+
+    private void CleanupManager()
+    {
+        if (chunkUpdateCoroutine != null)
+        {
+            StopCoroutine(chunkUpdateCoroutine);
+            chunkUpdateCoroutine = null;
+        }
+
+        // Save all dirty chunks before cleanup
+        SaveAllDirtyChunks();
+    }
+
+    #endregion
+
+    #region Tile Management
+
+    private void SaveExistingTiles()
     {
         if (mainTilemap == null) return;
 
-        BoundsInt bounds = mainTilemap.cellBounds;
+        var bounds = mainTilemap.cellBounds;
+        int savedCount = 0;
 
         for (int x = bounds.xMin; x < bounds.xMax; x++)
         {
             for (int y = bounds.yMin; y < bounds.yMax; y++)
             {
-                Vector3Int position = new Vector3Int(x, y, 0);
-                TileBase tile = mainTilemap.GetTile(position);
+                var position = new Vector3Int(x, y, 0);
+                var tile = mainTilemap.GetTile(position);
                 if (tile != null)
                 {
                     paintedTiles[position] = tile;
+                    savedCount++;
                 }
             }
         }
 
-        Debug.Log($"Saved {paintedTiles.Count} existing painted tiles");
+        if (showDebugInfo)
+            Debug.Log($"Saved {savedCount} existing painted tiles");
     }
 
-    IEnumerator UpdateChunksAroundPlayer()
+    #endregion
+
+    #region Chunk Management
+
+    private IEnumerator ChunkUpdateLoop()
     {
         while (true)
         {
@@ -140,153 +308,155 @@ public class ChunkedTilemapManager : MonoBehaviour
 
             if (player == null) continue;
 
-            Vector2Int currentPlayerChunk = WorldToChunk(player.position);
-
+            var currentPlayerChunk = WorldToChunk(player.position);
             if (currentPlayerChunk != lastPlayerChunk)
             {
                 UpdatePlayerChunk();
                 lastPlayerChunk = currentPlayerChunk;
             }
+
+            // Process chunk queues
+            yield return ProcessChunkQueues();
         }
     }
 
-    void UpdatePlayerChunk()
+    private void UpdatePlayerChunk()
     {
         if (player == null) return;
 
-        Vector2Int playerChunk = WorldToChunk(player.position);
-        HashSet<Vector2Int> chunksToLoad = new HashSet<Vector2Int>();
+        var playerChunk = WorldToChunk(player.position);
+        var targetChunks = GetChunksInRadius(playerChunk, loadRadius);
 
-        // Determine which chunks should be loaded
-        for (int x = -loadRadius; x <= loadRadius; x++)
-        {
-            for (int y = -loadRadius; y <= loadRadius; y++)
-            {
-                Vector2Int chunkPos = playerChunk + new Vector2Int(x, y);
-                chunksToLoad.Add(chunkPos);
-            }
-        }
-
-        // Start loading/unloading chunks
-        StartCoroutine(LoadUnloadChunks(chunksToLoad));
-    }
-
-    IEnumerator LoadUnloadChunks(HashSet<Vector2Int> targetChunks)
-    {
-        // Unload chunks that are too far
-        List<Vector2Int> chunksToUnload = new List<Vector2Int>();
-        foreach (Vector2Int loadedChunk in loadedChunks)
+        // Queue chunks for unloading
+        foreach (var loadedChunk in loadedChunks.ToList())
         {
             if (!targetChunks.Contains(loadedChunk))
             {
-                chunksToUnload.Add(loadedChunk);
+                chunkUnloadQueue.Enqueue(loadedChunk);
             }
         }
 
-        int unloadedThisFrame = 0;
-        foreach (Vector2Int chunkPos in chunksToUnload)
+        // Queue chunks for loading
+        foreach (var targetChunk in targetChunks)
         {
-            if (unloadedThisFrame >= maxChunksToUnloadPerFrame)
+            if (!loadedChunks.Contains(targetChunk) && !chunkLoadQueue.Contains(targetChunk))
             {
-                yield return null;
-                unloadedThisFrame = 0;
-            }
-
-            UnloadChunk(chunkPos);
-            unloadedThisFrame++;
-        }
-
-        // Load new chunks
-        int loadedThisFrame = 0;
-        foreach (Vector2Int chunkPos in targetChunks)
-        {
-            if (!loadedChunks.Contains(chunkPos))
-            {
-                if (loadedThisFrame >= maxChunksToLoadPerFrame)
-                {
-                    yield return null;
-                    loadedThisFrame = 0;
-                }
-
-                LoadChunk(chunkPos);
-                loadedThisFrame++;
+                chunkLoadQueue.Enqueue(targetChunk);
             }
         }
     }
 
-    void LoadChunk(Vector2Int chunkPos)
+    private HashSet<Vector2Int> GetChunksInRadius(Vector2Int center, int radius)
+    {
+        var chunks = new HashSet<Vector2Int>();
+        for (int x = -radius; x <= radius; x++)
+        {
+            for (int y = -radius; y <= radius; y++)
+            {
+                chunks.Add(center + new Vector2Int(x, y));
+            }
+        }
+        return chunks;
+    }
+
+    private IEnumerator ProcessChunkQueues()
+    {
+        int processedThisFrame = 0;
+
+        // Process unload queue
+        while (chunkUnloadQueue.Count > 0 && processedThisFrame < maxChunksToUnloadPerFrame)
+        {
+            var chunkPos = chunkUnloadQueue.Dequeue();
+            UnloadChunk(chunkPos);
+            processedThisFrame++;
+        }
+
+        if (processedThisFrame >= maxChunksToUnloadPerFrame)
+        {
+            yield return null;
+            processedThisFrame = 0;
+        }
+
+        // Process load queue
+        while (chunkLoadQueue.Count > 0 && processedThisFrame < maxChunksToLoadPerFrame)
+        {
+            var chunkPos = chunkLoadQueue.Dequeue();
+            yield return LoadChunkCoroutine(chunkPos);
+            processedThisFrame++;
+        }
+    }
+
+    private IEnumerator LoadChunkCoroutine(Vector2Int chunkPos)
     {
         if (!chunks.ContainsKey(chunkPos))
         {
             chunks[chunkPos] = new ChunkData(chunkPos, chunkSize);
         }
 
-        ChunkData chunk = chunks[chunkPos];
+        var chunk = chunks[chunkPos];
 
         if (!chunk.isGenerated && generateChunksOnDemand)
         {
-            GenerateChunk(chunk);
+            yield return GenerateChunkCoroutine(chunk);
         }
 
         if (!chunk.isLoaded)
         {
-            ApplyChunkToTilemap(chunk);
+            yield return ApplyChunkToTilemapCoroutine(chunk);
             chunk.isLoaded = true;
         }
 
         loadedChunks.Add(chunkPos);
+        OnChunkLoaded?.Invoke(chunkPos);
     }
 
-    void UnloadChunk(Vector2Int chunkPos)
+    private void UnloadChunk(Vector2Int chunkPos)
     {
         if (!chunks.ContainsKey(chunkPos)) return;
 
-        ChunkData chunk = chunks[chunkPos];
+        var chunk = chunks[chunkPos];
 
         if (chunk.isLoaded)
         {
-            // Save current state before unloading
             SaveChunkFromTilemap(chunk);
-
-            // Clear tiles from tilemap
             ClearChunkFromTilemap(chunk);
             chunk.isLoaded = false;
         }
 
         loadedChunks.Remove(chunkPos);
+        OnChunkUnloaded?.Invoke(chunkPos);
     }
 
-    void GenerateChunk(ChunkData chunk)
+    #endregion
+
+    #region Chunk Generation
+
+    private IEnumerator GenerateChunkCoroutine(ChunkData chunk)
     {
-        Vector2Int worldStart = ChunkToWorld(chunk.chunkPosition);
+        var worldStart = ChunkToWorld(chunk.chunkPosition);
+        int tilesProcessed = 0;
 
         for (int x = 0; x < chunkSize; x++)
         {
             for (int y = 0; y < chunkSize; y++)
             {
-                Vector3Int worldPos = new Vector3Int(worldStart.x + x, worldStart.y + y, 0);
+                var worldPos = new Vector3Int(worldStart.x + x, worldStart.y + y, 0);
 
-                // Check if there's a painted tile at this position
+                // Check for painted tiles first
                 if (paintedTiles.ContainsKey(worldPos))
                 {
                     chunk.mainTiles[x, y] = paintedTiles[worldPos];
                 }
                 else
                 {
-                    TileBase _rockTile = rockTile.GetRandomTile();
-                    TileBase _grassTile = grassTile.GetRandomTile();
-                    if(Random.value < grassProbability)
-                    {
-                        chunk.mainTiles[x, y] = _grassTile;
-                    }
-                    else if(Random.value < rockProbability)
-                    {
-                        chunk.backgroundTiles[x, y] = _rockTile;
-                    }
-                    else
-                    {
-                        chunk.backgroundTiles[x, y] = null; // No tile
-                    }
+                    GenerateTileAtPosition(chunk, x, y, worldPos);
+                }
+
+                tilesProcessed++;
+                if (tilesProcessed >= maxTilesPerFrame)
+                {
+                    yield return null;
+                    tilesProcessed = 0;
                 }
             }
         }
@@ -294,15 +464,81 @@ public class ChunkedTilemapManager : MonoBehaviour
         chunk.isGenerated = true;
     }
 
-    void ApplyChunkToTilemap(ChunkData chunk)
+
+    private void GenerateTileAtPosition(ChunkData chunk, int localX, int localY, Vector3Int worldPos)
     {
-        Vector2Int worldStart = ChunkToWorld(chunk.chunkPosition);
+        float terrainValue = GenerateNoise(worldPos.x, worldPos.y, terrainNoise);
+        float decorationValue = GenerateNoise(worldPos.x, worldPos.y, decorationNoise);
+
+        // Create weighted selection based on noise value
+        TileBase selectedTile = null;
+
+        // Adjust these weights to control spawn rates
+        float grassWeight = Mathf.Lerp(80f, 20f, terrainValue); // More grass at low noise
+        float rockWeight = Mathf.Lerp(5f, 20f, terrainValue);   // More rocks at high noise
+        float emptyWeight = Mathf.Lerp(15f, 20f, terrainValue); // Some empty space
+
+        float totalWeight = grassWeight + rockWeight + emptyWeight;
+        float randomValue = Random.Range(0f, totalWeight);
+
+        if (randomValue < grassWeight)
+        {
+            selectedTile = grassTiles?.GetRandomTile();
+        }
+        else if (randomValue < grassWeight + rockWeight)
+        {
+            selectedTile = rockTiles?.GetRandomTile();
+        }
+        // else empty
+
+        chunk.mainTiles[localX, localY] = selectedTile;
+
+        // Decorations
+        if (decorationValue > decorationThreshold && selectedTile != null)
+        {
+            var decoration = decorationTiles?.GetRandomTile();
+            if (decoration != null)
+            {
+                chunk.mainTiles[localX, localY] = decoration;
+            }
+        }
+    }
+    
+
+    private float GenerateNoise(float x, float y, NoiseSettings settings)
+    {
+        float value = 0f;
+        float amplitude = 1f;
+        float frequency = settings.scale;
+
+        for (int i = 0; i < settings.octaves; i++)
+        {
+            float sampleX = (x + settings.offset.x) * frequency;
+            float sampleY = (y + settings.offset.y) * frequency;
+
+            value += Mathf.PerlinNoise(sampleX, sampleY) * amplitude;
+
+            amplitude *= settings.persistence;
+            frequency *= settings.lacunarity;
+        }
+
+        return Mathf.Clamp01(value);
+    }
+
+    #endregion
+
+    #region Tilemap Operations
+
+    private IEnumerator ApplyChunkToTilemapCoroutine(ChunkData chunk)
+    {
+        var worldStart = ChunkToWorld(chunk.chunkPosition);
+        int tilesProcessed = 0;
 
         for (int x = 0; x < chunkSize; x++)
         {
             for (int y = 0; y < chunkSize; y++)
             {
-                Vector3Int worldPos = new Vector3Int(worldStart.x + x, worldStart.y + y, 0);
+                var worldPos = new Vector3Int(worldStart.x + x, worldStart.y + y, 0);
 
                 // Apply main tiles
                 if (chunk.mainTiles[x, y] != null)
@@ -310,90 +546,80 @@ public class ChunkedTilemapManager : MonoBehaviour
                     mainTilemap.SetTile(worldPos, chunk.mainTiles[x, y]);
 
                     // Add collision if needed
-                    if (ShouldHaveCollision(chunk.mainTiles[x, y]))
+                    if (collisionTilemap != null && ShouldHaveCollision(chunk.mainTiles[x, y]))
                     {
                         collisionTilemap.SetTile(worldPos, chunk.mainTiles[x, y]);
                     }
                 }
 
                 // Apply background tiles
-                if (chunk.backgroundTiles[x, y] != null)
+                if (backgroundTilemap != null && chunk.backgroundTiles[x, y] != null)
                 {
                     backgroundTilemap.SetTile(worldPos, chunk.backgroundTiles[x, y]);
+                }
+
+                tilesProcessed++;
+                if (tilesProcessed >= maxTilesPerFrame)
+                {
+                    yield return null;
+                    tilesProcessed = 0;
                 }
             }
         }
     }
 
-    void SaveChunkFromTilemap(ChunkData chunk)
+    private void SaveChunkFromTilemap(ChunkData chunk)
     {
-        Vector2Int worldStart = ChunkToWorld(chunk.chunkPosition);
+        if (!chunk.isDirty) return;
+
+        var worldStart = ChunkToWorld(chunk.chunkPosition);
 
         for (int x = 0; x < chunkSize; x++)
         {
             for (int y = 0; y < chunkSize; y++)
             {
-                Vector3Int worldPos = new Vector3Int(worldStart.x + x, worldStart.y + y, 0);
-
-                // Save current state
+                var worldPos = new Vector3Int(worldStart.x + x, worldStart.y + y, 0);
                 chunk.mainTiles[x, y] = mainTilemap.GetTile(worldPos);
-                chunk.backgroundTiles[x, y] = backgroundTilemap.GetTile(worldPos);
+
+                if (backgroundTilemap != null)
+                    chunk.backgroundTiles[x, y] = backgroundTilemap.GetTile(worldPos);
             }
         }
+
+        chunk.MarkClean();
     }
 
-    void ClearChunkFromTilemap(ChunkData chunk)
+    private void ClearChunkFromTilemap(ChunkData chunk)
     {
-        Vector2Int worldStart = ChunkToWorld(chunk.chunkPosition);
+        var worldStart = ChunkToWorld(chunk.chunkPosition);
 
         for (int x = 0; x < chunkSize; x++)
         {
             for (int y = 0; y < chunkSize; y++)
             {
-                Vector3Int worldPos = new Vector3Int(worldStart.x + x, worldStart.y + y, 0);
+                var worldPos = new Vector3Int(worldStart.x + x, worldStart.y + y, 0);
 
-                // Clear all tilemaps
                 mainTilemap.SetTile(worldPos, null);
-                collisionTilemap.SetTile(worldPos, null);
-                backgroundTilemap.SetTile(worldPos, null);
+                collisionTilemap?.SetTile(worldPos, null);
+                backgroundTilemap?.SetTile(worldPos, null);
             }
         }
     }
 
-    bool ShouldHaveCollision(TileBase tile)
+    private bool ShouldHaveCollision(TileBase tile)
     {
-        if (collisionTiles == null) return false;
-
-        foreach (TileBase collisionTile in collisionTiles)
-        {
-            if (tile == collisionTile)
-                return true;
-        }
-        return false;
+        if (collisionTiles == null || tile == null) return false;
+        return System.Array.IndexOf(collisionTiles, tile) >= 0;
     }
 
-    // Utility methods
-    Vector2Int WorldToChunk(Vector3 worldPosition)
-    {
-        return new Vector2Int(
-            Mathf.FloorToInt(worldPosition.x / chunkSize),
-            Mathf.FloorToInt(worldPosition.y / chunkSize)
-        );
-    }
+    #endregion
 
-    Vector2Int ChunkToWorld(Vector2Int chunkPosition)
-    {
-        return new Vector2Int(
-            chunkPosition.x * chunkSize,
-            chunkPosition.y * chunkSize
-        );
-    }
+    #region Public API
 
-    // Public methods for interaction
     public bool TryInteractWithTile(Vector3 worldPosition)
     {
-        Vector3Int cellPosition = mainTilemap.WorldToCell(worldPosition);
-        TileBase tile = mainTilemap.GetTile(cellPosition);
+        var cellPosition = mainTilemap.WorldToCell(worldPosition);
+        var tile = mainTilemap.GetTile(cellPosition);
 
         if (tile != null && IsInteractiveTile(tile))
         {
@@ -404,81 +630,151 @@ public class ChunkedTilemapManager : MonoBehaviour
         return false;
     }
 
-    bool IsInteractiveTile(TileBase tile)
+    public void SetTileAt(Vector3Int position, TileBase tile, bool isMainTile = true)
     {
-        if (interactiveTiles == null) return false;
-
-        foreach (TileBase interactiveTile in interactiveTiles)
+    
+        if (backgroundTilemap != null)
         {
-            if (tile == interactiveTile)
-                return true;
+            backgroundTilemap.SetTile(position, tile);
         }
-        return false;
-    }
+        else if (isMainTile)
+        {
+            mainTilemap.SetTile(position, tile);
+            paintedTiles[position] = tile;
+        }
 
-    void OnTileInteraction(Vector3Int position, TileBase tile)
-    {
-        Debug.Log($"Interacted with tile {tile.name} at position {position}");
-
-        // Update the chunk data when tiles are modified
-        Vector2Int chunkPos = WorldToChunk(position);
+        // Mark chunk as dirty
+        var chunkPos = WorldToChunk(position);
         if (chunks.ContainsKey(chunkPos))
         {
-            Vector2Int localPos = new Vector2Int(
-                position.x - ChunkToWorld(chunkPos).x,
-                position.y - ChunkToWorld(chunkPos).y
-            );
-
-            // Update chunk data if tile is removed/changed
-            // chunks[chunkPos].mainTiles[localPos.x, localPos.y] = null;
+            chunks[chunkPos].MarkDirty();
         }
     }
 
-    // Debug information
-    void OnDrawGizmosSelected()
+    public TileBase GetTileAt(Vector3Int position, bool isMainTile = true)
     {
-        if (player == null) return;
+        return isMainTile ? mainTilemap.GetTile(position) : backgroundTilemap?.GetTile(position);
+    }
 
-        Vector2Int playerChunk = WorldToChunk(player.position);
+    public void SaveAllDirtyChunks()
+    {
+        foreach (var chunk in chunks.Values.Where(c => c.isDirty))
+        {
+            SaveChunkFromTilemap(chunk);
+        }
+    }
+
+    public void RegenerateChunk(Vector2Int chunkPosition)
+    {
+        if (chunks.ContainsKey(chunkPosition))
+        {
+            var chunk = chunks[chunkPosition];
+            chunk.isGenerated = false;
+            chunk.MarkDirty();
+
+            if (chunk.isLoaded)
+            {
+                StartCoroutine(RegenerateLoadedChunk(chunk));
+            }
+        }
+    }
+
+    private IEnumerator RegenerateLoadedChunk(ChunkData chunk)
+    {
+        ClearChunkFromTilemap(chunk);
+        yield return GenerateChunkCoroutine(chunk);
+        yield return ApplyChunkToTilemapCoroutine(chunk);
+    }
+
+    #endregion
+
+    #region Utility Methods
+
+    private bool IsInteractiveTile(TileBase tile)
+    {
+        if (interactiveTiles == null || tile == null) return false;
+        return System.Array.IndexOf(interactiveTiles, tile) >= 0;
+    }
+
+    private void OnTileInteraction(Vector3Int position, TileBase tile)
+    {
+        OnTileInteracted?.Invoke(position, tile);
+
+        if (showDebugInfo)
+            Debug.Log($"Interacted with tile {tile.name} at position {position}");
+
+        // Mark chunk as dirty when tiles are modified
+        var chunkPos = WorldToChunk(position);
+        if (chunks.ContainsKey(chunkPos))
+        {
+            chunks[chunkPos].MarkDirty();
+        }
+    }
+
+    private Vector2Int WorldToChunk(Vector3 worldPosition)
+    {
+        return new Vector2Int(
+            Mathf.FloorToInt(worldPosition.x / chunkSize),
+            Mathf.FloorToInt(worldPosition.y / chunkSize)
+        );
+    }
+
+    private Vector2Int ChunkToWorld(Vector2Int chunkPosition)
+    {
+        return chunkPosition * chunkSize;
+    }
+
+    #endregion
+
+    #region Debug and Gizmos
+
+    private void DrawChunkGizmos()
+    {
+        var playerChunk = WorldToChunk(player.position);
 
         // Draw loaded chunks
         Gizmos.color = Color.green;
-        foreach (Vector2Int chunkPos in loadedChunks)
+        foreach (var chunkPos in loadedChunks)
         {
-            Vector2Int worldPos = ChunkToWorld(chunkPos);
-            Vector3 center = new Vector3(worldPos.x + chunkSize * 0.5f, worldPos.y + chunkSize * 0.5f, 0);
-            Gizmos.DrawWireCube(center, new Vector3(chunkSize, chunkSize, 0));
+            DrawChunkGizmo(chunkPos);
+        }
+
+        // Draw chunks in queue
+        Gizmos.color = Color.yellow;
+        foreach (var chunkPos in chunkLoadQueue)
+        {
+            DrawChunkGizmo(chunkPos);
         }
 
         // Draw load radius
-        Gizmos.color = Color.yellow;
-        Vector2Int playerWorldChunk = ChunkToWorld(playerChunk);
-        Vector3 playerChunkCenter = new Vector3(
+        Gizmos.color = Color.cyan;
+        var playerWorldChunk = ChunkToWorld(playerChunk);
+        var center = new Vector3(
             playerWorldChunk.x + chunkSize * 0.5f,
             playerWorldChunk.y + chunkSize * 0.5f,
             0
         );
 
-        float radiusSize = (loadRadius * 2 + 1) * chunkSize;
-        Gizmos.DrawWireCube(playerChunkCenter, new Vector3(radiusSize, radiusSize, 0));
+        var radiusSize = (loadRadius * 2 + 1) * chunkSize;
+        Gizmos.DrawWireCube(center, new Vector3(radiusSize, radiusSize, 0));
     }
 
-    void OnDestroy()
+    private void DrawChunkGizmo(Vector2Int chunkPos)
     {
-        if (chunkUpdateCoroutine != null)
-        {
-            StopCoroutine(chunkUpdateCoroutine);
-        }
+        var worldPos = ChunkToWorld(chunkPos);
+        var center = new Vector3(worldPos.x + chunkSize * 0.5f, worldPos.y + chunkSize * 0.5f, 0);
+        Gizmos.DrawWireCube(center, new Vector3(chunkSize, chunkSize, 0));
     }
 
-    // Public utility methods
-    public int GetLoadedChunkCount()
-    {
-        return loadedChunks.Count;
-    }
+    #endregion
 
-    public int GetTotalChunkCount()
-    {
-        return chunks.Count;
-    }
+    #region Public Properties
+
+    public int LoadedChunkCount => loadedChunks.Count;
+    public int TotalChunkCount => chunks.Count;
+    public int ChunkLoadQueueCount => chunkLoadQueue.Count;
+    public int ChunkUnloadQueueCount => chunkUnloadQueue.Count;
+    public Vector2Int CurrentPlayerChunk => WorldToChunk(player.position);
+
+    #endregion
 }
