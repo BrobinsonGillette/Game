@@ -141,8 +141,7 @@ public class PlayerStats : MonoBehaviour, IDamable
         // Endurance reduces damage slightly
         if (endurance > 0)
         {
-            float damageReduction = 1f - (endurance * 0.01f); // 1% reduction per endurance point
-            damageReduction = Mathf.Clamp(damageReduction, 0.5f, 1f); // Cap at 50% reduction
+            float damageReduction = 1f - (endurance + agility * 0.01f); // 1% reduction per endurance point
             actualDamage *= damageReduction;
         }
 
@@ -347,7 +346,7 @@ public class PlayerStats : MonoBehaviour, IDamable
 
     private void Die()
     {
-        if (currentHealth > 0) return; // Already handled
+        if (IsDead()) return; // Already handled
 
         deaths++;
         Debug.Log($"Player died! Total deaths: {deaths}");
@@ -356,6 +355,7 @@ public class PlayerStats : MonoBehaviour, IDamable
 
     public void Respawn()
     {
+        if (IsDead()) return; // Already handled
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         OnPlayerRespawn?.Invoke();
@@ -365,11 +365,10 @@ public class PlayerStats : MonoBehaviour, IDamable
     // Utility methods
     public float GetHealthPercentage() => maxHealth > 0 ? currentHealth / maxHealth : 0f;
     public float GetExpPercentage() => maxExp > 0 ? currentExp / maxExp : 0f;
-    public bool IsAlive() => currentHealth > 0;
     public bool IsDead() => currentHealth <= 0;
 
     // Critical chance based on Luck (for other systems to use)
-    public float GetCriticalChance() => Mathf.Clamp(luck * 0.5f, 0f, 50f); // Max 50% crit chance
+    public float GetCriticalChance() => (luck * 0.5f); 
 
     // Save/Load methods
     public PlayerData GetSaveData()
