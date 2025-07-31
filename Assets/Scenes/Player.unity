@@ -246,6 +246,7 @@ GameObject:
   - component: {fileID: 1954903871}
   - component: {fileID: 1954903872}
   - component: {fileID: 1954903873}
+  - component: {fileID: 1954903874}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -447,6 +448,25 @@ MonoBehaviour:
   deceleration: 10
   flipSpriteOnDirection: 1
   showDebugInfo: 0
+--- !u!114 &1954903874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954903869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9270b169bb6a245458a0b6487f9bf14e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionKey: 101
+  interactionRange: 1.5
+  interactionLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  mainTilemap: {fileID: 0}
+  tilemapManager: {fileID: 0}
 --- !u!1 &2108734101
 GameObject:
   m_ObjectHideFlags: 0

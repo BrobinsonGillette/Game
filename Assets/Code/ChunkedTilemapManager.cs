@@ -23,8 +23,6 @@ public class ChunkData
         isGenerated = false;
         isDirty = false;
     }
-
-    public void MarkDirty() => isDirty = true;
     public void MarkClean() => isDirty = false;
 }
 
@@ -83,10 +81,6 @@ public class TileSet
         // Fallback (shouldn't normally reach here)
         return tiles.LastOrDefault(t => t?.tile != null)?.tile;
     }
-
-  
-  
-
 }
 
 
@@ -111,12 +105,12 @@ public class ChunkedTilemapManager : MonoBehaviour
     [SerializeField] private Transform player;
 
     [Header("Tilemaps")]
-    [SerializeField] private Tilemap mainTilemap;
-    [SerializeField] private Tilemap collisionTilemap;
+    public Tilemap mainTilemap;
+    public Tilemap collisionTilemap;
     [SerializeField] private Tilemap backgroundTilemap;
 
     [Header("Chunk Settings")]
-    [SerializeField] private int chunkSize = 16;
+    public int chunkSize = 16;
     [SerializeField] private int loadRadius = 2;
     [SerializeField] private float updateInterval = 0.5f;
 
@@ -125,7 +119,7 @@ public class ChunkedTilemapManager : MonoBehaviour
     [SerializeField] private TileSet grassTiles;
     [SerializeField] private TileSet decorationTiles;
     [SerializeField] private TileBase[] collisionTiles;
-    [SerializeField] private TileBase[] interactiveTiles;
+ 
 
     [Header("Generation Settings")]
     [SerializeField] private NoiseSettings terrainNoise;
@@ -577,7 +571,7 @@ public class ChunkedTilemapManager : MonoBehaviour
                     mainTilemap.SetTile(worldPos, chunk.mainTiles[x, y]);
 
                     // Add collision if needed
-                    if (collisionTilemap != null && ShouldHaveCollision(chunk.mainTiles[x, y]))
+                    if (collisionTilemap != null && ShouldHaveCollision(chunk.mainTiles[x, y]) )
                     {
                         collisionTilemap.SetTile(worldPos, chunk.mainTiles[x, y]);
                     }
