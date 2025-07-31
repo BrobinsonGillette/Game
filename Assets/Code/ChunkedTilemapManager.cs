@@ -33,7 +33,7 @@ public class WeightedTile
 {
     public TileBase tile;
     [Range(0f, 100)]
-    public int weight = 1;
+    public float weight = 1;
 }
 
 [System.Serializable]
@@ -65,7 +65,6 @@ public class TileSet
         float total = GetTotalWeight();
         if (total <= 0) return null;
 
-        // FIXED: Generate random value between 0 and total weight (not 1 to total)
         float randomValue = Random.Range(0f, total);
         float currentWeight = 0f;
 
@@ -75,7 +74,7 @@ public class TileSet
             if (weightedTile?.tile == null) continue;
 
             currentWeight += weightedTile.weight;
-            if (randomValue <= currentWeight)
+            if (randomValue < currentWeight)
             {
                 return weightedTile.tile;
             }
@@ -138,13 +137,14 @@ public class ChunkedTilemapManager : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float decorationThreshold = 0.8f;
     [SerializeField] private bool generateChunksOnDemand = true;
-    [SerializeField] private int worldSeed = 12345;
+
 
     [Header("Performance Settings")]
-    [SerializeField] private int maxChunksToLoadPerFrame = 1;
-    [SerializeField] private int maxChunksToUnloadPerFrame = 2;
-    [SerializeField] private int maxTilesPerFrame = 256;
-    [SerializeField] private bool usePooling = true;
+    public int worldSeed = 12345;
+    public int maxChunksToLoadPerFrame = 1;
+    public int maxChunksToUnloadPerFrame = 2;
+    public int maxTilesPerFrame = 256;
+
 
     [Header("Debug")]
     [SerializeField] private bool showDebugInfo = false;
@@ -215,9 +215,8 @@ public class ChunkedTilemapManager : MonoBehaviour
         // Save existing tiles
         SaveExistingTiles();
 
-        // Initialize object pools
-        if (usePooling)
-            InitializePools();
+     
+        InitializePools();
 
         // Start chunk management
         lastPlayerChunk = WorldToChunk(player.position);

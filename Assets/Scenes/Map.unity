@@ -506,7 +506,7 @@ MonoBehaviour:
     - tile: {fileID: 11400000, guid: 0a4f6994a51dab9458401c451355c2fa, type: 2}
       weight: 25
     - tile: {fileID: 11400000, guid: 9d101dba27363a44dbea5d55b6cc21fa, type: 2}
-      weight: 15
+      weight: 5
     - tile: {fileID: 11400000, guid: c5a2c9132b6117a4ea37657df6a49095, type: 2}
       weight: 5
     - tile: {fileID: 11400000, guid: 4e132dbdbd8beff4db252e66b43f20f7, type: 2}
@@ -526,23 +526,23 @@ MonoBehaviour:
     - tile: {fileID: 11400000, guid: 0b91cf28ff137c24d9927ada7ccb6659, type: 2}
       weight: 25
     - tile: {fileID: 11400000, guid: c65f6b9392fed7a49a31ed4aca3fc053, type: 2}
-      weight: 1
+      weight: 0.01
     - tile: {fileID: 11400000, guid: 754011c6e7cf9084297bf533922e86f9, type: 2}
-      weight: 1
+      weight: 0.01
     - tile: {fileID: 11400000, guid: 1c3da1e4f10acd44e9bfb5c223b69c35, type: 2}
-      weight: 1
+      weight: 0.01
     - tile: {fileID: 11400000, guid: 76978bcb1c4c8c34494f677148382759, type: 2}
-      weight: 1
+      weight: 0.01
     - tile: {fileID: 11400000, guid: fcc948e52685dac4da7907f3d85416d7, type: 2}
-      weight: 2
+      weight: 0.02
     - tile: {fileID: 11400000, guid: 5f95010ae6bc984478f095f7d45db030, type: 2}
-      weight: 2
+      weight: 0.02
     - tile: {fileID: 11400000, guid: b3de637def273bb47b548c2117f64027, type: 2}
-      weight: 2
+      weight: 0.02
     - tile: {fileID: 11400000, guid: b1a187601628c644c8fae9f7432f66d0, type: 2}
       weight: 25
     - tile: {fileID: 11400000, guid: cfe07a76c8d2c61499ad352c7a8904f9, type: 2}
-      weight: 15
+      weight: 0.05
   grassTiles:
     tiles:
     - tile: {fileID: 11400000, guid: 8774e7c3400e496499626a31599c83cf, type: 2}
@@ -743,16 +743,15 @@ MonoBehaviour:
     lacunarity: 2
     offset: {x: 0, y: 0}
   grassThreshold: 0.4
-  rockThreshold: 0.215
+  rockThreshold: 0.25
   decorationThreshold: 0.8
   generateChunksOnDemand: 1
   worldSeed: 12345
   maxChunksToLoadPerFrame: 1
   maxChunksToUnloadPerFrame: 2
   maxTilesPerFrame: 256
-  usePooling: 1
   showDebugInfo: 0
-  showChunkBounds: 1
+  showChunkBounds: 0
 --- !u!1 &1098278663
 GameObject:
   m_ObjectHideFlags: 0
