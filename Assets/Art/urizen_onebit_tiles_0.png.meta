@@ -4410,27 +4410,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: urizen_onebit_tiles_0_394
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 364
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5221eaa93dc8d7c4386e6fab7f0175a6
-      internalID: 924164482
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: urizen_onebit_tiles_0_395
       rect:
         serializedVersion: 2
@@ -10126,27 +10105,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: urizen_onebit_tiles_0_784
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 71d35bfb70698a743915099a7adf499c
-      internalID: -979379132
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: urizen_onebit_tiles_0_793
       rect:
         serializedVersion: 2
@@ -12305,27 +12263,6 @@ TextureImporter:
       bones: []
       spriteID: 8f77b64aa532aa94ebef100db59e8d9c
       internalID: -2063576625
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_0_183
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 520
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bb491cafdc91d6b44be053cf0aef6b76
-      internalID: 381609722
       vertices: []
       indices: 
       edges: []

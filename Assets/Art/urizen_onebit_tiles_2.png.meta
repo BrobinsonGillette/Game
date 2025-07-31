@@ -5696,27 +5696,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: urizen_onebit_tiles_2_572
-      rect:
-        serializedVersion: 2
-        x: 247
-        y: 144
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: efbc12d3fdbcd8c4f82c956df2183d25
-      internalID: 1272615629
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: urizen_onebit_tiles_2_573
       rect:
         serializedVersion: 2
@@ -5775,27 +5754,6 @@ TextureImporter:
       bones: []
       spriteID: f8ae5d088792bb04d9ba13e25f146d8b
       internalID: 415685135
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_2_585
-      rect:
-        serializedVersion: 2
-        x: 91
-        y: 131
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 56eaa87731105b740a71309516f62a32
-      internalID: -514966333
       vertices: []
       indices: 
       edges: []
@@ -7838,69 +7796,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: urizen_onebit_tiles_2_19
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 495
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4ddb1850ed840a740ac0bff64c59e096
-      internalID: 1396964063
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_2_20
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 495
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 12dea58df2dba9a4791c7528f8abfa72
-      internalID: 1917127629
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_2_21
-      rect:
-        serializedVersion: 2
-        x: 26
-        y: 495
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2735860484c72624c9dde1eec02c2125
-      internalID: 1850240049
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: urizen_onebit_tiles_2_22
       rect:
         serializedVersion: 2
@@ -7917,132 +7812,6 @@ TextureImporter:
       bones: []
       spriteID: 4637b2d2e19d2f44aa359221b901ced4
       internalID: -1558260836
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_2_23
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 495
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b79a9558fcc438d44b3006966b4c6f11
-      internalID: -332809689
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_2_24
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 495
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 73999792d6b033940a759c58dda61024
-      internalID: 1212786392
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_2_25
-      rect:
-        serializedVersion: 2
-        x: 78
-        y: 495
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 23c199001f6ef194993de2a327f0ea17
-      internalID: -2061293274
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_2_26
-      rect:
-        serializedVersion: 2
-        x: 91
-        y: 495
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 254d7f3914040af4eb14aafd33f652b7
-      internalID: 1312463492
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_2_27
-      rect:
-        serializedVersion: 2
-        x: 104
-        y: 495
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 68bf81900fa4efc4e9aceef8e7d511ed
-      internalID: -652627226
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_2_28
-      rect:
-        serializedVersion: 2
-        x: 117
-        y: 495
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 44cffdaef9575ef4daae443e9a9e5bee
-      internalID: 65892136
       vertices: []
       indices: 
       edges: []
