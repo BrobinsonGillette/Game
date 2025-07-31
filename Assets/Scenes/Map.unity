@@ -298,25 +298,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 898125794}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2790faa2f7a711d488569f539fee6990, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cba50bf90e1c794a9f5f3f9b04df252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilemap: {fileID: 380300476}
-  tilemapCollider: {fileID: 0}
-  tileData:
-    grassTile: {fileID: 0}
-    stoneTile: {fileID: 0}
-    waterTile: {fileID: 0}
-    wallTile: {fileID: 0}
-    treeTile: {fileID: 0}
-    townEntranceTile: {fileID: 0}
-    dungeonEntranceTile: {fileID: 0}
-  chunkSize: 16
+  player: {fileID: 0}
+  chunkSize: 50
   renderDistance: 3
   noiseScale: 0.1
-  worldSeed: 12345
-  premadeLocations: []
-  player: {fileID: 0}
+  octaves: 4
+  persistence: 0.5
+  lacunarity: 2
+  seed: 0
+  useBiomes: 0
+  biomeScale: 0.05
+  temperatureOffset: 0
+  humidityOffset: 100
+  terrainTypes:
+  - {fileID: 11400000, guid: 1160ff94b0726d04695e52b756ae3429, type: 2}
+  - {fileID: 11400000, guid: ee6b93349deeb0d419b2afabee619858, type: 2}
+  - {fileID: 11400000, guid: 1b731600107e9574993e9131044a5883, type: 2}
+  fallbackTerrain: {fileID: 11400000, guid: c462116f93f87e14ea7642df3363ee3d, type: 2}
+  terrainTilemap: {fileID: 380300476}
+  collisionTilemap: {fileID: 1919720713}
+  enableInteraction: 1
+  interactionLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  globalSpawnMultiplier: 1
+  debugSpawnProbabilities: 0
 --- !u!1 &1919720710
 GameObject:
   m_ObjectHideFlags: 0

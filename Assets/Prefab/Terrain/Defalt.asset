@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b0e1c18a7d39444e9aba54c1ba5c305, type: 3}
+  m_Name: Defalt
+  m_EditorClassIdentifier: 
+  tile: {fileID: 11400000, guid: 2fc5275f2233ac049aa7aee9cb7a604a, type: 2}
+  hasCollision: 0
+  canInteract: 0
+  type: 1
+  minHeight: 0
+  maxHeight: 1
+  spawnFrequency: 1
+  randomSpawnChance: 1
+  temperaturePreference: 0
+  humidityPreference: 0
+  biomeStrictness: 0
+  stepSound: {fileID: 0}
+  interactionSound: {fileID: 0}
+  minimapColor: {r: 1, g: 1, b: 1, a: 1}
+  description: 
