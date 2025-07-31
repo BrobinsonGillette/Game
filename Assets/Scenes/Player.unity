@@ -461,7 +461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionKey: 101
-  interactionRange: 1.5
+  interactionRange: 2.8
   interactionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -523,7 +523,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1000982105
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 687231436, guid: 261e9c909fcaea5458178c7ee2529fad, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

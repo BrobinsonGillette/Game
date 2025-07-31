@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
+    public static PlayerMove instance { get; private set; }
     [SerializeField] private PlayerCam playerCam;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField] private InputManager inputSystem;
+    public InputManager inputSystem;
     [SerializeField] private Rigidbody2D rb;
 
     [Header("Movement Settings")]
@@ -20,10 +21,19 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private bool showDebugInfo = false;
 
     private Vector2 moveDirection;
-    private Vector2 currentVelocity;
     private bool isSprinting;
     private float currentSpeed;
-
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     void Start()
     {
         // Initialize components

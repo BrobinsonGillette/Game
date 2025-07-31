@@ -641,7 +641,16 @@ public class ChunkedTilemapManager : MonoBehaviour
 
     #region Public API
 
-   
+    /// <summary>
+    /// Returns a read-only collection of all currently loaded chunk positions
+    /// </summary>
+    /// <returns>HashSet of loaded chunk positions</returns>
+    public HashSet<Vector2Int> GetLoadedChunks()
+    {
+        // Return a copy to prevent external modification
+        return new HashSet<Vector2Int>(loadedChunks);
+    }
+
     public void SaveAllDirtyChunks()
     {
         foreach (var chunk in chunks.Values.Where(c => c.isDirty))

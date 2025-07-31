@@ -1,14 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine;
 
 [System.Serializable]
 public class InteractableTileMapping
 {
     public TileBase tile;
     public GameObject interactablePrefab;
-
 }
 
 public class InteractionObjectSpawner : MonoBehaviour
@@ -25,8 +23,12 @@ public class InteractionObjectSpawner : MonoBehaviour
     public bool spawnOnChunkLoad = true;
     public bool destroyOnChunkUnload = true;
 
+    [Header("Position Offset")]
+    public Vector2 positionOffset = new Vector2(0.5f, 0.5f);
+
     private Dictionary<TileBase, InteractableTileMapping> tileMappings;
     private Dictionary<Vector2Int, List<GameObject>> chunkInteractables;
+    private HashSet<Vector3Int> spawnedPositions; // Track spawned positions to avoid duplicates
 
     private void Start()
     {
@@ -38,11 +40,12 @@ public class InteractionObjectSpawner : MonoBehaviour
         // Initialize dictionaries
         tileMappings = new Dictionary<TileBase, InteractableTileMapping>();
         chunkInteractables = new Dictionary<Vector2Int, List<GameObject>>();
+        spawnedPositions = new HashSet<Vector3Int>();
 
         // Build tile mappings dictionary
         foreach (var mapping in interactableMappings)
         {
-            if (mapping.tile != null)
+            if (mapping.tile != null && mapping.interactablePrefab != null)
             {
                 tileMappings[mapping.tile] = mapping;
             }
@@ -74,7 +77,15 @@ public class InteractionObjectSpawner : MonoBehaviour
         }
 
         // Spawn interactables for already loaded chunks
-        SpawnExistingInteractables();
+        if (tilemapManager != null)
+        {
+            SpawnInteractablesForLoadedChunks();
+        }
+        else
+        {
+            // If no chunk manager, spawn for entire tilemap
+            SpawnExistingInteractables();
+        }
     }
 
     private void OnDestroy()
@@ -97,9 +108,35 @@ public class InteractionObjectSpawner : MonoBehaviour
 
     private void OnChunkUnloaded(Vector2Int chunkPosition)
     {
-        if (destroyOnChunkUnload)
+        if (destroyOnChunkUnload && chunkInteractables.ContainsKey(chunkPosition))
         {
-            DestroyInteractablesInChunk(chunkPosition);
+            List<GameObject> objects = chunkInteractables[chunkPosition];
+
+            foreach (GameObject obj in objects)
+            {
+                if (obj != null)
+                {
+                    // Remove from spawned positions tracker
+                    Vector3Int tilePos = mainTilemap.WorldToCell(obj.transform.position);
+                    spawnedPositions.Remove(tilePos);
+
+                    // Destroy the object
+                    DestroyImmediate(obj);
+                }
+            }
+
+            chunkInteractables.Remove(chunkPosition);
+        }
+    }
+
+    private void SpawnInteractablesForLoadedChunks()
+    {
+        // Get all currently loaded chunks and spawn interactables for them
+        var loadedChunks = tilemapManager.GetLoadedChunks();
+
+        foreach (var chunkPosition in loadedChunks)
+        {
+            SpawnInteractablesInChunk(chunkPosition);
         }
     }
 
@@ -118,7 +155,7 @@ public class InteractionObjectSpawner : MonoBehaviour
                 Vector3Int position = new Vector3Int(x, y, 0);
                 TileBase tile = mainTilemap.GetTile(position);
 
-                if (tile != null && tileMappings.ContainsKey(tile))
+                if (tile != null && tileMappings.ContainsKey(tile) && !spawnedPositions.Contains(position))
                 {
                     SpawnInteractableAtPosition(position, tileMappings[tile]);
                 }
@@ -129,6 +166,14 @@ public class InteractionObjectSpawner : MonoBehaviour
     private void SpawnInteractablesInChunk(Vector2Int chunkPosition)
     {
         if (mainTilemap == null || tilemapManager == null) return;
+
+        // Initialize list for this chunk if it doesn't exist
+        if (!chunkInteractables.ContainsKey(chunkPosition))
+        {
+            chunkInteractables[chunkPosition] = new List<GameObject>();
+        }
+
+        List<GameObject> chunkObjects = chunkInteractables[chunkPosition];
 
         // Calculate chunk bounds
         Vector2Int worldStart = chunkPosition * tilemapManager.chunkSize;
@@ -141,8 +186,6 @@ public class InteractionObjectSpawner : MonoBehaviour
             1
         );
 
-        List<GameObject> spawnedObjects = new List<GameObject>();
-
         // Iterate through chunk tiles
         for (int x = chunkBounds.xMin; x < chunkBounds.xMax; x++)
         {
@@ -151,75 +194,96 @@ public class InteractionObjectSpawner : MonoBehaviour
                 Vector3Int position = new Vector3Int(x, y, 0);
                 TileBase tile = mainTilemap.GetTile(position);
 
-                if (tile != null && tileMappings.ContainsKey(tile))
+                if (tile != null && tileMappings.ContainsKey(tile) && !spawnedPositions.Contains(position))
                 {
                     GameObject spawnedObj = SpawnInteractableAtPosition(position, tileMappings[tile]);
                     if (spawnedObj != null)
                     {
-                        spawnedObjects.Add(spawnedObj);
+                        chunkObjects.Add(spawnedObj);
                     }
                 }
             }
         }
-
-        // Store spawned objects for this chunk
-        chunkInteractables[chunkPosition] = spawnedObjects;
     }
 
     private GameObject SpawnInteractableAtPosition(Vector3Int tilePosition, InteractableTileMapping mapping)
     {
+        // Check if already spawned at this position
+        if (spawnedPositions.Contains(tilePosition))
+        {
+            return null;
+        }
 
         // Convert tile position to world position
         Vector3 worldPosition = mainTilemap.CellToWorld(tilePosition);
+
+        // Apply offset to center the object on the tile
+        worldPosition.x += positionOffset.x;
+        worldPosition.y += positionOffset.y;
         worldPosition.z = 0; // Ensure Z is 0 for 2D
 
         // Spawn the interactable object
         GameObject spawnedObj = Instantiate(mapping.interactablePrefab, worldPosition, Quaternion.identity, interactableParent);
 
-        // Ensure the object has an Iteract component
+        // Ensure the object has an Interact component (fixed typo)
         Iteract iteractComponent = spawnedObj.GetComponent<Iteract>();
         if (iteractComponent == null)
         {
             iteractComponent = spawnedObj.AddComponent<Iteract>();
         }
 
+        // Track this position as spawned
+        spawnedPositions.Add(tilePosition);
+
         return spawnedObj;
     }
 
-    private void DestroyInteractablesInChunk(Vector2Int chunkPosition)
+    // Public method to manually spawn interactables (useful for testing)
+    public void ManualSpawnAll()
     {
-        if (chunkInteractables.ContainsKey(chunkPosition))
-        {
-            List<GameObject> objects = chunkInteractables[chunkPosition];
+        SpawnExistingInteractables();
+    }
 
-            foreach (GameObject obj in objects)
+    // Public method to clear all spawned interactables
+    public void ClearAllInteractables()
+    {
+        foreach (var chunkObjects in chunkInteractables.Values)
+        {
+            foreach (var obj in chunkObjects)
             {
                 if (obj != null)
                 {
-                    Destroy(obj);
+                    DestroyImmediate(obj);
                 }
             }
-
-            chunkInteractables.Remove(chunkPosition);
         }
+
+        chunkInteractables.Clear();
+        spawnedPositions.Clear();
     }
 
-    // Public method to manually spawn an interactable at a specific position
-    public GameObject SpawnInteractableManually(Vector3Int tilePosition, GameObject prefab)
+    // Get spawned object at specific tile position
+    public GameObject GetInteractableAtPosition(Vector3Int tilePosition)
     {
-        Vector3 worldPosition = mainTilemap.CellToWorld(tilePosition);
-        worldPosition.z = 0;
+        if (!spawnedPositions.Contains(tilePosition))
+            return null;
 
-        GameObject spawnedObj = Instantiate(prefab, worldPosition, Quaternion.identity, interactableParent);
+        Vector3 worldPos = mainTilemap.CellToWorld(tilePosition);
+        worldPos.x += positionOffset.x;
+        worldPos.y += positionOffset.y;
 
-        Iteract iteractComponent = spawnedObj.GetComponent<Iteract>();
-        if (iteractComponent == null)
+        // Find object near this position
+        foreach (var chunkObjects in chunkInteractables.Values)
         {
-            iteractComponent = spawnedObj.AddComponent<Iteract>();
+            foreach (var obj in chunkObjects)
+            {
+                if (obj != null && Vector3.Distance(obj.transform.position, worldPos) < 0.1f)
+                {
+                    return obj;
+                }
+            }
         }
 
-        return spawnedObj;
+        return null;
     }
-
-
 }

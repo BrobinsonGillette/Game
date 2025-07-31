@@ -6,7 +6,6 @@ using UnityEngine.Tilemaps;
 public class PlayerTileInteraction : MonoBehaviour
 {
     [Header("Interaction Settings")]
-    public KeyCode interactionKey = KeyCode.E;
     public float interactionRange = 1.5f;
     public LayerMask interactionLayerMask = -1;
 
@@ -36,7 +35,7 @@ public class PlayerTileInteraction : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(interactionKey))
+        if (PlayerMove.instance.inputSystem.Interact.action.ReadValue<float>() > 0)
         {
             TryInteractWithTile();
         }
