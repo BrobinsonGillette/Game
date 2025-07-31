@@ -409,8 +409,8 @@ Tilemap:
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: -2, y: -2, z: 0}
-  m_Size: {x: 26, y: 29, z: 1}
+  m_Origin: {x: -42, y: -2, z: 0}
+  m_Size: {x: 66, y: 29, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -750,8 +750,8 @@ MonoBehaviour:
   maxChunksToLoadPerFrame: 1
   maxChunksToUnloadPerFrame: 2
   maxTilesPerFrame: 256
-  showDebugInfo: 0
-  showChunkBounds: 0
+  showDebugInfo: 1
+  showChunkBounds: 1
 --- !u!1 &1098278663
 GameObject:
   m_ObjectHideFlags: 0

@@ -274,9 +274,41 @@ public class ChunkedTilemapManager : MonoBehaviour
     {
         if (mainTilemap == null) return;
 
+        // Get the current bounds
         var bounds = mainTilemap.cellBounds;
         int savedCount = 0;
 
+        // If bounds are empty or very small, create a larger search area
+        if (bounds.size.x <= 0 || bounds.size.y <= 0)
+        {
+            // Create a large search area around the origin and player
+            Vector3 playerPos = player != null ? player.position : Vector3.zero;
+            int searchRadius = 100; // Adjust this value based on your needs
+
+            bounds = new BoundsInt(
+                Mathf.FloorToInt(playerPos.x) - searchRadius,
+                Mathf.FloorToInt(playerPos.y) - searchRadius,
+                0,
+                searchRadius * 2,
+                searchRadius * 2,
+                1
+            );
+        }
+        else
+        {
+            // Expand existing bounds to ensure we don't miss anything
+            int expansion = 50; // tiles to expand in each direction
+            bounds = new BoundsInt(
+                bounds.xMin - expansion,
+                bounds.yMin - expansion,
+                bounds.zMin,
+                bounds.size.x + (expansion * 2),
+                bounds.size.y + (expansion * 2),
+                bounds.size.z
+            );
+        }
+
+        // Scan the area for existing tiles
         for (int x = bounds.xMin; x < bounds.xMax; x++)
         {
             for (int y = bounds.yMin; y < bounds.yMax; y++)
@@ -292,7 +324,7 @@ public class ChunkedTilemapManager : MonoBehaviour
         }
 
         if (showDebugInfo)
-            Debug.Log($"Saved {savedCount} existing painted tiles");
+            Debug.Log($"Saved {savedCount} existing painted tiles from expanded bounds: {bounds}");
     }
 
     #endregion
@@ -615,46 +647,7 @@ public class ChunkedTilemapManager : MonoBehaviour
 
     #region Public API
 
-    public bool TryInteractWithTile(Vector3 worldPosition)
-    {
-        var cellPosition = mainTilemap.WorldToCell(worldPosition);
-        var tile = mainTilemap.GetTile(cellPosition);
-
-        if (tile != null && IsInteractiveTile(tile))
-        {
-            OnTileInteraction(cellPosition, tile);
-            return true;
-        }
-
-        return false;
-    }
-
-    public void SetTileAt(Vector3Int position, TileBase tile, bool isMainTile = true)
-    {
-    
-        if (backgroundTilemap != null)
-        {
-            backgroundTilemap.SetTile(position, tile);
-        }
-        else if (isMainTile)
-        {
-            mainTilemap.SetTile(position, tile);
-            paintedTiles[position] = tile;
-        }
-
-        // Mark chunk as dirty
-        var chunkPos = WorldToChunk(position);
-        if (chunks.ContainsKey(chunkPos))
-        {
-            chunks[chunkPos].MarkDirty();
-        }
-    }
-
-    public TileBase GetTileAt(Vector3Int position, bool isMainTile = true)
-    {
-        return isMainTile ? mainTilemap.GetTile(position) : backgroundTilemap?.GetTile(position);
-    }
-
+   
     public void SaveAllDirtyChunks()
     {
         foreach (var chunk in chunks.Values.Where(c => c.isDirty))
@@ -662,53 +655,10 @@ public class ChunkedTilemapManager : MonoBehaviour
             SaveChunkFromTilemap(chunk);
         }
     }
-
-    public void RegenerateChunk(Vector2Int chunkPosition)
-    {
-        if (chunks.ContainsKey(chunkPosition))
-        {
-            var chunk = chunks[chunkPosition];
-            chunk.isGenerated = false;
-            chunk.MarkDirty();
-
-            if (chunk.isLoaded)
-            {
-                StartCoroutine(RegenerateLoadedChunk(chunk));
-            }
-        }
-    }
-
-    private IEnumerator RegenerateLoadedChunk(ChunkData chunk)
-    {
-        ClearChunkFromTilemap(chunk);
-        yield return GenerateChunkCoroutine(chunk);
-        yield return ApplyChunkToTilemapCoroutine(chunk);
-    }
-
     #endregion
 
     #region Utility Methods
 
-    private bool IsInteractiveTile(TileBase tile)
-    {
-        if (interactiveTiles == null || tile == null) return false;
-        return System.Array.IndexOf(interactiveTiles, tile) >= 0;
-    }
-
-    private void OnTileInteraction(Vector3Int position, TileBase tile)
-    {
-        OnTileInteracted?.Invoke(position, tile);
-
-        if (showDebugInfo)
-            Debug.Log($"Interacted with tile {tile.name} at position {position}");
-
-        // Mark chunk as dirty when tiles are modified
-        var chunkPos = WorldToChunk(position);
-        if (chunks.ContainsKey(chunkPos))
-        {
-            chunks[chunkPos].MarkDirty();
-        }
-    }
 
     private Vector2Int WorldToChunk(Vector3 worldPosition)
     {
@@ -767,13 +717,5 @@ public class ChunkedTilemapManager : MonoBehaviour
 
     #endregion
 
-    #region Public Properties
 
-    public int LoadedChunkCount => loadedChunks.Count;
-    public int TotalChunkCount => chunks.Count;
-    public int ChunkLoadQueueCount => chunkLoadQueue.Count;
-    public int ChunkUnloadQueueCount => chunkUnloadQueue.Count;
-    public Vector2Int CurrentPlayerChunk => WorldToChunk(player.position);
-
-    #endregion
 }
