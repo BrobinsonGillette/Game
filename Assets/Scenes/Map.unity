@@ -253,6 +253,7 @@ GameObject:
   - component: {fileID: 898125796}
   - component: {fileID: 898125795}
   - component: {fileID: 898125797}
+  - component: {fileID: 898125798}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -317,6 +318,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1160ff94b0726d04695e52b756ae3429, type: 2}
   - {fileID: 11400000, guid: ee6b93349deeb0d419b2afabee619858, type: 2}
   - {fileID: 11400000, guid: 1b731600107e9574993e9131044a5883, type: 2}
+  - {fileID: 11400000, guid: fefe00007e8b2e54fb33f08d0efdb669, type: 2}
   fallbackTerrain: {fileID: 11400000, guid: c462116f93f87e14ea7642df3363ee3d, type: 2}
   terrainTilemap: {fileID: 380300476}
   collisionTilemap: {fileID: 1919720713}
@@ -326,6 +328,24 @@ MonoBehaviour:
     m_Bits: 1
   globalSpawnMultiplier: 1
   debugSpawnProbabilities: 0
+  enablePresetSystem: 1
+--- !u!114 &898125798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898125794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b3d1bdcdaf765b458a9f2a545a5be5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  availablePresets: []
+  enableNaturalSpawning: 1
+  enableInteractionSpawning: 1
+  maxPresetsPerChunk: 2
+  showPreview: 1
 --- !u!1 &1919720710
 GameObject:
   m_ObjectHideFlags: 0

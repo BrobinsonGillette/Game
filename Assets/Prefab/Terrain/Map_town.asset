@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63465a2219dbb3247841be3837833a66, type: 3}
+  m_Name: Map_town
+  m_EditorClassIdentifier: 
+  presetName: 
+  presetType: 2
+  canSpawnNaturally: 0
+  naturalSpawnChance: 0.01
+  minDistanceBetweenSpawns: 50
+  minHeightToSpawn: 0.3
+  maxHeightToSpawn: 0.7
+  preferredTemperature: 0
+  temperatureTolerance: 1
+  preferredHumidity: 0
+  humidityTolerance: 1
+  presetTiles:
+  - position: {x: 0, y: 0}
+    terrainData: {fileID: 0}
+    placementPriority: 0
+  canSpawnByInteraction: 1
+  triggerTerrains:
+  - {fileID: 11400000, guid: fefe00007e8b2e54fb33f08d0efdb669, type: 2}

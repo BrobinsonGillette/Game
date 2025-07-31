@@ -46,6 +46,12 @@ public class TerrainGenerator : MonoBehaviour
     [Tooltip("Enable debugging spawn probabilities")]
     public bool debugSpawnProbabilities = false;
 
+    [Header("Preset System")]
+    public bool enablePresetSystem = true;
+
+    // Add reference to preset spawner
+    private PresetSpawner presetSpawner;
+
     // Private variables
     private Dictionary<Vector2Int, TerrainChunk> loadedChunks = new Dictionary<Vector2Int, TerrainChunk>();
     private Vector2Int lastPlayerChunk;
@@ -75,6 +81,15 @@ public class TerrainGenerator : MonoBehaviour
     void Start()
     {
         InitializeGenerator();
+        // Initialize preset spawner if enabled
+        if (enablePresetSystem)
+        {
+            presetSpawner = GetComponent<PresetSpawner>();
+            if (presetSpawner == null && enablePresetSystem)
+            {
+                Debug.LogWarning("Preset system enabled but no PresetSpawner component found!");
+            }
+        }
         GenerateInitialTerrain();
     }
 
@@ -231,7 +246,11 @@ public class TerrainGenerator : MonoBehaviour
     }
 
     void GenerateChunk(TerrainChunk chunk)
-    {
+    { // Store noise values for preset spawning
+        float[,] noiseValues = new float[chunkSize, chunkSize];
+        float[,] temperatureValues = new float[chunkSize, chunkSize];
+        float[,] humidityValues = new float[chunkSize, chunkSize];
+
         for (int x = 0; x < chunkSize; x++)
         {
             for (int y = 0; y < chunkSize; y++)
@@ -250,6 +269,11 @@ public class TerrainGenerator : MonoBehaviour
                     temperature = GenerateBiomeValue(worldPos.x, worldPos.y, temperatureOffset);
                     humidity = GenerateBiomeValue(worldPos.x, worldPos.y, humidityOffset);
                 }
+
+                // Store values for preset spawning
+                noiseValues[x, y] = noiseValue;
+                temperatureValues[x, y] = temperature;
+                humidityValues[x, y] = humidity;
 
                 TerrainTileData selectedTerrain = SelectTerrainType(noiseValue, temperature, humidity, worldPos);
 
@@ -271,6 +295,12 @@ public class TerrainGenerator : MonoBehaviour
         }
 
         chunk.isLoaded = true;
+
+        // Try to spawn presets in this chunk after basic terrain is generated
+        if (enablePresetSystem && presetSpawner != null)
+        {
+            presetSpawner.TrySpawnPresetsInChunk(chunk.chunkCoord, noiseValues, temperatureValues, humidityValues);
+        }
     }
 
     float GenerateNoiseValue(int x, int y)
@@ -441,14 +471,23 @@ public class TerrainGenerator : MonoBehaviour
         {
             Debug.Log($"Interacted with {terrainData.name} at {tilePosition}");
 
+            // Try preset spawning first if enabled
+            if (enablePresetSystem && presetSpawner != null)
+            {
+                bool presetSpawned = presetSpawner.TrySpawnPresetByInteraction(tilePosition);
+                if (presetSpawned)
+                {
+                    return; // Preset was spawned, don't do default interaction
+                }
+            }
+
             // Play interaction sound if available
             if (terrainData.interactionSound != null)
             {
                 AudioSource.PlayClipAtPoint(terrainData.interactionSound, Camera.main.ScreenToWorldPoint(Input.mousePosition));
             }
         }
-
-        // Example: Remove tile on interaction
+        // Example: Remove tile on interaction (only if no preset was spawned)
         // terrainTilemap.SetTile(tilePosition, null);
         // if (collisionTilemap != null)
         //     collisionTilemap.SetTile(tilePosition, null);
