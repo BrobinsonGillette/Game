@@ -9,9 +9,9 @@ public class PlayerTileInteraction : MonoBehaviour
     public float interactionRange = 1.5f;
     public LayerMask interactionLayerMask = -1;
 
-    [Header("References")]
-    public Tilemap mainTilemap;
-    public ChunkedTilemapManager tilemapManager;
+
+    public Tilemap mainTilemap { get; private set; }
+    public ChunkedTilemapManager tilemapManager { get; private set; }
 
     private Camera playerCamera;
     private Dictionary<Vector3Int, Iteract> interactableObjects = new Dictionary<Vector3Int, Iteract>();

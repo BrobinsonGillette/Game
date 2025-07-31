@@ -102,7 +102,7 @@ public class NoiseSettings
 public class ChunkedTilemapManager : MonoBehaviour
 {
     [Header("Player Reference")]
-    [SerializeField] private Transform player;
+    private Transform player;
 
     [Header("Tilemaps")]
     public Tilemap mainTilemap;
@@ -130,7 +130,7 @@ public class ChunkedTilemapManager : MonoBehaviour
     [SerializeField] private float rockThreshold = 0.6f;
     [Range(0f, 1f)]
     [SerializeField] private float decorationThreshold = 0.8f;
-    [SerializeField] private bool generateChunksOnDemand = true;
+  
 
 
     [Header("Performance Settings")]
@@ -209,19 +209,60 @@ public class ChunkedTilemapManager : MonoBehaviour
         // Save existing tiles
         SaveExistingTiles();
 
-     
         InitializePools();
 
         // Start chunk management
         lastPlayerChunk = WorldToChunk(player.position);
+
+        // IMPORTANT: Load player chunk immediately before starting the coroutine
+        ForceLoadPlayerChunk();
+
         chunkUpdateCoroutine = StartCoroutine(ChunkUpdateLoop());
 
-        // Initial chunk load
+        // Load surrounding chunks
         UpdatePlayerChunk();
 
         Debug.Log($"ChunkedTilemapManager initialized with seed: {worldSeed}");
     }
+    // Add this method for immediate player chunk loading
+    private void ForceLoadPlayerChunk()
+    {
+        if (player == null) return;
 
+        var playerChunk = WorldToChunk(player.position);
+
+        // If player chunk isn't loaded, load it immediately
+        if (!loadedChunks.Contains(playerChunk))
+        {
+            StartCoroutine(LoadChunkImmediately(playerChunk));
+        }
+    }
+    private IEnumerator LoadChunkImmediately(Vector2Int chunkPos)
+    {
+        if (!chunks.ContainsKey(chunkPos))
+        {
+            chunks[chunkPos] = new ChunkData(chunkPos, chunkSize);
+        }
+
+        var chunk = chunks[chunkPos];
+
+        if (!chunk.isGenerated)
+        {
+            yield return GenerateChunkCoroutine(chunk);
+        }
+
+        if (!chunk.isLoaded)
+        {
+            yield return ApplyChunkToTilemapCoroutine(chunk);
+            chunk.isLoaded = true;
+        }
+
+        loadedChunks.Add(chunkPos);
+        OnChunkLoaded?.Invoke(chunkPos);
+
+        if (showDebugInfo)
+            Debug.Log($"Immediately loaded player chunk: {chunkPos}");
+    }
     private bool ValidateTilemaps()
     {
         if (mainTilemap == null)
@@ -350,9 +391,9 @@ public class ChunkedTilemapManager : MonoBehaviour
         if (player == null) return;
 
         var playerChunk = WorldToChunk(player.position);
-        var targetChunks = GetChunksInRadius(playerChunk, loadRadius);
+        var targetChunks = GetChunksInRadiusSorted(playerChunk, loadRadius);
 
-        // Queue chunks for unloading
+        // Queue chunks for unloading (existing chunks not in target list)
         foreach (var loadedChunk in loadedChunks.ToList())
         {
             if (!targetChunks.Contains(loadedChunk))
@@ -361,29 +402,43 @@ public class ChunkedTilemapManager : MonoBehaviour
             }
         }
 
-        // Queue chunks for loading
+        // Clear the load queue to reprioritize
+        chunkLoadQueue.Clear();
+
+        // Queue chunks for loading in order of priority (closest first)
         foreach (var targetChunk in targetChunks)
         {
-            if (!loadedChunks.Contains(targetChunk) && !chunkLoadQueue.Contains(targetChunk))
+            if (!loadedChunks.Contains(targetChunk))
             {
                 chunkLoadQueue.Enqueue(targetChunk);
             }
         }
     }
-
-    private HashSet<Vector2Int> GetChunksInRadius(Vector2Int center, int radius)
+    private List<Vector2Int> GetChunksInRadiusSorted(Vector2Int center, int radius)
     {
-        var chunks = new HashSet<Vector2Int>();
+        var chunks = new List<Vector2Int>();
+
+        // Generate all chunks in radius with their distances
+        var chunksWithDistance = new List<(Vector2Int chunk, float distance)>();
+
         for (int x = -radius; x <= radius; x++)
         {
             for (int y = -radius; y <= radius; y++)
             {
-                chunks.Add(center + new Vector2Int(x, y));
+                var chunkPos = center + new Vector2Int(x, y);
+                float distance = Vector2Int.Distance(center, chunkPos);
+                chunksWithDistance.Add((chunkPos, distance));
             }
         }
-        return chunks;
+
+        // Sort by distance (closest first)
+        chunksWithDistance.Sort((a, b) => a.distance.CompareTo(b.distance));
+
+        // Extract just the chunk positions
+        return chunksWithDistance.ConvertAll(item => item.chunk);
     }
 
+  
     private IEnumerator ProcessChunkQueues()
     {
         int processedThisFrame = 0;
@@ -420,7 +475,7 @@ public class ChunkedTilemapManager : MonoBehaviour
 
         var chunk = chunks[chunkPos];
 
-        if (!chunk.isGenerated && generateChunksOnDemand)
+        if (!chunk.isGenerated)
         {
             yield return GenerateChunkCoroutine(chunk);
         }

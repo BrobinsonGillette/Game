@@ -8,17 +8,16 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private PlayerCam playerCam;
     [SerializeField] private SpriteRenderer spriteRenderer;
     public InputManager inputSystem;
-    [SerializeField] private Rigidbody2D rb;
+    private Rigidbody2D rb;
 
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float sprintSpeed = 10f;
     [SerializeField] private float acceleration = 10f;
     [SerializeField] private float deceleration = 10f;
-    [SerializeField] private bool flipSpriteOnDirection = true;
 
-    [Header("Debug")]
-    [SerializeField] private bool showDebugInfo = false;
+
+
 
     private Vector2 moveDirection;
     private bool isSprinting;
@@ -60,11 +59,6 @@ public class PlayerMove : MonoBehaviour
     {
         HandleInput();
         HandleSpriteFlipping();
-
-        if (showDebugInfo)
-        {
-            Debug.Log($"Move Direction: {moveDirection}, Is Sprinting: {isSprinting}, Current Speed: {currentSpeed}");
-        }
     }
 
     void FixedUpdate()
@@ -106,7 +100,7 @@ public class PlayerMove : MonoBehaviour
 
     private void HandleSpriteFlipping()
     {
-        if (!flipSpriteOnDirection || spriteRenderer == null) return;
+        if (spriteRenderer == null) return;
 
         if (moveDirection.x > 0)
         {
