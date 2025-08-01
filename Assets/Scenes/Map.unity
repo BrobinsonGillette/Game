@@ -132,7 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 531023651}
   - component: {fileID: 531023650}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,7 +215,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 607140082}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Firepoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -247,7 +247,7 @@ GameObject:
   m_Component:
   - component: {fileID: 856182692}
   - component: {fileID: 856182691}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -902,7 +902,8 @@ GameObject:
   - component: {fileID: 1913475963}
   - component: {fileID: 1913475964}
   - component: {fileID: 1913475965}
-  m_Layer: 0
+  - component: {fileID: 1913475966}
+  m_Layer: 8
   m_Name: Bad gay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1019,6 +1020,33 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.5527122, y: 1}
   m_EdgeRadius: 0
+--- !u!50 &1913475966
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913475962}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1000
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1919720710
 GameObject:
   m_ObjectHideFlags: 0
@@ -1331,7 +1359,8 @@ GameObject:
   - component: {fileID: 2025473517}
   - component: {fileID: 2025473516}
   - component: {fileID: 2025473515}
-  m_Layer: 0
+  - component: {fileID: 2025473518}
+  m_Layer: 8
   m_Name: Bad gay (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1409,15 +1438,15 @@ MonoBehaviour:
   meleeAreaRadius: 0
   meleeAreaDuration: 0
   meleeAreaPrefab: {fileID: 2612106632180080167, guid: 7a46306f36027024aae223acb90cbc82, type: 3}
-  RangeAttackDamage: 1
-  RangeAttackCooldown: 3
-  projectilePrefab: {fileID: 2612106632180080167, guid: 7b00d2e236e42f549b9563a73e28122c, type: 3}
+  RangeAttackDamage: 0
+  RangeAttackCooldown: 0
+  projectilePrefab: {fileID: 0}
   firePoint: {fileID: 607140082}
-  projectileSpeed: 25
+  projectileSpeed: 0
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
-  moveSpeed: 3
+  moveSpeed: 0
   stoppingDistance: 1.5
   retreatDistance: 1
   pathUpdateRate: 0.2
@@ -1448,6 +1477,33 @@ Transform:
   - {fileID: 607140082}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &2025473518
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025473514}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1000
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &2087617536
 GameObject:
   m_ObjectHideFlags: 0
@@ -1457,7 +1513,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2087617537}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Firepoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

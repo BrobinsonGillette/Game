@@ -464,7 +464,7 @@ public class Enamy : MonoBehaviour, IDamable
         else
         {
             if (projectilePrefab == null)
-                Debug.LogWarning($"{enemyName} projectilePrefab is null!");
+               // Debug.LogWarning($"{enemyName} projectilePrefab is null!");
             if (player == null)
                 Debug.LogWarning($"{enemyName} player reference is null!");
         }
