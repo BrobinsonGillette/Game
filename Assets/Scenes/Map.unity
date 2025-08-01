@@ -947,7 +947,7 @@ MonoBehaviour:
   DamageReduction: 1
   Rangeattack: 0
   MeleeAttackRange: 2
-  MeleeAttackDamage: 10
+  MeleeAttackDamage: 1
   MeleeAttackCooldown: 1
   meleeAreaRadius: 1.5
   meleeAreaDuration: 0.5
@@ -1409,11 +1409,11 @@ MonoBehaviour:
   meleeAreaRadius: 0
   meleeAreaDuration: 0
   meleeAreaPrefab: {fileID: 2612106632180080167, guid: 7a46306f36027024aae223acb90cbc82, type: 3}
-  RangeAttackDamage: 5
-  RangeAttackCooldown: 0.1
+  RangeAttackDamage: 1
+  RangeAttackCooldown: 3
   projectilePrefab: {fileID: 2612106632180080167, guid: 7b00d2e236e42f549b9563a73e28122c, type: 3}
   firePoint: {fileID: 607140082}
-  projectileSpeed: 10
+  projectileSpeed: 25
   playerLayer:
     serializedVersion: 2
     m_Bits: 64

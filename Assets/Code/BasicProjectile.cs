@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class BasicProjectile : MonoBehaviour
 {
-    private float damage;
-    private LayerMask targetLayer;
+    [SerializeField] private float damage;
+    [SerializeField] private LayerMask targetLayer;
 
     public void Initialize(float dmg, LayerMask layer)
     {
@@ -32,6 +32,10 @@ public class BasicProjectile : MonoBehaviour
                 target.TakeDamage(damage);
             }
             Destroy(gameObject);
+        }
+        else
+        {
+            Debug.Log($"Projectile hit target layer {targetLayer} layer: {other.gameObject.name} & layer is {other.gameObject.layer}");
         }
     }
  

@@ -137,14 +137,17 @@ public class PlayerStats : MonoBehaviour, IDamable
     {
         if (damage <= 0 || currentHealth <= 0) return;
 
-        float actualDamage = damage;
-        float damageReduction = 1f - (endurance + agility * 0.01f); // 1% reduction per endurance point
-        actualDamage *= damageReduction;
+        // Calculate damage reduction: 1% reduction for every 2 points in endurance + agility combined
+        float totalDefensiveStats = endurance + agility;
+        float damageReductionPercent = (totalDefensiveStats / 2f) * 0.01f; // 1% per 2 points
+        float damageReduction = 1f - damageReductionPercent;
+
+        float actualDamage = damage * damageReduction;
 
         currentHealth = Mathf.Clamp(currentHealth - actualDamage, 0, maxHealth);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
-        Debug.Log($"Player took {actualDamage:F1} damage (reduced from {damage:F1}). Health: {currentHealth:F1}/{maxHealth:F1}");
+        Debug.Log($"Player took {actualDamage:F1} damage (reduced from {damage:F1} by {damageReductionPercent * 100:F1}%). Health: {currentHealth:F1}/{maxHealth:F1}");
 
         if (currentHealth <= 0)
         {
@@ -417,6 +420,6 @@ public class PlayerStats : MonoBehaviour, IDamable
     [ContextMenu("Take Test Damage")]
     private void TakeTestDamage()
     {
-        TakeDamage(25f);
+        TakeDamage(500f);
     }
 }

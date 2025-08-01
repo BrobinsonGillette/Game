@@ -71,21 +71,12 @@ public class Enamy : MonoBehaviour, IDamable
 
     // Movement and pathfinding
     private Vector2 currentTarget;
-    private Vector2 currentVelocity;
-    private List<Vector2> currentPath;
-    private int currentPathIndex;
     private bool isMoving;
 
     // Combat preference calculation
     private float optimalCombatRange;
-    private float maxDamageWeaponRange;
 
-    // Pathfinding directions (8-directional movement)
-    private static readonly Vector2[] directions = {
-        Vector2.up, Vector2.down, Vector2.left, Vector2.right,
-        new Vector2(1, 1).normalized, new Vector2(1, -1).normalized,
-        new Vector2(-1, 1).normalized, new Vector2(-1, -1).normalized
-    };
+
 
     // Events
     public event Action<float, float> OnHealthChanged;
@@ -138,13 +129,11 @@ public class Enamy : MonoBehaviour, IDamable
 
         if (meleeDPS > rangedDPS)
         {
-            maxDamageWeaponRange = MeleeAttackRange;
             optimalCombatRange = MeleeAttackRange * 0.8f;
             preferRangedCombat = false;
         }
         else
         {
-            maxDamageWeaponRange = Rangeattack;
             optimalCombatRange = Rangeattack * 0.7f;
             preferRangedCombat = true;
         }
@@ -333,7 +322,7 @@ public class Enamy : MonoBehaviour, IDamable
         bool hasLOS = hit.collider == null;
 
         // Debug line of sight
-        Debug.Log($"{enemyName} LOS check: {hasLOS}, Hit: {(hit.collider != null ? hit.collider.name : "none")}");
+       // Debug.Log($"{enemyName} LOS check: {hasLOS}, Hit: {(hit.collider != null ? hit.collider.name : "none")}");
 
         return hasLOS;
     }
@@ -361,7 +350,7 @@ public class Enamy : MonoBehaviour, IDamable
 
     private void UpdateCombat(float distanceToPlayer)
     {
-        Debug.Log($"{enemyName}: Distance={distanceToPlayer:F2}, Ranged={Rangeattack:F2}, Melee={MeleeAttackRange:F2}, LOS={hasLineOfSight}, PreferRanged={preferRangedCombat}");
+      //  Debug.Log($"{enemyName}: Distance={distanceToPlayer:F2}, Ranged={Rangeattack:F2}, Melee={MeleeAttackRange:F2}, LOS={hasLineOfSight}, PreferRanged={preferRangedCombat}");
 
         // SIMPLE TEST VERSION - Just try ranged attack if in range
         if (distanceToPlayer <= Rangeattack)
@@ -387,11 +376,11 @@ public class Enamy : MonoBehaviour, IDamable
 
     private void TryRangedAttack()
     {
-        Debug.Log($"{enemyName} trying ranged attack - Cooldown ready: {Time.time >= lastRangeAttackTime + RangeAttackCooldown}");
+      //  Debug.Log($"{enemyName} trying ranged attack - Cooldown ready: {Time.time >= lastRangeAttackTime + RangeAttackCooldown}");
 
         if (Time.time >= lastRangeAttackTime + RangeAttackCooldown)
         {
-            Debug.Log($"{enemyName} FIRING ranged attack!");
+           // Debug.Log($"{enemyName} FIRING ranged attack!");
             PerformRangedAttack();
             lastRangeAttackTime = Time.time;
         }
@@ -450,15 +439,7 @@ public class Enamy : MonoBehaviour, IDamable
             // Spawn projectile
             GameObject projectile = Instantiate(projectilePrefab, firePoint.position, rotation);
 
-            // Try to initialize with EnemyProjectile script first
-            EnemyProjectile projectileScript = projectile.GetComponent<EnemyProjectile>();
-            if (projectileScript != null)
-            {
-                projectileScript.Initialize(direction, projectileSpeed, RangeAttackDamage, playerLayer);
-                Debug.Log($"{enemyName} fired EnemyProjectile at {player.name} (LOS: {hasLineOfSight})");
-            }
-            else
-            {
+      
                 // Fallback to BasicProjectile
                 BasicProjectile basicProjectile = projectile.GetComponent<BasicProjectile>();
                 if (basicProjectile == null)
@@ -478,8 +459,7 @@ public class Enamy : MonoBehaviour, IDamable
                 rb.velocity = direction * projectileSpeed;
                 basicProjectile.Initialize(RangeAttackDamage, playerLayer);
 
-                Debug.Log($"{enemyName} fired BasicProjectile at {player.name} (LOS: {hasLineOfSight})");
-            }
+              //  Debug.Log($"{enemyName} fired BasicProjectile at {player.name} (LOS: {hasLineOfSight})");
         }
         else
         {
@@ -579,39 +559,5 @@ public class Enamy : MonoBehaviour, IDamable
         }
     }
 
-    // Public methods
-    public void SetTarget(Transform newTarget)
-    {
-        player = newTarget;
-        targetLostTimer = 0f;
-    }
-
-    public void ForceAttack()
-    {
-        if (player == null) return;
-
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-
-        if (distanceToPlayer <= MeleeAttackRange)
-        {
-            TryMeleeAttack();
-        }
-        else if (distanceToPlayer <= Rangeattack)
-        {
-            TryRangedAttack();
-        }
-    }
-
-    public float GetOptimalCombatRange()
-    {
-        return optimalCombatRange;
-    }
-
-    public bool IsInOptimalRange()
-    {
-        if (player == null) return false;
-
-        float distance = Vector2.Distance(transform.position, player.position);
-        return Mathf.Abs(distance - optimalCombatRange) <= 1f;
-    }
+  
 }
