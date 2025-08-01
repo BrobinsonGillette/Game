@@ -70,6 +70,7 @@ public class Enamy : MonoBehaviour, IDamable
     private float targetLostTimer;
     private bool hasLineOfSight;
     private bool hasGivenExp = false;
+    bool takeDamage = false;
 
     // Movement and pathfinding
     private Vector2 currentTarget;
@@ -497,7 +498,7 @@ public class Enamy : MonoBehaviour, IDamable
 
     public void TakeDamage(float damage)
     {
-        if (damage <= 0 || currentHealth <= 0) return;
+        if (damage <= 0 || currentHealth <= 0 && !takeDamage) return;
 
         float actualDamage = damage;
         float damageReduction = 1f - (DamageReduction * 0.01f);
@@ -512,6 +513,15 @@ public class Enamy : MonoBehaviour, IDamable
         {
             Die();
         }
+        StartCoroutine(takeDamge());
+    }
+    private IEnumerator takeDamge()
+    {
+        takeDamage = true;
+        spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(0.4f);
+        spriteRenderer.color = Color.white;
+        takeDamage = false;
     }
     public bool IsDead => currentHealth <= 0;
     private void Die()

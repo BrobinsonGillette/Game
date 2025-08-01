@@ -6,7 +6,7 @@ public class PlayerMove : MonoBehaviour
 {
     public static PlayerMove instance { get; private set; }
     [SerializeField] private PlayerCam playerCam;
-    [SerializeField] private SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
     public InputManager inputSystem;
     private Rigidbody2D rb;
 

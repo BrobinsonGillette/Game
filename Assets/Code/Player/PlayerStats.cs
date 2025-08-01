@@ -90,6 +90,7 @@ public class PlayerStats : MonoBehaviour, IDamable
     // Private variables
     private float lastMeleeAttackTime;
     private float lastRangeAttackTime;
+    bool takeDamage;
 
 
     // Properties for health
@@ -164,6 +165,7 @@ public class PlayerStats : MonoBehaviour, IDamable
 
     private void TryAttacking(InputAction.CallbackContext context) // FIXED: Method name
     {
+        if(IsDead()) return;
         switch (currentWeapon)
         {
             case weaponType.melee:
@@ -298,7 +300,7 @@ public class PlayerStats : MonoBehaviour, IDamable
 
     public void TakeDamage(float damage)
     {
-        if (damage <= 0 || currentHealth <= 0) return;
+        if (damage <= 0 || currentHealth <= 0 && !takeDamage) return;
 
         // Calculate damage reduction: 1% reduction for every 2 points in endurance + agility combined
         float totalDefensiveStats = endurance + agility;
@@ -309,7 +311,17 @@ public class PlayerStats : MonoBehaviour, IDamable
 
         currentHealth = currentHealth - actualDamage;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        StartCoroutine(takeDamge());
     }
+    private IEnumerator takeDamge()
+    {
+        takeDamage = true;
+        PlayerMove.instance.spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(0.4f);
+        PlayerMove.instance.spriteRenderer.color = Color.white;
+        takeDamage = false;
+    }
+
 
     public void Heal(float amount)
     {

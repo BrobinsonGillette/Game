@@ -949,7 +949,7 @@ MonoBehaviour:
   DamageReduction: 0
   Rangeattack: 0
   MeleeAttackRange: 2
-  MeleeAttackDamage: 5
+  MeleeAttackDamage: 1
   MeleeAttackCooldown: 1
   meleeAreaRadius: 1.5
   meleeAreaDuration: 0.5
