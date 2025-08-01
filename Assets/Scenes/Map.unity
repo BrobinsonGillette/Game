@@ -941,11 +941,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: Enemy
   enemyIcon: {fileID: 1488251085, guid: 261e9c909fcaea5458178c7ee2529fad, type: 3}
+  deadIcon: {fileID: 1417148046, guid: 261e9c909fcaea5458178c7ee2529fad, type: 3}
   spriteRenderer: {fileID: 531023650}
   expGiven: 10
-  currentHealth: 100
-  maxHealth: 100
-  DamageReduction: 1
+  currentHealth: 1
+  maxHealth: 1
+  DamageReduction: 0
   Rangeattack: 0
   MeleeAttackRange: 2
   MeleeAttackDamage: 1
@@ -958,6 +959,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 2612106632180080167, guid: 7b00d2e236e42f549b9563a73e28122c, type: 3}
   firePoint: {fileID: 2087617537}
   projectileSpeed: 10
+  projectileLifetime: 0
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -1426,11 +1428,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: Enemy
   enemyIcon: {fileID: 614176838, guid: 261e9c909fcaea5458178c7ee2529fad, type: 3}
+  deadIcon: {fileID: 1417148046, guid: 261e9c909fcaea5458178c7ee2529fad, type: 3}
   spriteRenderer: {fileID: 856182691}
   expGiven: 10
-  currentHealth: 100
-  maxHealth: 100
-  DamageReduction: 1
+  currentHealth: 1
+  maxHealth: 1
+  DamageReduction: 0
   Rangeattack: 5
   MeleeAttackRange: 0
   MeleeAttackDamage: 0
@@ -1443,6 +1446,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 0}
   firePoint: {fileID: 607140082}
   projectileSpeed: 0
+  projectileLifetime: 0
   playerLayer:
     serializedVersion: 2
     m_Bits: 64

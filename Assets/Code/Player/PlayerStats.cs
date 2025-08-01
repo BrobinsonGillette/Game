@@ -1,7 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.InputSystem;
 using UnityEngine;
+using System.Collections;
+
 [System.Serializable]
 public class PlayerData
 {
@@ -18,7 +19,7 @@ public class PlayerData
     public int deaths;
     public int availablePoints;
 }
-
+public enum weaponType { melee, ranged };
 public class PlayerStats : MonoBehaviour, IDamable
 {
     public static PlayerStats instance { get; private set; }
@@ -53,6 +54,25 @@ public class PlayerStats : MonoBehaviour, IDamable
     [SerializeField] private float expMultiplier = 1.5f;
     [SerializeField] private float enduranceHealthBonus = 3f; // Health bonus per endurance point
 
+    [Header("Melee Attack Settings")]
+    public float MeleeAttackDamage = 10f;
+    public float MeleeAttackCooldown = 1f;
+    public float meleeAreaRadius = 1.5f; // Radius of damage area
+    public float meleeAreaDuration = 0.5f; // How long damage area stays active
+    public GameObject meleeAreaPrefab; // Optional visual prefab for damage area
+
+    [Header("Ranged Attack Settings")]
+    public float RangeAttackDamage = 10f;
+    public float RangeAttackCooldown = 1f;
+    public GameObject projectilePrefab; // Projectile prefab to shoot
+    public Transform firePoint; // Where projectiles spawn from
+    public float projectileSpeed = 10f;
+    public float projectileLifetime;
+
+    [Header("Attack Detection")]
+    public LayerMask EnemyLayer = 1; // FIXED: Changed from EnamyLayer to EnemyLayer
+    private weaponType currentWeapon = weaponType.melee;
+
     // Properties for stats
     public int MightStat => might;
     public int AgilityStat => agility;
@@ -66,6 +86,11 @@ public class PlayerStats : MonoBehaviour, IDamable
     public float CurrentExp => currentExp;
     public float MaxExp => maxExp;
     public int AvailablePoints => availablePoints;
+
+    // Private variables
+    private float lastMeleeAttackTime;
+    private float lastRangeAttackTime;
+    private bool isAttacking = false;
 
     // Properties for health
     public float Health
@@ -89,9 +114,12 @@ public class PlayerStats : MonoBehaviour, IDamable
     public event Action OnDeath;
     public event Action<int> OnStatChanged; // available points
     public event Action OnPlayerRespawn;
+    public event Action OnMeleeAttack;
+    public event Action OnRangedAttack;
 
     // References
     private PlayerMove playerMove;
+
 
     private void Awake()
     {
@@ -111,6 +139,40 @@ public class PlayerStats : MonoBehaviour, IDamable
     private void Start()
     {
         playerMove = GetComponent<PlayerMove>();
+
+        // FIXED: Properly subscribe to input events
+        if (playerMove != null && playerMove.inputSystem != null)
+        {
+            playerMove.inputSystem.Attack.action.performed += TryAttacking;
+        }
+
+        // Set up firePoint if not assigned
+        if (firePoint == null)
+        {
+            firePoint = transform;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // FIXED: Unsubscribe from events to prevent memory leaks
+        if (playerMove != null && playerMove.inputSystem != null)
+        {
+            playerMove.inputSystem.Attack.action.performed -= TryAttacking;
+        }
+    }
+
+    private void TryAttacking(InputAction.CallbackContext context) // FIXED: Method name
+    {
+        switch (currentWeapon)
+        {
+            case weaponType.melee:
+                TryMeleeAttack();
+                break;
+            case weaponType.ranged:
+                TryRangedAttack();
+                break;
+        }
     }
 
     private void InitializePlayer()
@@ -124,6 +186,113 @@ public class PlayerStats : MonoBehaviour, IDamable
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         OnExpChanged?.Invoke(currentExp, maxExp);
         OnStatChanged?.Invoke(availablePoints);
+    }
+
+    private void TryMeleeAttack()
+    {
+        if (Time.time >= lastMeleeAttackTime + MeleeAttackCooldown)
+        {
+            StartCoroutine(PerformMeleeAttack());
+            lastMeleeAttackTime = Time.time;
+        }
+    }
+
+    private void TryRangedAttack()
+    {
+        if (Time.time >= lastRangeAttackTime + RangeAttackCooldown)
+        {
+            PerformRangedAttack();
+            lastRangeAttackTime = Time.time;
+        }
+    }
+
+    private IEnumerator PerformMeleeAttack()
+    {
+        isAttacking = true;
+        OnMeleeAttack?.Invoke();
+
+        Vector3 attackPosition = transform.position;
+
+        GameObject damageArea = null;
+        if (meleeAreaPrefab != null)
+        {
+            damageArea = Instantiate(meleeAreaPrefab, attackPosition, Quaternion.identity);
+            BasicProjectile basicProjectile = damageArea.AddComponent<BasicProjectile>();
+            basicProjectile.Initialize(0, 0, meleeAreaDuration);
+        }
+
+
+
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(attackPosition, meleeAreaRadius, EnemyLayer); // FIXED: EnemyLayer
+        foreach (Collider2D hitCollider in hitColliders)
+        {
+            IDamable damageTarget = hitCollider.GetComponent<IDamable>();
+         
+            if (damageTarget != null)
+            {
+                damageArea.transform.position = hitCollider.GetComponent<Collider2D>().bounds.center;
+                damageTarget.TakeDamage(MeleeAttackDamage);
+                Debug.Log($"Player dealt {MeleeAttackDamage} melee damage to {hitCollider.name}");
+            }
+            else
+            {
+                Debug.Log($"No IDamable component found on {hitCollider.name}");
+            }
+        }
+     
+
+        yield return new WaitForSeconds(meleeAreaDuration);
+
+        if (damageArea != null)
+        {
+            Destroy(damageArea);
+        }
+
+        isAttacking = false;
+    }
+
+    private void PerformRangedAttack()
+    {
+        OnRangedAttack?.Invoke();
+
+        if (projectilePrefab != null && firePoint != null) // FIXED: Added firePoint null check
+        {
+            // FIXED: Improved mouse position to world position conversion
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = 0f; // Ensure z is 0 for 2D
+
+            Vector2 direction = ((Vector2)mousePos - (Vector2)firePoint.position).normalized;
+
+            // Calculate 2D rotation angle
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+            // Spawn projectile
+            GameObject projectile = Instantiate(projectilePrefab, firePoint.position, rotation);
+
+            // Fallback to BasicProjectile
+            BasicProjectile basicProjectile = projectile.GetComponent<BasicProjectile>();
+            if (basicProjectile == null)
+            {
+                basicProjectile = projectile.AddComponent<BasicProjectile>();
+            }
+
+            // Add Rigidbody2D if needed
+            Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+            if (rb == null)
+            {
+                rb = projectile.AddComponent<Rigidbody2D>();
+                rb.gravityScale = 0f;
+                rb.freezeRotation = true;
+            }
+
+            rb.velocity = direction * projectileSpeed;
+            basicProjectile.Initialize(RangeAttackDamage, EnemyLayer, projectileLifetime); 
+        }
+        else
+        {
+            Debug.LogWarning("Cannot perform ranged attack: missing projectilePrefab or firePoint!");
+        }
     }
 
     private void RecalculateMaxHealth()
@@ -229,9 +398,9 @@ public class PlayerStats : MonoBehaviour, IDamable
     {
         return availablePoints > 0;
     }
+
     public bool DecreaseState(StatType statType)
     {
-
         float oldMaxHealth = maxHealth;
         bool healthChanged = false;
 
@@ -354,7 +523,7 @@ public class PlayerStats : MonoBehaviour, IDamable
 
     public void Respawn()
     {
-        if (IsDead()) return; // Already handled
+        if (!IsDead()) return; // FIXED: Logic was inverted
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         OnPlayerRespawn?.Invoke();
@@ -367,7 +536,7 @@ public class PlayerStats : MonoBehaviour, IDamable
     public bool IsDead() => currentHealth <= 0;
 
     // Critical chance based on Luck (for other systems to use)
-    public float GetCriticalChance() => (luck * 0.5f); 
+    public float GetCriticalChance() => (luck * 0.5f);
 
     // Save/Load methods
     public PlayerData GetSaveData()
@@ -410,16 +579,17 @@ public class PlayerStats : MonoBehaviour, IDamable
         OnStatChanged?.Invoke(availablePoints);
     }
 
+    // FIXED: Added method to switch weapon types
+    public void SetWeaponType(weaponType newWeapon)
+    {
+        currentWeapon = newWeapon;
+        Debug.Log($"Weapon switched to: {currentWeapon}");
+    }
+
     // Debug method for testing
     [ContextMenu("Add Test EXP")]
     private void AddTestExp()
     {
         GainExp(50f);
-    }
-
-    [ContextMenu("Take Test Damage")]
-    private void TakeTestDamage()
-    {
-        TakeDamage(500f);
     }
 }

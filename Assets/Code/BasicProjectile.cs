@@ -7,7 +7,7 @@ public class BasicProjectile : MonoBehaviour
     [SerializeField] private float damage;
     [SerializeField] private LayerMask targetLayer;
 
-    public void Initialize(float dmg, LayerMask layer)
+    public void Initialize(float dmg, LayerMask layer,float destroyTime)
     {
         damage = dmg;
         targetLayer = layer;
@@ -17,10 +17,11 @@ public class BasicProjectile : MonoBehaviour
         {
             BoxCollider2D col = gameObject.AddComponent<BoxCollider2D>();
             col.isTrigger = true;
+            col.size = new Vector2(0.5f, 0.5f);
         }
 
         // Destroy after 5 seconds
-        Destroy(gameObject, 5f);
+        Destroy(gameObject, destroyTime);
     }
     private void OnTriggerEnter2D(Collider2D other)
     {

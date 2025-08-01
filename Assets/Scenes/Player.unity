@@ -494,6 +494,19 @@ MonoBehaviour:
   speedPerLevel: 0.5
   expMultiplier: 1.5
   enduranceHealthBonus: 3
+  MeleeAttackDamage: 10
+  MeleeAttackCooldown: 1
+  meleeAreaRadius: 1.5
+  meleeAreaDuration: 0.5
+  meleeAreaPrefab: {fileID: 2612106632180080167, guid: 7a46306f36027024aae223acb90cbc82, type: 3}
+  RangeAttackDamage: 10
+  RangeAttackCooldown: 1
+  projectilePrefab: {fileID: 0}
+  firePoint: {fileID: 0}
+  projectileSpeed: 10
+  EnemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &2108734101
 GameObject:
   m_ObjectHideFlags: 0

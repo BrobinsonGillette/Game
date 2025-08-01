@@ -11,7 +11,7 @@ public class Enamy : MonoBehaviour, IDamable
 {
     [Header("Enemy Basic Info")]
     public string enemyName = "Enemy";
-    public Sprite enemyIcon;
+    public Sprite enemyIcon,deadIcon;
     [SerializeField] SpriteRenderer spriteRenderer;
     public int expGiven = 10;
 
@@ -37,6 +37,7 @@ public class Enamy : MonoBehaviour, IDamable
     public GameObject projectilePrefab; // Projectile prefab to shoot
     public Transform firePoint; // Where projectiles spawn from
     public float projectileSpeed = 10f;
+    public float projectileLifetime;
 
     [Header("Attack Detection")]
     public LayerMask playerLayer = 1; // What layer the player is on
@@ -68,6 +69,7 @@ public class Enamy : MonoBehaviour, IDamable
     private float lastPathUpdate;
     private float targetLostTimer;
     private bool hasLineOfSight;
+    private bool hasGivenExp = false;
 
     // Movement and pathfinding
     private Vector2 currentTarget;
@@ -148,21 +150,29 @@ public class Enamy : MonoBehaviour, IDamable
 
     private void Update()
     {
-        if (player != null && !IsDead())
+        if (IsDead && !hasGivenExp)
         {
-            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+            Die();
+            return; // Exit early to prevent further updates
+        }
+        else
+        {
+            if (player != null)
+            {
+                float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-            if (distanceToPlayer <= chaseRange)
-            {
-                targetLostTimer = 0f;
-                UpdateAI(distanceToPlayer);
-            }
-            else
-            {
-                targetLostTimer += Time.deltaTime;
-                if (targetLostTimer >= loseTargetTime)
+                if (distanceToPlayer <= chaseRange)
                 {
-                    StopMovement();
+                    targetLostTimer = 0f;
+                    UpdateAI(distanceToPlayer);
+                }
+                else
+                {
+                    targetLostTimer += Time.deltaTime;
+                    if (targetLostTimer >= loseTargetTime)
+                    {
+                        StopMovement();
+                    }
                 }
             }
         }
@@ -170,7 +180,7 @@ public class Enamy : MonoBehaviour, IDamable
 
     private void FixedUpdate()
     {
-        if (isMoving && !isAttacking)
+        if (isMoving && !isAttacking && !IsDead)
         {
             MoveTowardsTarget();
         }
@@ -180,7 +190,7 @@ public class Enamy : MonoBehaviour, IDamable
     {
         hasLineOfSight = CheckLineOfSight();
 
-        if (!isAttacking)
+        if (!isAttacking && !IsDead)
         {
             UpdateMovement(distanceToPlayer);
             UpdateCombat(distanceToPlayer);
@@ -353,13 +363,13 @@ public class Enamy : MonoBehaviour, IDamable
       //  Debug.Log($"{enemyName}: Distance={distanceToPlayer:F2}, Ranged={Rangeattack:F2}, Melee={MeleeAttackRange:F2}, LOS={hasLineOfSight}, PreferRanged={preferRangedCombat}");
 
         // SIMPLE TEST VERSION - Just try ranged attack if in range
-        if (distanceToPlayer <= Rangeattack)
+        if (distanceToPlayer <= Rangeattack && !IsDead)
         {
             TryRangedAttack();
         }
 
         // Also try melee if very close
-        if (distanceToPlayer <= MeleeAttackRange)
+        if (distanceToPlayer <= MeleeAttackRange && !IsDead)
         {
             TryMeleeAttack();
         }
@@ -367,7 +377,7 @@ public class Enamy : MonoBehaviour, IDamable
 
     private void TryMeleeAttack()
     {
-        if (Time.time >= lastMeleeAttackTime + MeleeAttackCooldown)
+        if (Time.time >= lastMeleeAttackTime + MeleeAttackCooldown && !IsDead)
         {
             StartCoroutine(PerformMeleeAttack());
             lastMeleeAttackTime = Time.time;
@@ -378,7 +388,7 @@ public class Enamy : MonoBehaviour, IDamable
     {
       //  Debug.Log($"{enemyName} trying ranged attack - Cooldown ready: {Time.time >= lastRangeAttackTime + RangeAttackCooldown}");
 
-        if (Time.time >= lastRangeAttackTime + RangeAttackCooldown)
+        if (Time.time >= lastRangeAttackTime + RangeAttackCooldown && !IsDead)
         {
            // Debug.Log($"{enemyName} FIRING ranged attack!");
             PerformRangedAttack();
@@ -396,31 +406,39 @@ public class Enamy : MonoBehaviour, IDamable
         Vector3 attackPosition = transform.position;
 
         GameObject damageArea = null;
-        if (meleeAreaPrefab != null)
+        if (meleeAreaPrefab != null && !IsDead)
         {
             damageArea = Instantiate(meleeAreaPrefab, attackPosition, Quaternion.identity);
-        }
+            BasicProjectile projectile = damageArea.AddComponent<BasicProjectile>();
+            projectile.Initialize(0, 0, meleeAreaDuration);
 
-        yield return new WaitForSeconds(0.1f);
 
-        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(attackPosition, meleeAreaRadius, playerLayer);
-        foreach (Collider2D hitCollider in hitColliders)
-        {
-            IDamable damageTarget = hitCollider.GetComponent<IDamable>();
-            if (damageTarget != null)
+            Collider2D[] hitColliders = Physics2D.OverlapCircleAll(attackPosition, meleeAreaRadius, playerLayer);
+            foreach (Collider2D hitCollider in hitColliders)
             {
-                damageTarget.TakeDamage(MeleeAttackDamage);
-                Debug.Log($"{enemyName} dealt {MeleeAttackDamage} melee damage to {hitCollider.name}");
+                damageArea.transform.position = hitCollider.GetComponent<Collider2D>().bounds.center;
+                IDamable damageTarget = hitCollider.GetComponent<IDamable>();
+                if (damageTarget != null)
+                {
+                    damageTarget.TakeDamage(MeleeAttackDamage);
+                    Debug.Log($"{enemyName} dealt {MeleeAttackDamage} melee damage to {hitCollider.name}");
+                }
+            }
+
+            yield return new WaitForSeconds(meleeAreaDuration);
+
+            if (damageArea != null)
+            {
+                Destroy(damageArea);
             }
         }
-
-        yield return new WaitForSeconds(meleeAreaDuration - 0.1f);
-
-        if (damageArea != null)
+        else
         {
-            Destroy(damageArea);
+            if (damageArea != null)
+            {
+                Destroy(damageArea);
+            }
         }
-
         isAttacking = false;
     }
 
@@ -428,7 +446,7 @@ public class Enamy : MonoBehaviour, IDamable
     {
         OnRangedAttack?.Invoke();
 
-        if (projectilePrefab != null && player != null)
+        if (projectilePrefab != null && player != null && !IsDead)
         {
             Vector2 direction = ((Vector2)player.position - (Vector2)firePoint.position).normalized;
 
@@ -457,7 +475,7 @@ public class Enamy : MonoBehaviour, IDamable
                 }
 
                 rb.velocity = direction * projectileSpeed;
-                basicProjectile.Initialize(RangeAttackDamage, playerLayer);
+                basicProjectile.Initialize(RangeAttackDamage, playerLayer, projectileLifetime);
 
               //  Debug.Log($"{enemyName} fired BasicProjectile at {player.name} (LOS: {hasLineOfSight})");
         }
@@ -485,31 +503,31 @@ public class Enamy : MonoBehaviour, IDamable
         float damageReduction = 1f - (DamageReduction * 0.01f);
         actualDamage *= damageReduction;
 
-        currentHealth = Mathf.Clamp(currentHealth - actualDamage, 0, maxHealth);
+        currentHealth = currentHealth - actualDamage;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
         Debug.Log($"{enemyName} took {actualDamage:F1} damage (reduced from {damage:F1}). Health: {currentHealth:F1}/{maxHealth:F1}");
 
-        if (currentHealth <= 0)
+        if (IsDead)
         {
             Die();
         }
     }
-
-    public bool IsDead() => currentHealth <= 0;
-
+    public bool IsDead => currentHealth <= 0;
     private void Die()
     {
-        if (IsDead()) return;
+        spriteRenderer.sprite = deadIcon;
 
-        if (PlayerStats.instance != null)
+        // Only give exp once
+        if (PlayerStats.instance != null && !hasGivenExp)
         {
+            hasGivenExp = true;
             PlayerStats.instance.GainExp(expGiven);
+            Debug.Log($"{enemyName} gave {expGiven} exp to player");
         }
 
         OnDeath?.Invoke();
-        Debug.Log($"{enemyName} died and gave {expGiven} experience!");
-        Destroy(gameObject, 0.5f);
+        Destroy(gameObject, 1.5f);
     }
 
     // Debug visualization
