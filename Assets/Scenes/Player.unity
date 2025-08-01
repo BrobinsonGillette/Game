@@ -474,22 +474,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e389451507958614483d9b4dd82aaeed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Might: 0
-  Agility: 0
-  Intellect: 0
-  Endurance: 0
-  Luck: 0
-  Sin: 0
+  might: 1
+  agility: 1
+  intellect: 1
+  endurance: 1
+  luck: 1
+  sin: 0
+  deaths: 0
   level: 1
   currentExp: 0
   maxExp: 100
-  maxHealth: 100
-  currentHealth: 0
+  availablePoints: 0
+  pointsPerLevel: 5
+  maxHealth: 10
+  currentHealth: 10
   baseSpeed: 5
   baseSprint: 10
   healthPerLevel: 5
   speedPerLevel: 0.5
   expMultiplier: 1.5
+  enduranceHealthBonus: 3
 --- !u!1 &2108734101
 GameObject:
   m_ObjectHideFlags: 0

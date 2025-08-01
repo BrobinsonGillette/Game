@@ -47,3 +47,6 @@ TagManager:
   - name: Player
     uniqueID: 3293985191
     locked: 0
+  - name: Attacks
+    uniqueID: 3557311223
+    locked: 0

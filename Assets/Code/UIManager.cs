@@ -48,13 +48,12 @@ public class UIManager : MonoBehaviour
     [Header("Health UI")]
     public Slider healthSlider;
     public TextMeshProUGUI healthText;
-    public Image healthFillImage;
-    public Gradient healthColorGradient;
+
 
     [Header("Experience UI")]
     public Slider expSlider;
-    public TextMeshProUGUI expText;
-    public TextMeshProUGUI levelText;
+    public TextMeshProUGUI[] expText;
+    public TextMeshProUGUI[] levelText;
 
     [Header("Stats UI")]
     [SerializeField] private StatUI[] statUi;
@@ -68,7 +67,6 @@ public class UIManager : MonoBehaviour
     public GameObject levelUpNotification;
 
     [Header("Player Info")]
-    public TextMeshProUGUI playerLevelText;
     public TextMeshProUGUI deathCountText;
 
     private PlayerStats playerStats;
@@ -193,11 +191,7 @@ public class UIManager : MonoBehaviour
             healthText.text = $"{currentHealth:F0}/{maxHealth:F0}";
         }
 
-        if (healthFillImage != null && healthColorGradient != null)
-        {
-            float healthPercentage = maxHealth > 0 ? currentHealth / maxHealth : 0f;
-            healthFillImage.color = healthColorGradient.Evaluate(healthPercentage);
-        }
+     
     }
 
     private void UpdateExpUI(float currentExp, float maxExp)
@@ -210,22 +204,30 @@ public class UIManager : MonoBehaviour
 
         if (expText != null)
         {
-            expText.text = $"{currentExp:F0}/{maxExp:F0} EXP";
+            foreach (var expText in expText)
+            {
+                if (expText != null)
+                {
+                    expText.text = $"{currentExp:F0}/{maxExp:F0} EXP";
+                }
+            }
         }
 
         if (levelText != null && playerStats != null)
         {
-            levelText.text = $"Level {playerStats.Level}";
+            foreach (var levelText in levelText)
+            {
+                if (levelText != null)
+                {
+                    levelText.text = $"Level {playerStats.Level}";
+                }
+            }
         }
     }
 
     private void OnPlayerLevelUp(int newLevel)
     {
-        // Update level display
-        if (playerLevelText != null)
-        {
-            playerLevelText.text = $"Level {newLevel}";
-        }
+    
 
         // Show level up notification and button
         ShowLevelUpNotification(newLevel);
@@ -309,10 +311,7 @@ public class UIManager : MonoBehaviour
     {
         if (playerStats == null) return;
 
-        if (playerLevelText != null)
-        {
-            playerLevelText.text = $"Level {playerStats.Level}";
-        }
+ 
 
         if (deathCountText != null)
         {
@@ -474,22 +473,5 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // Debug methods
-    [ContextMenu("Test Level Up")]
-    private void TestLevelUp()
-    {
-        if (playerStats != null)
-        {
-            playerStats.GainExp(playerStats.MaxExp);
-        }
-    }
-
-    [ContextMenu("Test Take Damage")]
-    private void TestTakeDamage()
-    {
-        if (playerStats != null)
-        {
-            playerStats.TakeDamage(25f);
-        }
-    }
+  
 }

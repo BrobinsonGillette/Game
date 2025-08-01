@@ -128,7 +128,7 @@ public class PlayerStats : MonoBehaviour, IDamable
 
     private void RecalculateMaxHealth()
     {
-        float baseHealthForLevel = 100f + ((level - 1) * healthPerLevel);
+        float baseHealthForLevel = 10f + ((level - 1) * healthPerLevel);
         float enduranceBonus = endurance * enduranceHealthBonus;
         maxHealth = baseHealthForLevel + enduranceBonus;
     }
@@ -138,12 +138,8 @@ public class PlayerStats : MonoBehaviour, IDamable
         if (damage <= 0 || currentHealth <= 0) return;
 
         float actualDamage = damage;
-        // Endurance reduces damage slightly
-        if (endurance > 0)
-        {
-            float damageReduction = 1f - (endurance + agility * 0.01f); // 1% reduction per endurance point
-            actualDamage *= damageReduction;
-        }
+        float damageReduction = 1f - (endurance + agility * 0.01f); // 1% reduction per endurance point
+        actualDamage *= damageReduction;
 
         currentHealth = Mathf.Clamp(currentHealth - actualDamage, 0, maxHealth);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
