@@ -17,11 +17,8 @@ public class StatUI
     public Button increaseButton;
     public Button decreaseButton; // For respec functionality if needed
 
-    private int currentValue;
-
     public void UpdateDisplay(int value, bool canUpgrade)
     {
-        currentValue = value;
         if (statValueText != null)
         {
             statValueText.text = value.ToString();
@@ -315,7 +312,7 @@ public class UIManager : MonoBehaviour
 
         if (deathCountText != null)
         {
-            deathCountText.text = $"Deaths: {playerStats.Deaths}";
+            deathCountText.text = $"";
         }
     }
     private void DecreaseStat(PlayerStats.StatType statType)
@@ -408,7 +405,7 @@ public class UIManager : MonoBehaviour
         // Update death count display
         if (deathCountText != null && playerStats != null)
         {
-            deathCountText.text = $"Deaths: {playerStats.Deaths}";
+            deathCountText.text = $"YOU Died! Deaths: {playerStats.Deaths}";
         }
 
         Debug.Log("Player died - UI updated");

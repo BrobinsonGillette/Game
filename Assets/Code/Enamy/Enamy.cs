@@ -421,7 +421,7 @@ public class Enamy : MonoBehaviour, IDamable
                 if (damageTarget != null)
                 {
                     damageTarget.TakeDamage(MeleeAttackDamage);
-                    Debug.Log($"{enemyName} dealt {MeleeAttackDamage} melee damage to {hitCollider.name}");
+                   // Debug.Log($"{enemyName} dealt {MeleeAttackDamage} melee damage to {hitCollider.name}");
                 }
             }
 

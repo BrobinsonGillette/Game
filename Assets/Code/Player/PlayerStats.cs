@@ -90,7 +90,7 @@ public class PlayerStats : MonoBehaviour, IDamable
     // Private variables
     private float lastMeleeAttackTime;
     private float lastRangeAttackTime;
-    private bool isAttacking = false;
+
 
     // Properties for health
     public float Health
@@ -208,7 +208,6 @@ public class PlayerStats : MonoBehaviour, IDamable
 
     private IEnumerator PerformMeleeAttack()
     {
-        isAttacking = true;
         OnMeleeAttack?.Invoke();
 
         Vector3 attackPosition = transform.position;
@@ -248,7 +247,6 @@ public class PlayerStats : MonoBehaviour, IDamable
             Destroy(damageArea);
         }
 
-        isAttacking = false;
     }
 
     private void PerformRangedAttack()
@@ -289,10 +287,6 @@ public class PlayerStats : MonoBehaviour, IDamable
             rb.velocity = direction * projectileSpeed;
             basicProjectile.Initialize(RangeAttackDamage, EnemyLayer, projectileLifetime); 
         }
-        else
-        {
-            Debug.LogWarning("Cannot perform ranged attack: missing projectilePrefab or firePoint!");
-        }
     }
 
     private void RecalculateMaxHealth()
@@ -313,15 +307,8 @@ public class PlayerStats : MonoBehaviour, IDamable
 
         float actualDamage = damage * damageReduction;
 
-        currentHealth = Mathf.Clamp(currentHealth - actualDamage, 0, maxHealth);
+        currentHealth = currentHealth - actualDamage;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
-
-        Debug.Log($"Player took {actualDamage:F1} damage (reduced from {damage:F1} by {damageReductionPercent * 100:F1}%). Health: {currentHealth:F1}/{maxHealth:F1}");
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
 
     public void Heal(float amount)
@@ -512,10 +499,8 @@ public class PlayerStats : MonoBehaviour, IDamable
         };
     }
 
-    private void Die()
+    public void Die()
     {
-        if (IsDead()) return; // Already handled
-
         deaths++;
         Debug.Log($"Player died! Total deaths: {deaths}");
         OnDeath?.Invoke();
@@ -579,17 +564,12 @@ public class PlayerStats : MonoBehaviour, IDamable
         OnStatChanged?.Invoke(availablePoints);
     }
 
-    // FIXED: Added method to switch weapon types
+
     public void SetWeaponType(weaponType newWeapon)
     {
         currentWeapon = newWeapon;
         Debug.Log($"Weapon switched to: {currentWeapon}");
     }
 
-    // Debug method for testing
-    [ContextMenu("Add Test EXP")]
-    private void AddTestExp()
-    {
-        GainExp(50f);
-    }
+
 }

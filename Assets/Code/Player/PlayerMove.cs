@@ -16,12 +16,11 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float acceleration = 10f;
     [SerializeField] private float deceleration = 10f;
 
-
-
-
     private Vector2 moveDirection;
     private bool isSprinting;
     private float currentSpeed;
+    private bool hasProcessedDeath = false; // Add this flag to track if death has been processed
+
     private void Awake()
     {
         if (instance == null)
@@ -33,6 +32,7 @@ public class PlayerMove : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     void Start()
     {
         // Initialize components
@@ -53,17 +53,54 @@ public class PlayerMove : MonoBehaviour
 
         // Initialize physics settings
         rb.freezeRotation = true; // Prevent rotation for 2D movement
+
+        // Subscribe to respawn event to reset death flag
+        if (PlayerStats.instance != null)
+        {
+            PlayerStats.instance.OnPlayerRespawn += OnPlayerRespawned;
+        }
     }
 
     void Update()
     {
-        HandleInput();
-        HandleSpriteFlipping();
+        // Check for death only once
+        if (PlayerStats.instance.IsDead() && !hasProcessedDeath)
+        {
+            PlayerStats.instance.Die();
+            hasProcessedDeath = true; // Mark that we've processed this death
+        }
+
+        // Don't handle input or movement if dead
+        if (!PlayerStats.instance.IsDead())
+        {
+            HandleInput();
+            HandleSpriteFlipping();
+        }
+        else
+        {
+            // Stop movement when dead
+            currentSpeed = 0;
+            moveDirection = Vector2.zero;
+        }
     }
 
     void FixedUpdate()
     {
-        MovePlayer();
+        // Only move if not dead
+        if (!PlayerStats.instance.IsDead())
+        {
+            MovePlayer();
+        }
+        else
+        {
+            // Stop all movement when dead
+            rb.velocity = Vector2.zero;
+        }
+    }
+
+    private void OnPlayerRespawned()
+    {
+        hasProcessedDeath = false; // Reset the flag when player respawns
     }
 
     private void HandleInput()
@@ -116,6 +153,12 @@ public class PlayerMove : MonoBehaviour
     {
         // Clean up input system
         inputSystem.DeSetUp();
+
+        // Unsubscribe from events
+        if (PlayerStats.instance != null)
+        {
+            PlayerStats.instance.OnPlayerRespawn -= OnPlayerRespawned;
+        }
     }
 
     // Public methods for external access
