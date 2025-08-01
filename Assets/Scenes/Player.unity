@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 1954903873}
   - component: {fileID: 1954903874}
   - component: {fileID: 1954903875}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -504,7 +504,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2108734103}
   - component: {fileID: 2108734102}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HumanSprites_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
