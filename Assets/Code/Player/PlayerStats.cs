@@ -32,6 +32,8 @@ public class PlayerStats : MonoBehaviour, IDamable
     [SerializeField] private int luck = 1;
     [SerializeField] private int sin = 0;
     [SerializeField] private int deaths = 0;
+    public WeponClass currentWeapon;
+    [SerializeField] private Transform firePoint; // Where projectiles spawn from
 
     [Header("Level System")]
     [SerializeField] private int level = 1;
@@ -54,24 +56,7 @@ public class PlayerStats : MonoBehaviour, IDamable
     [SerializeField] private float expMultiplier = 1.5f;
     [SerializeField] private float enduranceHealthBonus = 3f; // Health bonus per endurance point
 
-    [Header("Melee Attack Settings")]
-    public float MeleeAttackDamage = 10f;
-    public float MeleeAttackCooldown = 1f;
-    public float meleeAreaRadius = 1.5f; // Radius of damage area
-    public float meleeAreaDuration = 0.5f; // How long damage area stays active
-    public GameObject meleeAreaPrefab; // Optional visual prefab for damage area
 
-    [Header("Ranged Attack Settings")]
-    public float RangeAttackDamage = 10f;
-    public float RangeAttackCooldown = 1f;
-    public GameObject projectilePrefab; // Projectile prefab to shoot
-    public Transform firePoint; // Where projectiles spawn from
-    public float projectileSpeed = 10f;
-    public float projectileLifetime;
-
-    [Header("Attack Detection")]
-    public LayerMask EnemyLayer = 1; // FIXED: Changed from EnamyLayer to EnemyLayer
-    private weaponType currentWeapon = weaponType.melee;
 
     // Properties for stats
     public int MightStat => might;
@@ -115,8 +100,7 @@ public class PlayerStats : MonoBehaviour, IDamable
     public event Action OnDeath;
     public event Action<int> OnStatChanged; // available points
     public event Action OnPlayerRespawn;
-    public event Action OnMeleeAttack;
-    public event Action OnRangedAttack;
+
 
     // References
     private PlayerMove playerMove;
@@ -148,9 +132,9 @@ public class PlayerStats : MonoBehaviour, IDamable
         }
 
         // Set up firePoint if not assigned
-        if (firePoint == null)
+        if (currentWeapon.firePoint == null)
         {
-            firePoint = transform;
+            currentWeapon.firePoint = firePoint;
         }
     }
 
@@ -165,8 +149,9 @@ public class PlayerStats : MonoBehaviour, IDamable
 
     private void TryAttacking(InputAction.CallbackContext context) // FIXED: Method name
     {
-        if(IsDead()) return;
-        switch (currentWeapon)
+        if (IsDead()) return;
+        SetCurrentWeapon(currentWeapon);
+        switch (currentWeapon.currentType)
         {
             case weaponType.melee:
                 TryMeleeAttack();
@@ -192,104 +177,23 @@ public class PlayerStats : MonoBehaviour, IDamable
 
     private void TryMeleeAttack()
     {
-        if (Time.time >= lastMeleeAttackTime + MeleeAttackCooldown)
+        if (Time.time >= lastMeleeAttackTime + currentWeapon.AttackCooldown)
         {
-            StartCoroutine(PerformMeleeAttack());
+            currentWeapon.PerformMeleeAttack(transform);
             lastMeleeAttackTime = Time.time;
         }
     }
 
     private void TryRangedAttack()
     {
-        if (Time.time >= lastRangeAttackTime + RangeAttackCooldown)
+        if (Time.time >= lastRangeAttackTime + currentWeapon.AttackCooldown)
         {
-            PerformRangedAttack();
+            currentWeapon.PerformRangedAttack();
             lastRangeAttackTime = Time.time;
         }
     }
 
-    private IEnumerator PerformMeleeAttack()
-    {
-        OnMeleeAttack?.Invoke();
 
-        Vector3 attackPosition = transform.position;
-
-        GameObject damageArea = null;
-        if (meleeAreaPrefab != null)
-        {
-            damageArea = Instantiate(meleeAreaPrefab, attackPosition, Quaternion.identity);
-            BasicProjectile basicProjectile = damageArea.AddComponent<BasicProjectile>();
-            basicProjectile.Initialize(0, 0, meleeAreaDuration);
-        }
-
-
-
-        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(attackPosition, meleeAreaRadius, EnemyLayer); // FIXED: EnemyLayer
-        foreach (Collider2D hitCollider in hitColliders)
-        {
-            IDamable damageTarget = hitCollider.GetComponent<IDamable>();
-         
-            if (damageTarget != null)
-            {
-                damageArea.transform.position = hitCollider.GetComponent<Collider2D>().bounds.center;
-                damageTarget.TakeDamage(MeleeAttackDamage);
-                Debug.Log($"Player dealt {MeleeAttackDamage} melee damage to {hitCollider.name}");
-            }
-            else
-            {
-                Debug.Log($"No IDamable component found on {hitCollider.name}");
-            }
-        }
-     
-
-        yield return new WaitForSeconds(meleeAreaDuration);
-
-        if (damageArea != null)
-        {
-            Destroy(damageArea);
-        }
-
-    }
-
-    private void PerformRangedAttack()
-    {
-        OnRangedAttack?.Invoke();
-
-        if (projectilePrefab != null && firePoint != null) // FIXED: Added firePoint null check
-        {
-            // FIXED: Improved mouse position to world position conversion
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePos.z = 0f; // Ensure z is 0 for 2D
-
-            Vector2 direction = ((Vector2)mousePos - (Vector2)firePoint.position).normalized;
-
-            // Calculate 2D rotation angle
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-
-            // Spawn projectile
-            GameObject projectile = Instantiate(projectilePrefab, firePoint.position, rotation);
-
-            // Fallback to BasicProjectile
-            BasicProjectile basicProjectile = projectile.GetComponent<BasicProjectile>();
-            if (basicProjectile == null)
-            {
-                basicProjectile = projectile.AddComponent<BasicProjectile>();
-            }
-
-            // Add Rigidbody2D if needed
-            Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-            if (rb == null)
-            {
-                rb = projectile.AddComponent<Rigidbody2D>();
-                rb.gravityScale = 0f;
-                rb.freezeRotation = true;
-            }
-
-            rb.velocity = direction * projectileSpeed;
-            basicProjectile.Initialize(RangeAttackDamage, EnemyLayer, projectileLifetime); 
-        }
-    }
 
     private void RecalculateMaxHealth()
     {
@@ -316,9 +220,9 @@ public class PlayerStats : MonoBehaviour, IDamable
     private IEnumerator takeDamge()
     {
         takeDamage = true;
-        PlayerMove.instance.spriteRenderer.color = Color.red;
+        playerMove.spriteRenderer.color = Color.red;
         yield return new WaitForSeconds(0.4f);
-        PlayerMove.instance.spriteRenderer.color = Color.white;
+        playerMove.spriteRenderer.color = Color.white;
         takeDamage = false;
     }
 
@@ -531,57 +435,15 @@ public class PlayerStats : MonoBehaviour, IDamable
     public float GetHealthPercentage() => maxHealth > 0 ? currentHealth / maxHealth : 0f;
     public float GetExpPercentage() => maxExp > 0 ? currentExp / maxExp : 0f;
     public bool IsDead() => currentHealth <= 0;
-
-    // Critical chance based on Luck (for other systems to use)
-    public float GetCriticalChance() => (luck * 0.5f);
-
-    // Save/Load methods
-    public PlayerData GetSaveData()
+    public void SetCurrentWeapon(WeponClass weapon)
     {
-        return new PlayerData
-        {
-            level = this.level,
-            currentExp = this.currentExp,
-            currentHealth = this.currentHealth,
-            maxHealth = this.maxHealth,
-            might = this.might,
-            agility = this.agility,
-            intellect = this.intellect,
-            endurance = this.endurance,
-            luck = this.luck,
-            sin = this.sin,
-            deaths = this.deaths,
-            availablePoints = this.availablePoints
-        };
+        currentWeapon = weapon;
+        playerMove.spriteRenderer.sprite = weapon.weponSprite;
+        if (currentWeapon != null && currentWeapon.firePoint == null)
+            currentWeapon.firePoint = firePoint; // Ensure firePoint is set
+
     }
-
-    public void LoadSaveData(PlayerData data)
-    {
-        level = data.level;
-        currentExp = data.currentExp;
-        currentHealth = data.currentHealth;
-        maxHealth = data.maxHealth;
-        might = data.might;
-        agility = data.agility;
-        intellect = data.intellect;
-        endurance = data.endurance;
-        luck = data.luck;
-        sin = data.sin;
-        deaths = data.deaths;
-        availablePoints = data.availablePoints;
-
-        UpdateMaxExp();
-        OnHealthChanged?.Invoke(currentHealth, maxHealth);
-        OnExpChanged?.Invoke(currentExp, maxExp);
-        OnStatChanged?.Invoke(availablePoints);
-    }
-
-
-    public void SetWeaponType(weaponType newWeapon)
-    {
-        currentWeapon = newWeapon;
-        Debug.Log($"Weapon switched to: {currentWeapon}");
-    }
-
-
 }
+
+
+

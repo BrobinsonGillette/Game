@@ -741,7 +741,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilemapManager: {fileID: 898125797}
-  mainTilemap: {fileID: 0}
+  mainTilemap: {fileID: 1979230839}
   interactableMappings: []
   interactableParent: {fileID: 0}
   spawnOnChunkLoad: 1

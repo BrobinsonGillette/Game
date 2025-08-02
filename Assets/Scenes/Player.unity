@@ -481,6 +481,8 @@ MonoBehaviour:
   luck: 1
   sin: 0
   deaths: 0
+  currentWeapon: {fileID: 11400000, guid: 7190a072a40dafd4f90db7f5ab9100ea, type: 2}
+  firePoint: {fileID: 2035129709}
   level: 1
   currentExp: 0
   maxExp: 100
@@ -494,20 +496,6 @@ MonoBehaviour:
   speedPerLevel: 0.5
   expMultiplier: 1.5
   enduranceHealthBonus: 3
-  MeleeAttackDamage: 10
-  MeleeAttackCooldown: 1
-  meleeAreaRadius: 1.5
-  meleeAreaDuration: 0.5
-  meleeAreaPrefab: {fileID: 2612106632180080167, guid: 7a46306f36027024aae223acb90cbc82, type: 3}
-  RangeAttackDamage: 10
-  RangeAttackCooldown: 1
-  projectilePrefab: {fileID: 0}
-  firePoint: {fileID: 2035129709}
-  projectileSpeed: 10
-  projectileLifetime: 0
-  EnemyLayer:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!1 &2035129708
 GameObject:
   m_ObjectHideFlags: 0
