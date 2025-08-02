@@ -56,8 +56,6 @@ public class PlayerStats : MonoBehaviour, IDamable
     [SerializeField] private float expMultiplier = 1.5f;
     [SerializeField] private float enduranceHealthBonus = 3f; // Health bonus per endurance point
 
-
-
     // Properties for stats
     public int MightStat => might;
     public int AgilityStat => agility;
@@ -76,7 +74,6 @@ public class PlayerStats : MonoBehaviour, IDamable
     private float lastMeleeAttackTime;
     private float lastRangeAttackTime;
     bool takeDamage;
-
 
     // Properties for health
     public float Health
@@ -100,11 +97,11 @@ public class PlayerStats : MonoBehaviour, IDamable
     public event Action OnDeath;
     public event Action<int> OnStatChanged; // available points
     public event Action OnPlayerRespawn;
-
+    public event Action<WeponClass> OnWeaponChanged; // ADDED: Weapon change event
 
     // References
     private PlayerMove playerMove;
-
+    private WeaponInventory weaponInventory; // ADDED: Reference to weapon inventory
 
     private void Awake()
     {
@@ -124,6 +121,7 @@ public class PlayerStats : MonoBehaviour, IDamable
     private void Start()
     {
         playerMove = GetComponent<PlayerMove>();
+        weaponInventory = GetComponent<WeaponInventory>(); // ADDED: Get weapon inventory
 
         // FIXED: Properly subscribe to input events
         if (playerMove != null && playerMove.inputSystem != null)
@@ -131,10 +129,18 @@ public class PlayerStats : MonoBehaviour, IDamable
             playerMove.inputSystem.Attack.action.performed += TryAttacking;
         }
 
-        // Set up firePoint if not assigned
-        if (currentWeapon.firePoint == null)
+        // MODIFIED: Get weapon from inventory if available
+        if (weaponInventory != null && weaponInventory.CurrentWeapon != null)
         {
-            currentWeapon.firePoint = firePoint;
+            SetCurrentWeapon(weaponInventory.CurrentWeapon);
+        }
+        else if (currentWeapon != null)
+        {
+            // Set up firePoint if not assigned and weapon exists
+            if (currentWeapon.firePoint == null)
+            {
+                currentWeapon.firePoint = firePoint;
+            }
         }
     }
 
@@ -150,8 +156,13 @@ public class PlayerStats : MonoBehaviour, IDamable
     private void TryAttacking(InputAction.CallbackContext context) // FIXED: Method name
     {
         if (IsDead()) return;
-        SetCurrentWeapon(currentWeapon);
-        switch (currentWeapon.currentType)
+
+        // MODIFIED: Use weapon from inventory if available
+        WeponClass weaponToUse = weaponInventory?.CurrentWeapon ?? currentWeapon;
+        if (weaponToUse == null) return;
+
+        SetCurrentWeapon(weaponToUse);
+        switch (weaponToUse.currentType)
         {
             case weaponType.melee:
                 TryMeleeAttack();
@@ -177,23 +188,58 @@ public class PlayerStats : MonoBehaviour, IDamable
 
     private void TryMeleeAttack()
     {
-        if (Time.time >= lastMeleeAttackTime + currentWeapon.AttackCooldown)
+        WeponClass weaponToUse = weaponInventory?.CurrentWeapon ?? currentWeapon; // MODIFIED
+        if (weaponToUse == null) return;
+
+        if (Time.time >= lastMeleeAttackTime + weaponToUse.AttackCooldown)
         {
-            currentWeapon.PerformMeleeAttack(transform);
+            // MODIFIED: Apply might stat to damage
+            float finalDamage = weaponToUse.AttackDamage * (1f + (might * 0.1f)); // 10% damage bonus per might point
+            WeponClass tempWeapon = ScriptableObject.CreateInstance<WeponClass>();
+            CopyWeaponStats(weaponToUse, tempWeapon);
+            tempWeapon.AttackDamage = finalDamage;
+
+            tempWeapon.PerformMeleeAttack(transform);
             lastMeleeAttackTime = Time.time;
         }
     }
 
     private void TryRangedAttack()
     {
-        if (Time.time >= lastRangeAttackTime + currentWeapon.AttackCooldown)
+        WeponClass weaponToUse = weaponInventory?.CurrentWeapon ?? currentWeapon; // MODIFIED
+        if (weaponToUse == null) return;
+
+        if (Time.time >= lastRangeAttackTime + weaponToUse.AttackCooldown)
         {
-            currentWeapon.PerformRangedAttack();
+            // MODIFIED: Apply intellect stat to damage and agility to projectile speed
+            float finalDamage = weaponToUse.AttackDamage * (1f + (intellect * 0.1f)); // 10% damage bonus per intellect point
+            float finalSpeed = weaponToUse.projectileSpeed * (1f + (agility * 0.05f)); // 5% speed bonus per agility point
+
+            WeponClass tempWeapon = ScriptableObject.CreateInstance<WeponClass>();
+            CopyWeaponStats(weaponToUse, tempWeapon);
+            tempWeapon.AttackDamage = finalDamage;
+            tempWeapon.projectileSpeed = finalSpeed;
+
+            tempWeapon.PerformRangedAttack();
             lastRangeAttackTime = Time.time;
         }
     }
 
-
+    // ADDED: Helper method to copy weapon stats
+    private void CopyWeaponStats(WeponClass source, WeponClass target)
+    {
+        target.weponSprite = source.weponSprite;
+        target.weponIcon = source.weponIcon;
+        target.AreaRadius = source.AreaRadius;
+        target.AttackDuration = source.AttackDuration;
+        target.AttackDamage = source.AttackDamage;
+        target.AttackCooldown = source.AttackCooldown;
+        target.Prefab = source.Prefab;
+        target.firePoint = source.firePoint;
+        target.projectileSpeed = source.projectileSpeed;
+        target.EnemyLayer = source.EnemyLayer;
+        target.currentType = source.currentType;
+    }
 
     private void RecalculateMaxHealth()
     {
@@ -217,6 +263,7 @@ public class PlayerStats : MonoBehaviour, IDamable
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         StartCoroutine(takeDamge());
     }
+
     private IEnumerator takeDamge()
     {
         takeDamage = true;
@@ -225,7 +272,6 @@ public class PlayerStats : MonoBehaviour, IDamable
         playerMove.spriteRenderer.color = Color.white;
         takeDamage = false;
     }
-
 
     public void Heal(float amount)
     {
@@ -435,13 +481,64 @@ public class PlayerStats : MonoBehaviour, IDamable
     public float GetHealthPercentage() => maxHealth > 0 ? currentHealth / maxHealth : 0f;
     public float GetExpPercentage() => maxExp > 0 ? currentExp / maxExp : 0f;
     public bool IsDead() => currentHealth <= 0;
+
+    // MODIFIED: Enhanced SetCurrentWeapon method
     public void SetCurrentWeapon(WeponClass weapon)
     {
         currentWeapon = weapon;
-        playerMove.spriteRenderer.sprite = weapon.weponSprite;
-        if (currentWeapon != null && currentWeapon.firePoint == null)
-            currentWeapon.firePoint = firePoint; // Ensure firePoint is set
 
+        if (weapon != null)
+        {
+            // Update sprite
+            if (playerMove?.spriteRenderer != null)
+            {
+                playerMove.spriteRenderer.sprite = weapon.weponSprite;
+            }
+
+            // Ensure firePoint is set
+            if (weapon.firePoint == null)
+            {
+                weapon.firePoint = firePoint;
+            }
+
+            Debug.Log($"Equipped weapon: {weapon.name} ({weapon.currentType})");
+        }
+        else
+        {
+            Debug.Log("No weapon equipped");
+        }
+
+        // Invoke weapon change event
+        OnWeaponChanged?.Invoke(weapon);
+    }
+
+    // ADDED: Get modified attack damage based on stats
+    public float GetModifiedAttackDamage(WeponClass weapon)
+    {
+        if (weapon == null) return 0f;
+
+        float baseDamage = weapon.AttackDamage;
+        float statMultiplier = weapon.currentType == weaponType.melee ?
+            (1f + (might * 0.1f)) : (1f + (intellect * 0.1f));
+
+        return baseDamage * statMultiplier;
+    }
+
+    // ADDED: Get modified projectile speed based on agility
+    public float GetModifiedProjectileSpeed(WeponClass weapon)
+    {
+        if (weapon == null) return 0f;
+
+        return weapon.projectileSpeed * (1f + (agility * 0.05f));
+    }
+
+    // ADDED: Get modified attack cooldown based on agility
+    public float GetModifiedAttackCooldown(WeponClass weapon)
+    {
+        if (weapon == null) return 0f;
+
+        float cooldownReduction = 1f - (agility * 0.02f); // 2% cooldown reduction per agility point
+        return weapon.AttackCooldown * Mathf.Max(0.1f, cooldownReduction); // Minimum 10% of original cooldown
     }
 }
 

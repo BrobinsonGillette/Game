@@ -117,7 +117,6 @@ public class ChunkedTilemapManager : MonoBehaviour
     [Header("Tile Generation")]
     [SerializeField] private TileSet rockTiles;
     [SerializeField] private TileSet grassTiles;
-    [SerializeField] private TileSet decorationTiles;
     [SerializeField] private TileBase[] collisionTiles;
  
 
@@ -573,15 +572,7 @@ public class ChunkedTilemapManager : MonoBehaviour
 
         chunk.mainTiles[localX, localY] = selectedTile;
 
-        // Decorations
-        if (decorationValue > decorationThreshold && selectedTile != null)
-        {
-            var decoration = decorationTiles?.GetRandomTile();
-            if (decoration != null)
-            {
-                chunk.mainTiles[localX, localY] = decoration;
-            }
-        }
+
     }
     
 

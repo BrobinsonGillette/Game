@@ -113,8 +113,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_14
       rect:
         serializedVersion: 2
-        x: 52
-        y: 390
+        x: 182
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -134,8 +134,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_15
       rect:
         serializedVersion: 2
-        x: 91
-        y: 390
+        x: 195
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -155,8 +155,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_16
       rect:
         serializedVersion: 2
-        x: 117
-        y: 390
+        x: 208
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -176,8 +176,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_17
       rect:
         serializedVersion: 2
-        x: 130
-        y: 390
+        x: 221
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -197,8 +197,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_21
       rect:
         serializedVersion: 2
-        x: 260
-        y: 390
+        x: 273
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -218,8 +218,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_30
       rect:
         serializedVersion: 2
-        x: 273
-        y: 377
+        x: 104
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -239,8 +239,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_31
       rect:
         serializedVersion: 2
-        x: 286
-        y: 377
+        x: 117
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -260,8 +260,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_32
       rect:
         serializedVersion: 2
-        x: 299
-        y: 377
+        x: 130
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -281,8 +281,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_33
       rect:
         serializedVersion: 2
-        x: 312
-        y: 377
+        x: 143
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -302,8 +302,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_34
       rect:
         serializedVersion: 2
-        x: 0
-        y: 364
+        x: 156
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -323,8 +323,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_35
       rect:
         serializedVersion: 2
-        x: 13
-        y: 364
+        x: 169
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -344,8 +344,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_36
       rect:
         serializedVersion: 2
-        x: 26
-        y: 364
+        x: 182
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -365,8 +365,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_37
       rect:
         serializedVersion: 2
-        x: 39
-        y: 364
+        x: 195
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -386,8 +386,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_38
       rect:
         serializedVersion: 2
-        x: 52
-        y: 364
+        x: 208
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -407,8 +407,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_39
       rect:
         serializedVersion: 2
-        x: 65
-        y: 364
+        x: 221
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -428,8 +428,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_42
       rect:
         serializedVersion: 2
-        x: 104
-        y: 364
+        x: 13
+        y: 325
         width: 13
         height: 13
       alignment: 0
@@ -449,8 +449,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_44
       rect:
         serializedVersion: 2
-        x: 130
-        y: 364
+        x: 39
+        y: 325
         width: 13
         height: 13
       alignment: 0
@@ -470,8 +470,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_45
       rect:
         serializedVersion: 2
-        x: 143
-        y: 364
+        x: 52
+        y: 325
         width: 13
         height: 13
       alignment: 0
@@ -491,8 +491,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_46
       rect:
         serializedVersion: 2
-        x: 156
-        y: 364
+        x: 65
+        y: 325
         width: 13
         height: 13
       alignment: 0
@@ -512,8 +512,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_49
       rect:
         serializedVersion: 2
-        x: 195
-        y: 364
+        x: 26
+        y: 312
         width: 13
         height: 13
       alignment: 0
@@ -533,8 +533,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_50
       rect:
         serializedVersion: 2
-        x: 208
-        y: 364
+        x: 39
+        y: 312
         width: 13
         height: 13
       alignment: 0
@@ -554,8 +554,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_55
       rect:
         serializedVersion: 2
-        x: 273
-        y: 364
+        x: 104
+        y: 312
         width: 13
         height: 13
       alignment: 0
@@ -575,8 +575,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_56
       rect:
         serializedVersion: 2
-        x: 0
-        y: 351
+        x: 117
+        y: 312
         width: 13
         height: 13
       alignment: 0
@@ -596,8 +596,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_57
       rect:
         serializedVersion: 2
-        x: 13
-        y: 351
+        x: 130
+        y: 312
         width: 13
         height: 13
       alignment: 0
@@ -617,8 +617,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_58
       rect:
         serializedVersion: 2
-        x: 26
-        y: 351
+        x: 143
+        y: 312
         width: 13
         height: 13
       alignment: 0
@@ -638,8 +638,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_59
       rect:
         serializedVersion: 2
-        x: 39
-        y: 351
+        x: 0
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -659,8 +659,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_60
       rect:
         serializedVersion: 2
-        x: 52
-        y: 351
+        x: 13
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -680,8 +680,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_61
       rect:
         serializedVersion: 2
-        x: 0
-        y: 338
+        x: 26
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -701,8 +701,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_64
       rect:
         serializedVersion: 2
-        x: 39
-        y: 338
+        x: 65
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -722,8 +722,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_80
       rect:
         serializedVersion: 2
-        x: 0
-        y: 325
+        x: 91
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -743,8 +743,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_81
       rect:
         serializedVersion: 2
-        x: 13
-        y: 325
+        x: 104
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -764,8 +764,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_82
       rect:
         serializedVersion: 2
-        x: 26
-        y: 325
+        x: 117
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -785,8 +785,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_83
       rect:
         serializedVersion: 2
-        x: 39
-        y: 325
+        x: 130
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -806,8 +806,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_84
       rect:
         serializedVersion: 2
-        x: 52
-        y: 325
+        x: 143
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -827,8 +827,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_85
       rect:
         serializedVersion: 2
-        x: 65
-        y: 325
+        x: 156
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -848,8 +848,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_86
       rect:
         serializedVersion: 2
-        x: 0
-        y: 312
+        x: 169
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -869,8 +869,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_87
       rect:
         serializedVersion: 2
-        x: 13
-        y: 312
+        x: 182
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -890,8 +890,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_88
       rect:
         serializedVersion: 2
-        x: 26
-        y: 312
+        x: 195
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -911,8 +911,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_89
       rect:
         serializedVersion: 2
-        x: 39
-        y: 312
+        x: 0
+        y: 273
         width: 13
         height: 13
       alignment: 0
@@ -932,8 +932,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_90
       rect:
         serializedVersion: 2
-        x: 52
-        y: 312
+        x: 13
+        y: 273
         width: 13
         height: 13
       alignment: 0
@@ -953,8 +953,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_91
       rect:
         serializedVersion: 2
-        x: 65
-        y: 312
+        x: 26
+        y: 273
         width: 13
         height: 13
       alignment: 0
@@ -974,8 +974,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_92
       rect:
         serializedVersion: 2
-        x: 78
-        y: 312
+        x: 39
+        y: 273
         width: 13
         height: 13
       alignment: 0
@@ -995,8 +995,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_93
       rect:
         serializedVersion: 2
-        x: 91
-        y: 312
+        x: 52
+        y: 273
         width: 13
         height: 13
       alignment: 0
@@ -1016,8 +1016,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_94
       rect:
         serializedVersion: 2
-        x: 104
-        y: 312
+        x: 65
+        y: 273
         width: 13
         height: 13
       alignment: 0
@@ -1037,8 +1037,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_95
       rect:
         serializedVersion: 2
-        x: 117
-        y: 312
+        x: 0
+        y: 260
         width: 13
         height: 13
       alignment: 0
@@ -1058,8 +1058,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_96
       rect:
         serializedVersion: 2
-        x: 130
-        y: 312
+        x: 13
+        y: 260
         width: 13
         height: 13
       alignment: 0
@@ -1079,8 +1079,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_97
       rect:
         serializedVersion: 2
-        x: 143
-        y: 312
+        x: 26
+        y: 260
         width: 13
         height: 13
       alignment: 0
@@ -1100,8 +1100,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_98
       rect:
         serializedVersion: 2
-        x: 0
-        y: 299
+        x: 39
+        y: 260
         width: 13
         height: 13
       alignment: 0
@@ -1121,8 +1121,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_99
       rect:
         serializedVersion: 2
-        x: 13
-        y: 299
+        x: 52
+        y: 260
         width: 13
         height: 13
       alignment: 0
@@ -1142,8 +1142,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_100
       rect:
         serializedVersion: 2
-        x: 26
-        y: 299
+        x: 65
+        y: 260
         width: 13
         height: 13
       alignment: 0
@@ -1163,8 +1163,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_101
       rect:
         serializedVersion: 2
-        x: 39
-        y: 299
+        x: 78
+        y: 260
         width: 13
         height: 13
       alignment: 0
@@ -1184,8 +1184,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_102
       rect:
         serializedVersion: 2
-        x: 52
-        y: 299
+        x: 0
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -1205,8 +1205,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_103
       rect:
         serializedVersion: 2
-        x: 65
-        y: 299
+        x: 13
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -1226,8 +1226,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_104
       rect:
         serializedVersion: 2
-        x: 78
-        y: 299
+        x: 26
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -1247,8 +1247,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_105
       rect:
         serializedVersion: 2
-        x: 91
-        y: 299
+        x: 39
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -1268,8 +1268,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_106
       rect:
         serializedVersion: 2
-        x: 104
-        y: 299
+        x: 52
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -1289,8 +1289,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_110
       rect:
         serializedVersion: 2
-        x: 156
-        y: 299
+        x: 104
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -1310,8 +1310,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_111
       rect:
         serializedVersion: 2
-        x: 169
-        y: 299
+        x: 117
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -1331,8 +1331,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_112
       rect:
         serializedVersion: 2
-        x: 0
-        y: 286
+        x: 130
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -1352,8 +1352,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_113
       rect:
         serializedVersion: 2
-        x: 13
-        y: 286
+        x: 143
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -1373,8 +1373,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_114
       rect:
         serializedVersion: 2
-        x: 26
-        y: 286
+        x: 156
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -1394,8 +1394,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_116
       rect:
         serializedVersion: 2
-        x: 52
-        y: 286
+        x: 182
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -1415,8 +1415,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_117
       rect:
         serializedVersion: 2
-        x: 65
-        y: 286
+        x: 0
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1436,8 +1436,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_118
       rect:
         serializedVersion: 2
-        x: 78
-        y: 286
+        x: 13
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1457,8 +1457,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_119
       rect:
         serializedVersion: 2
-        x: 91
-        y: 286
+        x: 26
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1478,8 +1478,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_120
       rect:
         serializedVersion: 2
-        x: 104
-        y: 286
+        x: 39
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1499,8 +1499,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_121
       rect:
         serializedVersion: 2
-        x: 117
-        y: 286
+        x: 52
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1520,8 +1520,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_122
       rect:
         serializedVersion: 2
-        x: 130
-        y: 286
+        x: 65
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1541,8 +1541,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_123
       rect:
         serializedVersion: 2
-        x: 143
-        y: 286
+        x: 78
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1562,8 +1562,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_124
       rect:
         serializedVersion: 2
-        x: 156
-        y: 286
+        x: 91
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1583,8 +1583,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_125
       rect:
         serializedVersion: 2
-        x: 169
-        y: 286
+        x: 104
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1604,8 +1604,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_126
       rect:
         serializedVersion: 2
-        x: 182
-        y: 286
+        x: 117
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1625,8 +1625,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_127
       rect:
         serializedVersion: 2
-        x: 195
-        y: 286
+        x: 130
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1646,8 +1646,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_128
       rect:
         serializedVersion: 2
-        x: 0
-        y: 273
+        x: 143
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1667,8 +1667,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_129
       rect:
         serializedVersion: 2
-        x: 13
-        y: 273
+        x: 156
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1688,8 +1688,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_130
       rect:
         serializedVersion: 2
-        x: 26
-        y: 273
+        x: 169
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1709,8 +1709,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_131
       rect:
         serializedVersion: 2
-        x: 39
-        y: 273
+        x: 182
+        y: 234
         width: 13
         height: 13
       alignment: 0
@@ -1730,8 +1730,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_132
       rect:
         serializedVersion: 2
-        x: 52
-        y: 273
+        x: 0
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -1751,8 +1751,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_133
       rect:
         serializedVersion: 2
-        x: 65
-        y: 273
+        x: 13
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -1772,8 +1772,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_134
       rect:
         serializedVersion: 2
-        x: 0
-        y: 260
+        x: 26
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -1793,8 +1793,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_136
       rect:
         serializedVersion: 2
-        x: 26
-        y: 260
+        x: 52
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -1814,8 +1814,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_137
       rect:
         serializedVersion: 2
-        x: 39
-        y: 260
+        x: 65
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -1835,8 +1835,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_138
       rect:
         serializedVersion: 2
-        x: 52
-        y: 260
+        x: 78
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -1856,8 +1856,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_139
       rect:
         serializedVersion: 2
-        x: 65
-        y: 260
+        x: 91
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -1877,8 +1877,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_140
       rect:
         serializedVersion: 2
-        x: 78
-        y: 260
+        x: 104
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -1898,8 +1898,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_141
       rect:
         serializedVersion: 2
-        x: 0
-        y: 247
+        x: 117
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -1919,8 +1919,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_149
       rect:
         serializedVersion: 2
-        x: 104
-        y: 247
+        x: 52
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -1940,8 +1940,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_150
       rect:
         serializedVersion: 2
-        x: 117
-        y: 247
+        x: 65
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -1961,8 +1961,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_151
       rect:
         serializedVersion: 2
-        x: 130
-        y: 247
+        x: 78
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -1982,8 +1982,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_152
       rect:
         serializedVersion: 2
-        x: 143
-        y: 247
+        x: 91
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -2003,8 +2003,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_153
       rect:
         serializedVersion: 2
-        x: 156
-        y: 247
+        x: 104
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -2024,8 +2024,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_154
       rect:
         serializedVersion: 2
-        x: 169
-        y: 247
+        x: 117
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -2045,8 +2045,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_155
       rect:
         serializedVersion: 2
-        x: 182
-        y: 247
+        x: 130
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -2066,8 +2066,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_156
       rect:
         serializedVersion: 2
-        x: 0
-        y: 234
+        x: 143
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -2087,8 +2087,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_157
       rect:
         serializedVersion: 2
-        x: 13
-        y: 234
+        x: 156
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -2108,8 +2108,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_158
       rect:
         serializedVersion: 2
-        x: 26
-        y: 234
+        x: 0
+        y: 195
         width: 13
         height: 13
       alignment: 0
@@ -2129,8 +2129,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_159
       rect:
         serializedVersion: 2
-        x: 39
-        y: 234
+        x: 13
+        y: 195
         width: 13
         height: 13
       alignment: 0
@@ -2150,8 +2150,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_160
       rect:
         serializedVersion: 2
-        x: 52
-        y: 234
+        x: 26
+        y: 195
         width: 13
         height: 13
       alignment: 0
@@ -2171,8 +2171,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_162
       rect:
         serializedVersion: 2
-        x: 78
-        y: 234
+        x: 52
+        y: 195
         width: 13
         height: 13
       alignment: 0
@@ -2192,8 +2192,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_163
       rect:
         serializedVersion: 2
-        x: 91
-        y: 234
+        x: 65
+        y: 195
         width: 13
         height: 13
       alignment: 0
@@ -2213,8 +2213,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_164
       rect:
         serializedVersion: 2
-        x: 104
-        y: 234
+        x: 78
+        y: 195
         width: 13
         height: 13
       alignment: 0
@@ -2234,8 +2234,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_165
       rect:
         serializedVersion: 2
-        x: 117
-        y: 234
+        x: 91
+        y: 195
         width: 13
         height: 13
       alignment: 0
@@ -2255,8 +2255,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_166
       rect:
         serializedVersion: 2
-        x: 130
-        y: 234
+        x: 104
+        y: 195
         width: 13
         height: 13
       alignment: 0
@@ -2276,8 +2276,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_167
       rect:
         serializedVersion: 2
-        x: 143
-        y: 234
+        x: 117
+        y: 195
         width: 13
         height: 13
       alignment: 0
@@ -2297,8 +2297,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_168
       rect:
         serializedVersion: 2
-        x: 156
-        y: 234
+        x: 0
+        y: 130
         width: 13
         height: 13
       alignment: 0
@@ -2318,8 +2318,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_169
       rect:
         serializedVersion: 2
-        x: 169
-        y: 234
+        x: 13
+        y: 130
         width: 13
         height: 13
       alignment: 0
@@ -2339,8 +2339,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_170
       rect:
         serializedVersion: 2
-        x: 182
-        y: 234
+        x: 26
+        y: 130
         width: 13
         height: 13
       alignment: 0
@@ -2360,8 +2360,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_171
       rect:
         serializedVersion: 2
-        x: 0
-        y: 221
+        x: 143
+        y: 130
         width: 13
         height: 13
       alignment: 0
@@ -2381,8 +2381,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_172
       rect:
         serializedVersion: 2
-        x: 13
-        y: 221
+        x: 182
+        y: 104
         width: 13
         height: 13
       alignment: 0
@@ -2402,8 +2402,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_173
       rect:
         serializedVersion: 2
-        x: 26
-        y: 221
+        x: 195
+        y: 104
         width: 13
         height: 13
       alignment: 0
@@ -2423,8 +2423,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_174
       rect:
         serializedVersion: 2
-        x: 39
-        y: 221
+        x: 221
+        y: 104
         width: 13
         height: 13
       alignment: 0
@@ -2444,8 +2444,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_175
       rect:
         serializedVersion: 2
-        x: 52
-        y: 221
+        x: 234
+        y: 104
         width: 13
         height: 13
       alignment: 0
@@ -2465,8 +2465,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_178
       rect:
         serializedVersion: 2
-        x: 91
-        y: 221
+        x: 26
+        y: 91
         width: 13
         height: 13
       alignment: 0
@@ -2486,8 +2486,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_179
       rect:
         serializedVersion: 2
-        x: 104
-        y: 221
+        x: 13
+        y: 78
         width: 13
         height: 13
       alignment: 0
@@ -2507,8 +2507,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_180
       rect:
         serializedVersion: 2
-        x: 117
-        y: 221
+        x: 0
+        y: 65
         width: 13
         height: 13
       alignment: 0
@@ -2528,8 +2528,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_181
       rect:
         serializedVersion: 2
-        x: 130
-        y: 221
+        x: 13
+        y: 65
         width: 13
         height: 13
       alignment: 0
@@ -2549,8 +2549,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_182
       rect:
         serializedVersion: 2
-        x: 143
-        y: 221
+        x: 0
+        y: 26
         width: 13
         height: 13
       alignment: 0
@@ -2570,8 +2570,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_183
       rect:
         serializedVersion: 2
-        x: 156
-        y: 221
+        x: 0
+        y: 13
         width: 13
         height: 13
       alignment: 0
@@ -2591,8 +2591,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_184
       rect:
         serializedVersion: 2
-        x: 0
-        y: 208
+        x: 13
+        y: 13
         width: 13
         height: 13
       alignment: 0
@@ -2612,8 +2612,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_185
       rect:
         serializedVersion: 2
-        x: 13
-        y: 208
+        x: 26
+        y: 13
         width: 13
         height: 13
       alignment: 0
@@ -2633,8 +2633,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_186
       rect:
         serializedVersion: 2
-        x: 26
-        y: 208
+        x: 39
+        y: 13
         width: 13
         height: 13
       alignment: 0
@@ -2654,8 +2654,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_187
       rect:
         serializedVersion: 2
-        x: 39
-        y: 208
+        x: 52
+        y: 13
         width: 13
         height: 13
       alignment: 0
@@ -2675,8 +2675,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_188
       rect:
         serializedVersion: 2
-        x: 52
-        y: 208
+        x: 65
+        y: 13
         width: 13
         height: 13
       alignment: 0
@@ -2696,8 +2696,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_189
       rect:
         serializedVersion: 2
-        x: 65
-        y: 208
+        x: 78
+        y: 13
         width: 13
         height: 13
       alignment: 0
@@ -2717,8 +2717,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_190
       rect:
         serializedVersion: 2
-        x: 78
-        y: 208
+        x: 0
+        y: 0
         width: 13
         height: 13
       alignment: 0
@@ -2738,8 +2738,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_191
       rect:
         serializedVersion: 2
-        x: 91
-        y: 208
+        x: 13
+        y: 0
         width: 13
         height: 13
       alignment: 0
@@ -2759,8 +2759,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_192
       rect:
         serializedVersion: 2
-        x: 104
-        y: 208
+        x: 26
+        y: 0
         width: 13
         height: 13
       alignment: 0
@@ -2780,8 +2780,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_193
       rect:
         serializedVersion: 2
-        x: 117
-        y: 208
+        x: 39
+        y: 0
         width: 13
         height: 13
       alignment: 0
@@ -2801,8 +2801,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_194
       rect:
         serializedVersion: 2
-        x: 130
-        y: 208
+        x: 52
+        y: 0
         width: 13
         height: 13
       alignment: 0
@@ -2822,8 +2822,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_195
       rect:
         serializedVersion: 2
-        x: 143
-        y: 208
+        x: 65
+        y: 0
         width: 13
         height: 13
       alignment: 0
@@ -2843,8 +2843,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_196
       rect:
         serializedVersion: 2
-        x: 156
-        y: 208
+        x: 78
+        y: 0
         width: 13
         height: 13
       alignment: 0
@@ -2864,8 +2864,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_197
       rect:
         serializedVersion: 2
-        x: 0
-        y: 195
+        x: 91
+        y: 0
         width: 13
         height: 13
       alignment: 0
@@ -2882,1901 +2882,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: urizen_onebit_tiles_1_198
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 195
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0324a347ca0c2e940bd79e6542114164
-      internalID: 1582228680
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_199
-      rect:
-        serializedVersion: 2
-        x: 26
-        y: 195
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ae55bdb09c3f1ed45a18dad1f5d751ff
-      internalID: -978648099
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_201
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 195
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d28cac2b80679ea4e9653dd8e1120f48
-      internalID: 585028137
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_202
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 195
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bdc204d4a19a7c64a9e738697ff5c4c9
-      internalID: -1795132824
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_203
-      rect:
-        serializedVersion: 2
-        x: 78
-        y: 195
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9d8e576a216965c4d87c41beb3539273
-      internalID: -2049373867
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_204
-      rect:
-        serializedVersion: 2
-        x: 91
-        y: 195
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8b3b2dde3e9552c44ac2ed8af2270f28
-      internalID: 1084434736
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_205
-      rect:
-        serializedVersion: 2
-        x: 104
-        y: 195
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c13a1065d6dce6f4485eccd68e08d7f8
-      internalID: -537908707
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_206
-      rect:
-        serializedVersion: 2
-        x: 117
-        y: 195
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b4d9ce19fa8cb394cabba1cf602bde8d
-      internalID: -1085430438
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_207
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 182
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4736bed5db8d0a04bb66069a22471682
-      internalID: -1543744380
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_216
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 169
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 312cb2d30ae9be2448ddd38401bd5f4f
-      internalID: -220971341
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_217
-      rect:
-        serializedVersion: 2
-        x: 26
-        y: 169
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 19abd040e8090264588ebcf47a5ec332
-      internalID: 1186247213
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_218
-      rect:
-        serializedVersion: 2
-        x: 39
-        y: 169
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d53fc0d874598f747bcbf0d7a1598cf8
-      internalID: 1392595975
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_219
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 169
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2acb5dd9fc867034ab18c7b361a0c4e5
-      internalID: 2065501529
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_220
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 169
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 10a5618025fb65a44b48ca3860c95587
-      internalID: 1061904573
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_221
-      rect:
-        serializedVersion: 2
-        x: 78
-        y: 169
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c43705e543eb1234ea6a70b4c6816cdc
-      internalID: 1482084674
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_222
-      rect:
-        serializedVersion: 2
-        x: 91
-        y: 169
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 54b29bd21f0ff8e41ae2a0555a6665e5
-      internalID: 2056625784
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_223
-      rect:
-        serializedVersion: 2
-        x: 104
-        y: 169
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ea5dc2d78ced0494d8a07d17921c3296
-      internalID: -786455514
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_224
-      rect:
-        serializedVersion: 2
-        x: 117
-        y: 169
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 69a6c9173c2ffb445913e5a12ef880d3
-      internalID: 756154462
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_225
-      rect:
-        serializedVersion: 2
-        x: 130
-        y: 169
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0770c125f8736f7418311d5205b2a81b
-      internalID: -1309703206
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_226
-      rect:
-        serializedVersion: 2
-        x: 143
-        y: 169
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f2c7ce65af3b4894b896a76bd554e96a
-      internalID: -1487739477
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_227
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 156
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c1082ae03ae423e4188b56bf34a48643
-      internalID: -242642471
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_228
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 156
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 95fb4198aa7d75a47965844580bd87b6
-      internalID: 956378732
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_229
-      rect:
-        serializedVersion: 2
-        x: 26
-        y: 156
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2337bd622299c674595a8e1ecb54cbe3
-      internalID: -1046789819
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_230
-      rect:
-        serializedVersion: 2
-        x: 39
-        y: 156
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9d53f54c1f422ac44b07e0d1203a7dc7
-      internalID: 1451471634
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_231
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 156
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4373041929e5fea4ba561a56784ee8d9
-      internalID: 325220630
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_232
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 143
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 62d896e5be869864693f5eabaeb502e4
-      internalID: -937591807
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_233
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 143
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b3d4fee564c30b744b5dc16572292aef
-      internalID: 1002583866
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_234
-      rect:
-        serializedVersion: 2
-        x: 26
-        y: 143
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e260315feab6f8347b097c8bc0da95a5
-      internalID: 774597615
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_235
-      rect:
-        serializedVersion: 2
-        x: 39
-        y: 143
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 72fb1a8d7fff99c489954b150599096b
-      internalID: -1064901148
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_236
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 143
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: dfecda83af2b1bc40a1d9463f054b6c7
-      internalID: -528297548
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_237
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ae9d34a3d12a3d74a8a8b9974610c45d
-      internalID: -1151538879
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_238
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 920007b418a1f704983e0a2fec088b16
-      internalID: -1002512025
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_239
-      rect:
-        serializedVersion: 2
-        x: 26
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c75d0565b0b0aac4aaabe70abfaf472c
-      internalID: 862568070
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_240
-      rect:
-        serializedVersion: 2
-        x: 39
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: aec2346c7e422db4cbd6403755460697
-      internalID: 1661761932
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_241
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 366277f97ab3105479309987312772f5
-      internalID: 1803979096
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_242
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ba933115c705ff949be6744ef2713110
-      internalID: -92722535
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_243
-      rect:
-        serializedVersion: 2
-        x: 78
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4153485336d654f4eba522e33d01e0dc
-      internalID: -140373742
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_244
-      rect:
-        serializedVersion: 2
-        x: 91
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e467da09f988c834ab4084f70e20f357
-      internalID: -237974845
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_245
-      rect:
-        serializedVersion: 2
-        x: 104
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0e2ffe23b599b5b419f975e3771f0644
-      internalID: 413464673
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_247
-      rect:
-        serializedVersion: 2
-        x: 130
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 93e704b4ba6ae994ea979361ba1705c9
-      internalID: 81098067
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_248
-      rect:
-        serializedVersion: 2
-        x: 143
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1c2543822d389a64881f5fa3dfca9cdc
-      internalID: 166733346
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_249
-      rect:
-        serializedVersion: 2
-        x: 156
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0704e8aa6e88e0a42a9d0041881b44e7
-      internalID: 2012235844
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_250
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 117
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: cde8656116114a945b3e3cd19aeff54e
-      internalID: 982124933
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_251
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 117
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0016f50dc94e3d848985b2facd385617
-      internalID: 1832475192
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_252
-      rect:
-        serializedVersion: 2
-        x: 26
-        y: 117
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b710f337d190b1244a329c313a22a339
-      internalID: 555864485
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_253
-      rect:
-        serializedVersion: 2
-        x: 39
-        y: 117
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8a5ede0098e1c8f49bcad4b79bac697d
-      internalID: -1894562275
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_254
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 117
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: af0df6e872690984cbe062f487f0ac1a
-      internalID: -707922639
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_255
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 117
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: edf39bf6ac1672c459501b3882277a13
-      internalID: -1734178723
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_256
-      rect:
-        serializedVersion: 2
-        x: 78
-        y: 117
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6817376ff045f314e89adb47f17b4acd
-      internalID: 1889011576
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_257
-      rect:
-        serializedVersion: 2
-        x: 91
-        y: 117
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b8ad3acc793170b48ba3acdbc0af5ba1
-      internalID: -2057128564
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_258
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 28621f22dab696544a03f68faa107319
-      internalID: -1938035191
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_259
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 80e9d9e5305e19a4999a898a4f1e9c19
-      internalID: 960535050
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_263
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 234013f5634d38f49b1c9160fd4eb98a
-      internalID: 1657825262
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_264
-      rect:
-        serializedVersion: 2
-        x: 78
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8f3fa154ca634c342894a82112920136
-      internalID: -280053809
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_265
-      rect:
-        serializedVersion: 2
-        x: 91
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d5f2fbc71d1266040a31ec6a6ab99a29
-      internalID: 480223470
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_266
-      rect:
-        serializedVersion: 2
-        x: 104
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a44b5d0401c627348a706c03b93eea36
-      internalID: -454373247
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_267
-      rect:
-        serializedVersion: 2
-        x: 117
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f78010eb6858fd541b5115f338541b74
-      internalID: 1275705667
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_268
-      rect:
-        serializedVersion: 2
-        x: 130
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 67001041a68865749b718a5173c49c78
-      internalID: -2072344914
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_269
-      rect:
-        serializedVersion: 2
-        x: 143
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a3e62ab90db91c445af8facf0a179f5a
-      internalID: -2002441549
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_270
-      rect:
-        serializedVersion: 2
-        x: 156
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5f8a90b6a2204884c942d7023bc2a34b
-      internalID: 288216084
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_271
-      rect:
-        serializedVersion: 2
-        x: 169
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2a820abf94491fc4492e67dcf55a7d83
-      internalID: 578241592
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_272
-      rect:
-        serializedVersion: 2
-        x: 182
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d0fd58dec728d0244bd63a552c8bc821
-      internalID: 1777101155
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_273
-      rect:
-        serializedVersion: 2
-        x: 195
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6f121fafadab1894d861e4728c4174d3
-      internalID: -605266867
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_274
-      rect:
-        serializedVersion: 2
-        x: 208
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e42ef9135902dc24e97286ca7db31ffa
-      internalID: 1702625554
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_275
-      rect:
-        serializedVersion: 2
-        x: 221
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ee6801d6f5b14d94d9e7e5c71e2a74a1
-      internalID: 1830822249
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_276
-      rect:
-        serializedVersion: 2
-        x: 234
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bcb6af8b76a035f4996c6ae01736fb63
-      internalID: -1370316756
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_277
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 91
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5154864c6250ccc46881fb4170ab36f7
-      internalID: -765446034
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_278
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 91
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c58d13a889526b84f98c4b5a80a70f12
-      internalID: -53914505
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_279
-      rect:
-        serializedVersion: 2
-        x: 26
-        y: 91
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 75653f8cc7881cf4f88deba95dc46ef3
-      internalID: 2019354753
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_280
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 78
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4258ce31c5518164db6bd346b9e76e1e
-      internalID: 1641673290
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_281
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 78
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: de790741e7f7f1147908d8576d865925
-      internalID: 634845498
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_282
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 78
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5b39fda18e30d6544acf79600821f915
-      internalID: -290121427
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_283
-      rect:
-        serializedVersion: 2
-        x: 78
-        y: 78
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e3b4c37fc9b70854faae91db98398020
-      internalID: 87007024
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_284
-      rect:
-        serializedVersion: 2
-        x: 91
-        y: 78
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2a056fece7314794890ad4bbe579de4e
-      internalID: -2029097566
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_285
-      rect:
-        serializedVersion: 2
-        x: 104
-        y: 78
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 08d71e7e0fe73bc49a0d0f50fc3fe9bd
-      internalID: -1840702710
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_289
-      rect:
-        serializedVersion: 2
-        x: 143
-        y: 39
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d6a2bfae09a162a408b985005b410c43
-      internalID: 143727156
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_290
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 26
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2e37efaaa1a13094aa251af231d0da9e
-      internalID: 2129485521
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_291
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 26
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d4a3c84f995f00646ac17d4426928e7c
-      internalID: 38215164
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_292
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 26
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 85dd1d4b27649d949bf5bdf81a074fdb
-      internalID: -1493861154
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_293
-      rect:
-        serializedVersion: 2
-        x: 104
-        y: 26
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c6599bb0a18183a458dc4606b42ac559
-      internalID: 1876410980
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_294
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 13
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d63a0de2163ca734ab4446d1b1737867
-      internalID: 1480979537
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_295
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 13
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9b7ac68cc4a215e489f1b9e3f655b0be
-      internalID: -1970626106
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_296
-      rect:
-        serializedVersion: 2
-        x: 26
-        y: 13
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d434c9dc48ac4414ea3e1bc3d1890568
-      internalID: -207317914
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_302
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 0
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f58deb92aeef0f44f9a8da150047f53e
-      internalID: -331019726
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_303
-      rect:
-        serializedVersion: 2
-        x: 26
-        y: 0
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8221211c460bd4b46895f47155143bca
-      internalID: 660443367
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_304
-      rect:
-        serializedVersion: 2
-        x: 39
-        y: 0
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 63ef68b02f6d95245aa5be51ea629c85
-      internalID: 740242187
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_305
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 0
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: aa128edb38af1074288618c1d25491c6
-      internalID: -1813505714
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_306
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 0
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7a4522860e9afc74eb787482ac1cef29
-      internalID: 1296901287
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_307
-      rect:
-        serializedVersion: 2
-        x: 78
-        y: 0
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: dc6a81d176460a7469895c9b6a875698
-      internalID: -534221946
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_308
-      rect:
-        serializedVersion: 2
-        x: 91
-        y: 0
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 764f4b1cce6a47442b297349e1aed088
-      internalID: -1208381157
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: urizen_onebit_tiles_1_0
       rect:
         serializedVersion: 2
-        x: 52
-        y: 403
+        x: 0
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -4796,8 +2906,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_1
       rect:
         serializedVersion: 2
-        x: 65
-        y: 403
+        x: 13
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -4817,8 +2927,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_2
       rect:
         serializedVersion: 2
-        x: 78
-        y: 403
+        x: 26
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -4838,8 +2948,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_3
       rect:
         serializedVersion: 2
-        x: 91
-        y: 403
+        x: 39
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -4859,8 +2969,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_4
       rect:
         serializedVersion: 2
-        x: 143
-        y: 403
+        x: 52
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -4880,8 +2990,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_5
       rect:
         serializedVersion: 2
-        x: 260
-        y: 403
+        x: 65
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -4901,8 +3011,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_6
       rect:
         serializedVersion: 2
-        x: 273
-        y: 403
+        x: 78
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -4922,8 +3032,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_7
       rect:
         serializedVersion: 2
-        x: 286
-        y: 403
+        x: 91
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -4943,8 +3053,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_8
       rect:
         serializedVersion: 2
-        x: 299
-        y: 403
+        x: 104
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -4964,8 +3074,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_9
       rect:
         serializedVersion: 2
-        x: 312
-        y: 403
+        x: 117
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -4985,8 +3095,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_10
       rect:
         serializedVersion: 2
-        x: 0
-        y: 390
+        x: 130
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -5006,8 +3116,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_11
       rect:
         serializedVersion: 2
-        x: 13
-        y: 390
+        x: 143
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -5027,8 +3137,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_12
       rect:
         serializedVersion: 2
-        x: 26
-        y: 390
+        x: 156
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -5048,8 +3158,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_13
       rect:
         serializedVersion: 2
-        x: 39
-        y: 390
+        x: 169
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -5069,8 +3179,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_18
       rect:
         serializedVersion: 2
-        x: 143
-        y: 390
+        x: 234
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -5090,8 +3200,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_19
       rect:
         serializedVersion: 2
-        x: 182
-        y: 390
+        x: 247
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -5111,8 +3221,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_20
       rect:
         serializedVersion: 2
-        x: 195
-        y: 390
+        x: 260
+        y: 364
         width: 13
         height: 13
       alignment: 0
@@ -5132,8 +3242,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_22
       rect:
         serializedVersion: 2
-        x: 273
-        y: 390
+        x: 0
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -5153,8 +3263,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_23
       rect:
         serializedVersion: 2
-        x: 286
-        y: 390
+        x: 13
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -5174,8 +3284,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_24
       rect:
         serializedVersion: 2
-        x: 299
-        y: 390
+        x: 26
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -5195,8 +3305,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_25
       rect:
         serializedVersion: 2
-        x: 312
-        y: 390
+        x: 39
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -5216,8 +3326,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_26
       rect:
         serializedVersion: 2
-        x: 0
-        y: 377
+        x: 52
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -5237,8 +3347,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_27
       rect:
         serializedVersion: 2
-        x: 13
-        y: 377
+        x: 65
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -5258,8 +3368,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_28
       rect:
         serializedVersion: 2
-        x: 52
-        y: 377
+        x: 78
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -5279,8 +3389,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_29
       rect:
         serializedVersion: 2
-        x: 260
-        y: 377
+        x: 91
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -5300,8 +3410,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_40
       rect:
         serializedVersion: 2
-        x: 78
-        y: 364
+        x: 234
+        y: 338
         width: 13
         height: 13
       alignment: 0
@@ -5321,8 +3431,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_41
       rect:
         serializedVersion: 2
-        x: 91
-        y: 364
+        x: 0
+        y: 325
         width: 13
         height: 13
       alignment: 0
@@ -5342,8 +3452,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_43
       rect:
         serializedVersion: 2
-        x: 117
-        y: 364
+        x: 26
+        y: 325
         width: 13
         height: 13
       alignment: 0
@@ -5363,8 +3473,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_47
       rect:
         serializedVersion: 2
-        x: 169
-        y: 364
+        x: 0
+        y: 312
         width: 13
         height: 13
       alignment: 0
@@ -5384,8 +3494,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_48
       rect:
         serializedVersion: 2
-        x: 182
-        y: 364
+        x: 13
+        y: 312
         width: 13
         height: 13
       alignment: 0
@@ -5405,8 +3515,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_51
       rect:
         serializedVersion: 2
-        x: 221
-        y: 364
+        x: 52
+        y: 312
         width: 13
         height: 13
       alignment: 0
@@ -5426,8 +3536,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_52
       rect:
         serializedVersion: 2
-        x: 234
-        y: 364
+        x: 65
+        y: 312
         width: 13
         height: 13
       alignment: 0
@@ -5447,8 +3557,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_53
       rect:
         serializedVersion: 2
-        x: 247
-        y: 364
+        x: 78
+        y: 312
         width: 13
         height: 13
       alignment: 0
@@ -5468,8 +3578,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_54
       rect:
         serializedVersion: 2
-        x: 260
-        y: 364
+        x: 91
+        y: 312
         width: 13
         height: 13
       alignment: 0
@@ -5489,8 +3599,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_62
       rect:
         serializedVersion: 2
-        x: 13
-        y: 338
+        x: 39
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -5510,8 +3620,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_63
       rect:
         serializedVersion: 2
-        x: 26
-        y: 338
+        x: 52
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -5531,8 +3641,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_65
       rect:
         serializedVersion: 2
-        x: 52
-        y: 338
+        x: 78
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -5552,8 +3662,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_66
       rect:
         serializedVersion: 2
-        x: 65
-        y: 338
+        x: 91
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -5573,8 +3683,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_67
       rect:
         serializedVersion: 2
-        x: 78
-        y: 338
+        x: 104
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -5594,8 +3704,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_68
       rect:
         serializedVersion: 2
-        x: 91
-        y: 338
+        x: 117
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -5615,8 +3725,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_69
       rect:
         serializedVersion: 2
-        x: 104
-        y: 338
+        x: 130
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -5636,8 +3746,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_70
       rect:
         serializedVersion: 2
-        x: 117
-        y: 338
+        x: 143
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -5657,8 +3767,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_71
       rect:
         serializedVersion: 2
-        x: 130
-        y: 338
+        x: 156
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -5678,8 +3788,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_72
       rect:
         serializedVersion: 2
-        x: 143
-        y: 338
+        x: 169
+        y: 299
         width: 13
         height: 13
       alignment: 0
@@ -5699,8 +3809,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_73
       rect:
         serializedVersion: 2
-        x: 156
-        y: 338
+        x: 0
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -5720,8 +3830,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_74
       rect:
         serializedVersion: 2
-        x: 169
-        y: 338
+        x: 13
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -5741,8 +3851,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_75
       rect:
         serializedVersion: 2
-        x: 182
-        y: 338
+        x: 26
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -5762,8 +3872,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_76
       rect:
         serializedVersion: 2
-        x: 195
-        y: 338
+        x: 39
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -5783,8 +3893,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_77
       rect:
         serializedVersion: 2
-        x: 208
-        y: 338
+        x: 52
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -5804,8 +3914,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_78
       rect:
         serializedVersion: 2
-        x: 221
-        y: 338
+        x: 65
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -5825,8 +3935,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_79
       rect:
         serializedVersion: 2
-        x: 234
-        y: 338
+        x: 78
+        y: 286
         width: 13
         height: 13
       alignment: 0
@@ -5846,8 +3956,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_107
       rect:
         serializedVersion: 2
-        x: 117
-        y: 299
+        x: 65
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -5867,8 +3977,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_108
       rect:
         serializedVersion: 2
-        x: 130
-        y: 299
+        x: 78
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -5888,8 +3998,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_109
       rect:
         serializedVersion: 2
-        x: 143
-        y: 299
+        x: 91
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -5909,8 +4019,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_115
       rect:
         serializedVersion: 2
-        x: 39
-        y: 286
+        x: 169
+        y: 247
         width: 13
         height: 13
       alignment: 0
@@ -5930,8 +4040,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_135
       rect:
         serializedVersion: 2
-        x: 13
-        y: 260
+        x: 39
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -5951,8 +4061,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_142
       rect:
         serializedVersion: 2
-        x: 13
-        y: 247
+        x: 130
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -5972,8 +4082,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_143
       rect:
         serializedVersion: 2
-        x: 26
-        y: 247
+        x: 143
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -5993,8 +4103,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_144
       rect:
         serializedVersion: 2
-        x: 39
-        y: 247
+        x: 156
+        y: 221
         width: 13
         height: 13
       alignment: 0
@@ -6014,8 +4124,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_145
       rect:
         serializedVersion: 2
-        x: 52
-        y: 247
+        x: 0
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -6035,8 +4145,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_146
       rect:
         serializedVersion: 2
-        x: 65
-        y: 247
+        x: 13
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -6056,8 +4166,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_147
       rect:
         serializedVersion: 2
-        x: 78
-        y: 247
+        x: 26
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -6077,8 +4187,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_148
       rect:
         serializedVersion: 2
-        x: 91
-        y: 247
+        x: 39
+        y: 208
         width: 13
         height: 13
       alignment: 0
@@ -6098,8 +4208,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_161
       rect:
         serializedVersion: 2
-        x: 65
-        y: 234
+        x: 39
+        y: 195
         width: 13
         height: 13
       alignment: 0
@@ -6119,8 +4229,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_176
       rect:
         serializedVersion: 2
-        x: 65
-        y: 221
+        x: 0
+        y: 91
         width: 13
         height: 13
       alignment: 0
@@ -6140,8 +4250,8 @@ TextureImporter:
       name: urizen_onebit_tiles_1_177
       rect:
         serializedVersion: 2
-        x: 78
-        y: 221
+        x: 13
+        y: 91
         width: 13
         height: 13
       alignment: 0
@@ -6153,447 +4263,6 @@ TextureImporter:
       bones: []
       spriteID: 64f2a776489f22a4b93807b4f1d2b63c
       internalID: 539626894
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_200
-      rect:
-        serializedVersion: 2
-        x: 39
-        y: 195
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7bd1953eba3555f4381dde8b10c7b241
-      internalID: -401169853
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_208
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 182
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0ab5b54481b3b1a4a86cb2d82fb5247a
-      internalID: -594566069
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_209
-      rect:
-        serializedVersion: 2
-        x: 26
-        y: 182
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5664b36f469284040923700040a85616
-      internalID: -2092974222
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_210
-      rect:
-        serializedVersion: 2
-        x: 39
-        y: 182
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 84e805a27a4ecb74f825208a93d5a5a0
-      internalID: 433849413
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_211
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 182
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d01d48e9431d4cf428170d80035898d3
-      internalID: -2081392854
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_212
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 182
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ed520ec33cdd92048964295d42abef9f
-      internalID: 1730516274
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_213
-      rect:
-        serializedVersion: 2
-        x: 78
-        y: 182
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3c9cfe2eb71939648aeff1bba89971f6
-      internalID: -1282987948
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_214
-      rect:
-        serializedVersion: 2
-        x: 91
-        y: 182
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bf95f5b69d9adf645b44a52ef6ce3534
-      internalID: -53202420
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_215
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 169
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7750d2fccabe2b04d83aba4332c9c453
-      internalID: 1987036414
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_246
-      rect:
-        serializedVersion: 2
-        x: 117
-        y: 130
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e01f83dd43f238b44b122713b5be1ffe
-      internalID: 837495681
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_260
-      rect:
-        serializedVersion: 2
-        x: 26
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d4c56704740d4854cbb309170c2c5c82
-      internalID: -1727637741
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_261
-      rect:
-        serializedVersion: 2
-        x: 39
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f3bf8ba46d4cb6847a6f10deaa5ffda2
-      internalID: -1773881488
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_262
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 104
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 67c5ed7bdb408fb468de46c1db70287b
-      internalID: 634062330
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_286
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 65
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6794e1fd001dc5e42bb471915470d05a
-      internalID: 336984014
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_287
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 65
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 86bbc8405649d344eb5af403b834f756
-      internalID: -223047853
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_288
-      rect:
-        serializedVersion: 2
-        x: 130
-        y: 39
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 02c294afdc090b642b7b1df2c640505b
-      internalID: 2047695445
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_297
-      rect:
-        serializedVersion: 2
-        x: 39
-        y: 13
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ac984eb729f6e494e9da7a7bc3a8902a
-      internalID: -666603645
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_298
-      rect:
-        serializedVersion: 2
-        x: 52
-        y: 13
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a05479a98a5cdb7449d36921597201c0
-      internalID: -972111271
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_299
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 13
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 51fa81c90a3e09e429e0adeb952d3781
-      internalID: -1141257003
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_300
-      rect:
-        serializedVersion: 2
-        x: 78
-        y: 13
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 23a2f3a0e7d563f4d8ed20bcc820fdd6
-      internalID: -453146134
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: urizen_onebit_tiles_1_301
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 13
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0560a99c04e08154589733c63a20f657
-      internalID: -976521742
       vertices: []
       indices: 
       edges: []
@@ -6719,130 +4388,19 @@ TextureImporter:
       urizen_onebit_tiles_1_195: 595349159
       urizen_onebit_tiles_1_196: 324990217
       urizen_onebit_tiles_1_197: -491601765
-      urizen_onebit_tiles_1_198: 1582228680
-      urizen_onebit_tiles_1_199: -978648099
       urizen_onebit_tiles_1_2: -681050318
       urizen_onebit_tiles_1_20: 1608647775
-      urizen_onebit_tiles_1_200: -401169853
-      urizen_onebit_tiles_1_201: 585028137
-      urizen_onebit_tiles_1_202: -1795132824
-      urizen_onebit_tiles_1_203: -2049373867
-      urizen_onebit_tiles_1_204: 1084434736
-      urizen_onebit_tiles_1_205: -537908707
-      urizen_onebit_tiles_1_206: -1085430438
-      urizen_onebit_tiles_1_207: -1543744380
-      urizen_onebit_tiles_1_208: -594566069
-      urizen_onebit_tiles_1_209: -2092974222
       urizen_onebit_tiles_1_21: 1191209351
-      urizen_onebit_tiles_1_210: 433849413
-      urizen_onebit_tiles_1_211: -2081392854
-      urizen_onebit_tiles_1_212: 1730516274
-      urizen_onebit_tiles_1_213: -1282987948
-      urizen_onebit_tiles_1_214: -53202420
-      urizen_onebit_tiles_1_215: 1987036414
-      urizen_onebit_tiles_1_216: -220971341
-      urizen_onebit_tiles_1_217: 1186247213
-      urizen_onebit_tiles_1_218: 1392595975
-      urizen_onebit_tiles_1_219: 2065501529
       urizen_onebit_tiles_1_22: -840007820
-      urizen_onebit_tiles_1_220: 1061904573
-      urizen_onebit_tiles_1_221: 1482084674
-      urizen_onebit_tiles_1_222: 2056625784
-      urizen_onebit_tiles_1_223: -786455514
-      urizen_onebit_tiles_1_224: 756154462
-      urizen_onebit_tiles_1_225: -1309703206
-      urizen_onebit_tiles_1_226: -1487739477
-      urizen_onebit_tiles_1_227: -242642471
-      urizen_onebit_tiles_1_228: 956378732
-      urizen_onebit_tiles_1_229: -1046789819
       urizen_onebit_tiles_1_23: 59508714
-      urizen_onebit_tiles_1_230: 1451471634
-      urizen_onebit_tiles_1_231: 325220630
-      urizen_onebit_tiles_1_232: -937591807
-      urizen_onebit_tiles_1_233: 1002583866
-      urizen_onebit_tiles_1_234: 774597615
-      urizen_onebit_tiles_1_235: -1064901148
-      urizen_onebit_tiles_1_236: -528297548
-      urizen_onebit_tiles_1_237: -1151538879
-      urizen_onebit_tiles_1_238: -1002512025
-      urizen_onebit_tiles_1_239: 862568070
       urizen_onebit_tiles_1_24: 1205815260
-      urizen_onebit_tiles_1_240: 1661761932
-      urizen_onebit_tiles_1_241: 1803979096
-      urizen_onebit_tiles_1_242: -92722535
-      urizen_onebit_tiles_1_243: -140373742
-      urizen_onebit_tiles_1_244: -237974845
-      urizen_onebit_tiles_1_245: 413464673
-      urizen_onebit_tiles_1_246: 837495681
-      urizen_onebit_tiles_1_247: 81098067
-      urizen_onebit_tiles_1_248: 166733346
-      urizen_onebit_tiles_1_249: 2012235844
       urizen_onebit_tiles_1_25: -137059742
-      urizen_onebit_tiles_1_250: 982124933
-      urizen_onebit_tiles_1_251: 1832475192
-      urizen_onebit_tiles_1_252: 555864485
-      urizen_onebit_tiles_1_253: -1894562275
-      urizen_onebit_tiles_1_254: -707922639
-      urizen_onebit_tiles_1_255: -1734178723
-      urizen_onebit_tiles_1_256: 1889011576
-      urizen_onebit_tiles_1_257: -2057128564
-      urizen_onebit_tiles_1_258: -1938035191
-      urizen_onebit_tiles_1_259: 960535050
       urizen_onebit_tiles_1_26: 1154177036
-      urizen_onebit_tiles_1_260: -1727637741
-      urizen_onebit_tiles_1_261: -1773881488
-      urizen_onebit_tiles_1_262: 634062330
-      urizen_onebit_tiles_1_263: 1657825262
-      urizen_onebit_tiles_1_264: -280053809
-      urizen_onebit_tiles_1_265: 480223470
-      urizen_onebit_tiles_1_266: -454373247
-      urizen_onebit_tiles_1_267: 1275705667
-      urizen_onebit_tiles_1_268: -2072344914
-      urizen_onebit_tiles_1_269: -2002441549
       urizen_onebit_tiles_1_27: 566265324
-      urizen_onebit_tiles_1_270: 288216084
-      urizen_onebit_tiles_1_271: 578241592
-      urizen_onebit_tiles_1_272: 1777101155
-      urizen_onebit_tiles_1_273: -605266867
-      urizen_onebit_tiles_1_274: 1702625554
-      urizen_onebit_tiles_1_275: 1830822249
-      urizen_onebit_tiles_1_276: -1370316756
-      urizen_onebit_tiles_1_277: -765446034
-      urizen_onebit_tiles_1_278: -53914505
-      urizen_onebit_tiles_1_279: 2019354753
       urizen_onebit_tiles_1_28: 1028855547
-      urizen_onebit_tiles_1_280: 1641673290
-      urizen_onebit_tiles_1_281: 634845498
-      urizen_onebit_tiles_1_282: -290121427
-      urizen_onebit_tiles_1_283: 87007024
-      urizen_onebit_tiles_1_284: -2029097566
-      urizen_onebit_tiles_1_285: -1840702710
-      urizen_onebit_tiles_1_286: 336984014
-      urizen_onebit_tiles_1_287: -223047853
-      urizen_onebit_tiles_1_288: 2047695445
-      urizen_onebit_tiles_1_289: 143727156
       urizen_onebit_tiles_1_29: 652528441
-      urizen_onebit_tiles_1_290: 2129485521
-      urizen_onebit_tiles_1_291: 38215164
-      urizen_onebit_tiles_1_292: -1493861154
-      urizen_onebit_tiles_1_293: 1876410980
-      urizen_onebit_tiles_1_294: 1480979537
-      urizen_onebit_tiles_1_295: -1970626106
-      urizen_onebit_tiles_1_296: -207317914
-      urizen_onebit_tiles_1_297: -666603645
-      urizen_onebit_tiles_1_298: -972111271
-      urizen_onebit_tiles_1_299: -1141257003
       urizen_onebit_tiles_1_3: 479462320
       urizen_onebit_tiles_1_30: 1131034539
-      urizen_onebit_tiles_1_300: -453146134
-      urizen_onebit_tiles_1_301: -976521742
-      urizen_onebit_tiles_1_302: -331019726
-      urizen_onebit_tiles_1_303: 660443367
-      urizen_onebit_tiles_1_304: 740242187
-      urizen_onebit_tiles_1_305: -1813505714
-      urizen_onebit_tiles_1_306: 1296901287
-      urizen_onebit_tiles_1_307: -534221946
-      urizen_onebit_tiles_1_308: -1208381157
       urizen_onebit_tiles_1_31: 531000239
       urizen_onebit_tiles_1_32: 1718850998
       urizen_onebit_tiles_1_33: 1581074291

@@ -248,6 +248,7 @@ GameObject:
   - component: {fileID: 1954903873}
   - component: {fileID: 1954903874}
   - component: {fileID: 1954903875}
+  - component: {fileID: 1954903876}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -496,6 +497,30 @@ MonoBehaviour:
   speedPerLevel: 0.5
   expMultiplier: 1.5
   enduranceHealthBonus: 3
+--- !u!114 &1954903876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954903869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89f27fc07b647814db7111b4bcec13c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxWeapons: 5
+  weapons:
+  - {fileID: 11400000, guid: 7190a072a40dafd4f90db7f5ab9100ea, type: 2}
+  currentWeaponIndex: 0
+  nextWeaponKey: 113
+  previousWeaponKey: 9
+  weapon1Key: 49
+  weapon2Key: 50
+  weapon3Key: 51
+  weapon4Key: 52
+  weapon5Key: 53
+  startingWeapon: {fileID: 11400000, guid: 7190a072a40dafd4f90db7f5ab9100ea, type: 2}
 --- !u!1 &2035129708
 GameObject:
   m_ObjectHideFlags: 0
