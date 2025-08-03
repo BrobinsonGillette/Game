@@ -69,7 +69,10 @@ public class PlayerMove : MonoBehaviour
             PlayerStats.instance.Die();
             hasProcessedDeath = true; // Mark that we've processed this death
         }
-
+        if (inputSystem.loop.action.ReadValue<float>() > 0 && PlayerStats.instance.IsDead() && hasProcessedDeath)
+        {
+            PlayerStats.instance.Respawn();
+        }
         // Don't handle input or movement if dead
         if (!PlayerStats.instance.IsDead())
         {

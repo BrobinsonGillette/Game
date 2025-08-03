@@ -132,24 +132,10 @@ public class Iteract : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("No interactable assigned to this object!");
+            Debug.Log("No interactable assigned to this object!");
         }
     }
 
-    // Public method to force visibility update
-    public void UpdateVisibility()
-    {
-        if (hideWhenOutOfFrame)
-        {
-            SetVisibility(!IsoutOfFrame());
-        }
-    }
-
-    // Method to temporarily show/hide regardless of camera position
-    public void ForceVisibility(bool visible)
-    {
-        SetVisibility(visible);
-    }
 
     private void OnDrawGizmosSelected()
     {

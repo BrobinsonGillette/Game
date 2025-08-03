@@ -526,7 +526,11 @@ public class Enamy : MonoBehaviour, IDamable
     public bool IsDead => currentHealth <= 0;
     private void Die()
     {
-        spriteRenderer.sprite = deadIcon;
+        if (deadIcon != null)
+        {
+            spriteRenderer.sprite = deadIcon;
+        }
+     
 
         // Only give exp once
         if (PlayerStats.instance != null && !hasGivenExp)

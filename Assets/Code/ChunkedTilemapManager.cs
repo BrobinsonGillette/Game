@@ -197,7 +197,7 @@ public class ChunkedTilemapManager : MonoBehaviour
                 player = playerGO.transform;
             else
             {
-                Debug.LogError("Player not found! Please assign player transform or add 'Player' tag.");
+                Debug.Log("Player not found! Please assign player transform or add 'Player' tag.");
                 return;
             }
         }
@@ -552,10 +552,10 @@ public class ChunkedTilemapManager : MonoBehaviour
         // Create weighted selection based on noise value
         TileBase selectedTile = null;
 
-        // Adjust these weights to control spawn rates
-        float grassWeight = Mathf.Lerp(80f, 20f, terrainValue); // More grass at low noise
-        float rockWeight = Mathf.Lerp(5f, 20f, terrainValue);   // More rocks at high noise
-        float emptyWeight = Mathf.Lerp(15f, 20f, terrainValue); // Some empty space
+        // Adjust these weights to control spawn rates - INCREASED EMPTY WEIGHT
+        float grassWeight = Mathf.Lerp(60f, 15f, terrainValue); // Reduced grass weight
+        float rockWeight = Mathf.Lerp(5f, 15f, terrainValue);   // Slightly reduced rock weight
+        float emptyWeight = Mathf.Lerp(35f, 70f, terrainValue); // SIGNIFICANTLY INCREASED empty space
 
         float totalWeight = grassWeight + rockWeight + emptyWeight;
         float randomValue = Random.Range(0f, totalWeight);
@@ -568,7 +568,7 @@ public class ChunkedTilemapManager : MonoBehaviour
         {
             selectedTile = rockTiles?.GetRandomTile();
         }
-        // else empty
+        // else empty (selectedTile remains null)
 
         chunk.mainTiles[localX, localY] = selectedTile;
 

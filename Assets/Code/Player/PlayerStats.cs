@@ -15,7 +15,6 @@ public class PlayerData
     public int intellect;
     public int endurance;
     public int luck;
-    public int sin;
     public int deaths;
     public int availablePoints;
 }
@@ -27,10 +26,8 @@ public class PlayerStats : MonoBehaviour, IDamable
     [Header("Player Stats")]
     [SerializeField] private int might = 1;
     [SerializeField] private int agility = 1;
-    [SerializeField] private int intellect = 1;
     [SerializeField] private int endurance = 1;
     [SerializeField] private int luck = 1;
-    [SerializeField] private int sin = 0;
     [SerializeField] private int deaths = 0;
     public WeponClass currentWeapon;
     [SerializeField] private Transform firePoint; // Where projectiles spawn from
@@ -59,10 +56,9 @@ public class PlayerStats : MonoBehaviour, IDamable
     // Properties for stats
     public int MightStat => might;
     public int AgilityStat => agility;
-    public int IntellectStat => intellect;
     public int EnduranceStat => endurance;
     public int LuckStat => luck;
-    public int SinStat => sin;
+
 
     // Properties for level system
     public int Level => level;
@@ -212,7 +208,7 @@ public class PlayerStats : MonoBehaviour, IDamable
         if (Time.time >= lastRangeAttackTime + weaponToUse.AttackCooldown)
         {
             // MODIFIED: Apply intellect stat to damage and agility to projectile speed
-            float finalDamage = weaponToUse.AttackDamage * (1f + (intellect * 0.1f)); // 10% damage bonus per intellect point
+            float finalDamage = weaponToUse.AttackDamage * (1f + (might * 0.1f)); // 10% damage bonus per intellect point
             float finalSpeed = weaponToUse.projectileSpeed * (1f + (agility * 0.05f)); // 5% speed bonus per agility point
 
             WeponClass tempWeapon = ScriptableObject.CreateInstance<WeponClass>();
@@ -337,10 +333,8 @@ public class PlayerStats : MonoBehaviour, IDamable
     {
         Might = 1,
         Agility = 2,
-        Intellect = 3,
         Endurance = 4,
         Luck = 5,
-        Sin = 6
     }
 
     public bool CanUpgradeStat()
@@ -361,9 +355,6 @@ public class PlayerStats : MonoBehaviour, IDamable
             case StatType.Agility:
                 agility--;
                 break;
-            case StatType.Intellect:
-                intellect--;
-                break;
             case StatType.Endurance:
                 endurance--;
                 RecalculateMaxHealth();
@@ -371,9 +362,6 @@ public class PlayerStats : MonoBehaviour, IDamable
                 break;
             case StatType.Luck:
                 luck--;
-                break;
-            case StatType.Sin:
-                sin--;
                 break;
             default:
                 Debug.LogError($"Invalid stat type: {statType}");
@@ -395,7 +383,7 @@ public class PlayerStats : MonoBehaviour, IDamable
         return true;
     }
 
-    public bool IncreceState(StatType statType)
+    public bool IncreaseState(StatType statType)
     {
         if (!CanUpgradeStat())
         {
@@ -413,9 +401,6 @@ public class PlayerStats : MonoBehaviour, IDamable
             case StatType.Agility:
                 agility++;
                 break;
-            case StatType.Intellect:
-                intellect++;
-                break;
             case StatType.Endurance:
                 endurance++;
                 RecalculateMaxHealth();
@@ -423,9 +408,6 @@ public class PlayerStats : MonoBehaviour, IDamable
                 break;
             case StatType.Luck:
                 luck++;
-                break;
-            case StatType.Sin:
-                sin++;
                 break;
             default:
                 Debug.LogError($"Invalid stat type: {statType}");
@@ -453,10 +435,8 @@ public class PlayerStats : MonoBehaviour, IDamable
         {
             StatType.Might => might,
             StatType.Agility => agility,
-            StatType.Intellect => intellect,
             StatType.Endurance => endurance,
             StatType.Luck => luck,
-            StatType.Sin => sin,
             _ => 0
         };
     }
@@ -464,8 +444,8 @@ public class PlayerStats : MonoBehaviour, IDamable
     public void Die()
     {
         deaths++;
-        Debug.Log($"Player died! Total deaths: {deaths}");
         OnDeath?.Invoke();
+     
     }
 
     public void Respawn()
@@ -474,7 +454,8 @@ public class PlayerStats : MonoBehaviour, IDamable
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         OnPlayerRespawn?.Invoke();
-        Debug.Log("Player respawned with full health!");
+        transform.position = Vector3.zero; // Reset position to origin (or any spawn point)
+        SceneLoader.Instance?.ReloadCurrentScene(); // Reload the current scene
     }
 
     // Utility methods
@@ -519,7 +500,7 @@ public class PlayerStats : MonoBehaviour, IDamable
 
         float baseDamage = weapon.AttackDamage;
         float statMultiplier = weapon.currentType == weaponType.melee ?
-            (1f + (might * 0.1f)) : (1f + (intellect * 0.1f));
+            (1f + (might * 0.1f)) : (1f + (agility * 0.1f));
 
         return baseDamage * statMultiplier;
     }

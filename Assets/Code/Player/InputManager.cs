@@ -15,12 +15,12 @@ public class InputManager
     public InputActionProperty Select;
     public InputActionProperty Inventory;
     public InputActionProperty Sprint;
+    public InputActionProperty loop;
 
-    
-  
 
- 
-    
+
+
+
     public void StartUp()
     {
         Movement.action.Enable();
@@ -31,6 +31,7 @@ public class InputManager
         Select.action.Enable();
         Inventory.action.Enable();
         Select.action.Enable();
+        loop.action.Enable();
     }
 
     public void DeSetUp()
@@ -43,5 +44,6 @@ public class InputManager
         Select.action.Disable();
         Inventory.action.Disable();
         Select.action.Disable();
+        loop.action.Disable();
     }
 }

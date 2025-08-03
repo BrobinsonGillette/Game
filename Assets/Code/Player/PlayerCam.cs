@@ -15,7 +15,10 @@ public class PlayerCam : MonoBehaviour
     [SerializeField] private bool useBoundaries = false;
     [SerializeField] private Vector2 minBounds;
     [SerializeField] private Vector2 maxBounds;
-
+    private void Start()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     private void LateUpdate()
     {
         if (target == null) return;
