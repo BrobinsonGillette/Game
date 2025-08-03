@@ -51,13 +51,13 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI[] levelText;
 
 
-   [SerializeField]  private StatUI[] statUi;
+   private StatUI[] statUi;
     private TextMeshProUGUI availablePointsText;
     private Button levelUpButton;
     private Button closeStatsButton;
 
-
-    [SerializeField] private StatUI[] levelUpStatUi;
+ 
+   private StatUI[] levelUpStatUi;
     private TextMeshProUGUI levelUpText;
     private GameObject levelUpNotification;
 
@@ -66,8 +66,9 @@ public class UIManager : MonoBehaviour
 
     private PlayerStats playerStats;
     private Coroutine levelUpCoroutine;
-    private Canvas mainCanvas;
-
+    [SerializeField]  private Canvas mainCanvas;
+    [Header("Slot Machine Integration")] // ADD THIS
+    public SlotMachine slotMachine; // ADD THIS
     private void Awake()
     {
         if (Instance == null)
@@ -106,7 +107,10 @@ public class UIManager : MonoBehaviour
     private void CreateCompleteUI()
     {
         // Find or create main canvas
-        mainCanvas = FindObjectOfType<Canvas>();
+        if( mainCanvas == null)
+        {
+            mainCanvas = FindObjectOfType<Canvas>();
+        }
         if (mainCanvas == null)
         {
             CreateMainCanvas();
@@ -614,6 +618,16 @@ public class UIManager : MonoBehaviour
         ShowLevelUpNotification(newLevel);
         ShowLevelUpButton(true);
 
+        // UPDATE: Automatically open slot machine on level up
+        if (slotMachine != null)
+        {
+            // Close stats panel if it's open
+            CloseStatsPanel();
+
+            // Open slot machine with a small delay for better UX
+            StartCoroutine(OpenSlotMachineAfterDelay(1f));
+        }
+
         // Update stats UI to reflect new available points
         UpdateStatsUI();
     }
@@ -633,7 +647,14 @@ public class UIManager : MonoBehaviour
             levelUpCoroutine = StartCoroutine(HideLevelUpNotificationAfterDelay(3f));
         }
     }
-
+    private IEnumerator OpenSlotMachineAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (slotMachine != null)
+        {
+            slotMachine.OpenSlotMachine();
+        }
+    }
     private IEnumerator HideLevelUpNotificationAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);

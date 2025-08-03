@@ -9,7 +9,7 @@ public class WeponClass : ScriptableObject
     [Header("Attack Settings")]
     public Sprite weponSprite;
     public Sprite weponIcon;
-    public float AreaRadius = 1.5f; // Radius of damage area
+    public float WeponAttackRang = 1.5f; // Radius of damage area
     public float AttackDuration = 0.5f; // How long damage area stays active
     public float AttackDamage = 10f;
     public float AttackCooldown = 1f;
@@ -29,24 +29,26 @@ public class WeponClass : ScriptableObject
 
         Vector3 attackPosition = transform.position;
 
-        GameObject damageArea = null;
-        if (Prefab != null)
-        {
-            damageArea = Instantiate(Prefab, attackPosition, Quaternion.identity);
-            BasicProjectile basicProjectile = damageArea.AddComponent<BasicProjectile>();
-            basicProjectile.Initialize(0, 0, AttackDuration);
-        }
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(attackPosition, WeponAttackRang, EnemyLayer);
 
-
-
-        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(attackPosition, AreaRadius, EnemyLayer); // FIXED: EnemyLayer
         foreach (Collider2D hitCollider in hitColliders)
         {
             IDamable damageTarget = hitCollider.GetComponent<IDamable>();
 
             if (damageTarget != null)
             {
-                damageArea.transform.position = hitCollider.GetComponent<Collider2D>().bounds.center;
+                // Spawn a damage area for each hit collider
+                GameObject damageArea = null;
+                if (Prefab != null)
+                {
+                    // Position the damage area at the hit collider's center
+                    Vector3 damageAreaPosition = hitCollider.GetComponent<Collider2D>().bounds.center;
+                    damageArea = Instantiate(Prefab, damageAreaPosition, Quaternion.identity);
+
+                    BasicProjectile basicProjectile = damageArea.AddComponent<BasicProjectile>();
+                    basicProjectile.Initialize(0, 0, AttackDuration);
+                }
+
                 damageTarget.TakeDamage(AttackDamage);
                 Debug.Log($"Player dealt {AttackDamage} melee damage to {hitCollider.name}");
             }
@@ -55,7 +57,6 @@ public class WeponClass : ScriptableObject
                 Debug.Log($"No IDamable component found on {hitCollider.name}");
             }
         }
-
 
     }
 
@@ -93,7 +94,13 @@ public class WeponClass : ScriptableObject
                 rb.gravityScale = 0f;
                 rb.freezeRotation = true;
             }
-
+            BoxCollider2D col = projectile.GetComponent<BoxCollider2D>();
+            if (col == null)
+            {
+                col = projectile.AddComponent<BoxCollider2D>();
+                col.isTrigger = true;
+                col.size = new Vector2(0.5f, 0.5f);
+            }
             rb.velocity = direction * projectileSpeed;
             basicProjectile.Initialize(AttackDamage, EnemyLayer, AttackDuration);
         }

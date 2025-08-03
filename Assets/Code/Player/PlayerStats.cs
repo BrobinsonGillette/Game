@@ -226,7 +226,7 @@ public class PlayerStats : MonoBehaviour, IDamable
     {
         target.weponSprite = source.weponSprite;
         target.weponIcon = source.weponIcon;
-        target.AreaRadius = source.AreaRadius;
+        target.WeponAttackRang = source.WeponAttackRang;
         target.AttackDuration = source.AttackDuration;
         target.AttackDamage = source.AttackDamage;
         target.AttackCooldown = source.AttackCooldown;
@@ -246,7 +246,7 @@ public class PlayerStats : MonoBehaviour, IDamable
 
     public void TakeDamage(float damage)
     {
-        if (damage <= 0 || currentHealth <= 0 && !takeDamage) return;
+        if (currentHealth <= 0 && !takeDamage) return;
 
         // Calculate damage reduction: 1% reduction for every 2 points in endurance + agility combined
         float totalDefensiveStats = endurance + agility;
@@ -314,7 +314,8 @@ public class PlayerStats : MonoBehaviour, IDamable
         currentHealth = Mathf.Min(currentHealth + healthPerLevel, maxHealth);
 
         UpdateMaxExp();
-
+        if(AutoEnemySpawner.instance !=null)
+            AutoEnemySpawner.instance.UpdateAvailablePoints();
         // Invoke events
         OnLevelUp?.Invoke(level);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
@@ -461,6 +462,7 @@ public class PlayerStats : MonoBehaviour, IDamable
     // Utility methods
     public float GetHealthPercentage() => maxHealth > 0 ? currentHealth / maxHealth : 0f;
     public float GetExpPercentage() => maxExp > 0 ? currentExp / maxExp : 0f;
+
     public bool IsDead() => currentHealth <= 0;
 
     // MODIFIED: Enhanced SetCurrentWeapon method
@@ -493,34 +495,7 @@ public class PlayerStats : MonoBehaviour, IDamable
         OnWeaponChanged?.Invoke(weapon);
     }
 
-    // ADDED: Get modified attack damage based on stats
-    public float GetModifiedAttackDamage(WeponClass weapon)
-    {
-        if (weapon == null) return 0f;
 
-        float baseDamage = weapon.AttackDamage;
-        float statMultiplier = weapon.currentType == weaponType.melee ?
-            (1f + (might * 0.1f)) : (1f + (agility * 0.1f));
-
-        return baseDamage * statMultiplier;
-    }
-
-    // ADDED: Get modified projectile speed based on agility
-    public float GetModifiedProjectileSpeed(WeponClass weapon)
-    {
-        if (weapon == null) return 0f;
-
-        return weapon.projectileSpeed * (1f + (agility * 0.05f));
-    }
-
-    // ADDED: Get modified attack cooldown based on agility
-    public float GetModifiedAttackCooldown(WeponClass weapon)
-    {
-        if (weapon == null) return 0f;
-
-        float cooldownReduction = 1f - (agility * 0.02f); // 2% cooldown reduction per agility point
-        return weapon.AttackCooldown * Mathf.Max(0.1f, cooldownReduction); // Minimum 10% of original cooldown
-    }
 }
 
 

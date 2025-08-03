@@ -2,67 +2,80 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.AI;
 
 
 public class Enamy : MonoBehaviour, IDamable
 {
+
     [Header("Enemy Basic Info")]
     public string enemyName = "Enemy";
-    public Sprite enemyIcon,deadIcon;
-    [SerializeField] SpriteRenderer spriteRenderer;
+
+    [Header("Sprite Configuration - Auto-Generated")]
+    public Sprite enemyIcon;
+    public Sprite deadIcon;
+    public Sprite meleeAttackSprite;
+    public Sprite rangedAttackSprite;
+    [SerializeField] public SpriteRenderer spriteRenderer; // Made public for auto-setup
+
+    [Header("Attack Visual Settings - Auto-Generated")]
+    public Color meleeAttackColor = Color.red;
+    public Color rangedAttackColor = Color.blue;
+    public float attackSpriteScale = 1.5f;
+    public bool rotateAttackSprite = true;
+
     public int expGiven = 10;
 
-    [Header("Health System")]
+    [Header("Health System - Auto-Generated")]
     public float currentHealth = 100f;
     public float maxHealth = 100f;
     public float DamageReduction = 1f;
 
-    [Header("Combat Ranges")]
-    public float Rangeattack = 5f; // Range for ranged attack
-    public float MeleeAttackRange = 2f; // Range for melee attack
+    [Header("Combat Ranges - Auto-Generated")]
+    public float Rangeattack = 5f;
+    public float MeleeAttackRange = 2f;
 
-    [Header("Melee Attack Settings")]
+    [Header("Melee Attack Settings - Auto-Generated")]
     public float MeleeAttackDamage = 10f;
     public float MeleeAttackCooldown = 1f;
-    public float meleeAreaRadius = 1.5f; // Radius of damage area
-    public float meleeAreaDuration = 0.5f; // How long damage area stays active
-    public GameObject meleeAreaPrefab; // Optional visual prefab for damage area
+    public float meleeAreaRadius = 1.5f;
+    public float meleeAreaDuration = 0.5f;
+    public GameObject meleeAreaPrefab; // Auto-created from sprite
 
-    [Header("Ranged Attack Settings")]
+    [Header("Ranged Attack Settings - Auto-Generated")]
     public float RangeAttackDamage = 10f;
     public float RangeAttackCooldown = 1f;
-    public GameObject projectilePrefab; // Projectile prefab to shoot
-    public Transform firePoint; // Where projectiles spawn from
+    public GameObject projectilePrefab; // Auto-created from sprite
+    public Transform firePoint; // Auto-created
     public float projectileSpeed = 10f;
-    public float projectileLifetime;
+    public float projectileLifetime = 3f;
 
-    [Header("Attack Detection")]
-    public LayerMask playerLayer = 1; // What layer the player is on
+    [Header("Attack Detection - Auto-Generated")]
+    public LayerMask playerLayer = 1;
 
-    [Header("AI Navigation - Tilemap")]
+    [Header("AI Navigation - Auto-Generated")]
     public float moveSpeed = 3f;
     public float stoppingDistance = 1.5f;
     public float retreatDistance = 1f;
     public float pathUpdateRate = 0.2f;
-    public LayerMask obstacleLayer = -1; // What layers block movement
-    public float raycastDistance = 0.6f; // Distance to check for obstacles
+    public LayerMask obstacleLayer = -1;
+    public float raycastDistance = 0.6f;
 
-    [Header("AI Behavior")]
+    [Header("AI Behavior - Auto-Generated")]
     public bool preferRangedCombat = true;
     public float idealCombatDistance = 4f;
     public float chaseRange = 10f;
     public float loseTargetTime = 5f;
-    public float avoidanceForce = 5f; // How strong obstacle avoidance is
-    public int pathfindingSteps = 8; // Number of directions to try when pathfinding
+    public float avoidanceForce = 5f;
+    public int pathfindingSteps = 8;
 
     // Components
     private Rigidbody2D rb2d;
 
     // Private variables
-    private Transform player;
+    public Transform player;
+    public String TargetName = "Player";
     private float lastMeleeAttackTime;
     private float lastRangeAttackTime;
     private bool isAttacking = false;
@@ -79,8 +92,6 @@ public class Enamy : MonoBehaviour, IDamable
     // Combat preference calculation
     private float optimalCombatRange;
 
-
-
     // Events
     public event Action<float, float> OnHealthChanged;
     public event Action OnDeath;
@@ -89,27 +100,61 @@ public class Enamy : MonoBehaviour, IDamable
 
     private void Start()
     {
+        InitializeEnemy();
+    }
+
+    private void InitializeEnemy()
+    {
         // Initialize health
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
-        spriteRenderer.sprite = enemyIcon;
 
-        // Find player
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        // Set up sprite (should already be configured by spawner)
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+
+        // Find target
+        findtarget();
+
+        // Set up fire point (should be created by spawner)
+        if (firePoint == null)
+        {
+            // Create fire point if not assigned
+            GameObject firePointObj = new GameObject("FirePoint");
+            firePointObj.transform.SetParent(transform);
+            firePointObj.transform.localPosition = Vector3.right * 0.5f;
+            firePoint = firePointObj.transform;
+        }
+
+        // Set up physics
+        SetupRigidbody2D();
+
+        // Calculate combat preferences
+        CalculateOptimalCombatRange();
+
+        currentTarget = transform.position;
+
+        if (ShowDebugInfo())
+        {
+            Debug.Log($"Initialized auto-generated enemy: {enemyName}");
+        }
+        spriteRenderer.sprite = enemyIcon;
+    }
+
+    private bool ShowDebugInfo()
+    {
+        return AutoEnemySpawner.instance != null && AutoEnemySpawner.instance.ShowDebugInfo;
+    }
+
+    private void findtarget()
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag(TargetName);
         if (playerObj != null)
         {
             player = playerObj.transform;
         }
-
-        if (firePoint == null)
-        {
-            firePoint = transform;
-        }
-
-        SetupRigidbody2D();
-        CalculateOptimalCombatRange();
-
-        currentTarget = transform.position;
     }
 
     private void SetupRigidbody2D()
@@ -121,8 +166,8 @@ public class Enamy : MonoBehaviour, IDamable
         }
 
         rb2d.freezeRotation = true;
-        rb2d.gravityScale = 0f; // No gravity for top-down movement
-        rb2d.drag = 5f; // Add some drag for smoother movement
+        rb2d.gravityScale = 0f;
+        rb2d.drag = 5f;
     }
 
     private void CalculateOptimalCombatRange()
@@ -130,15 +175,13 @@ public class Enamy : MonoBehaviour, IDamable
         float meleeDPS = MeleeAttackDamage / MeleeAttackCooldown;
         float rangedDPS = RangeAttackDamage / RangeAttackCooldown;
 
-        if (meleeDPS > rangedDPS)
+        if (meleeDPS > rangedDPS && !preferRangedCombat)
         {
             optimalCombatRange = MeleeAttackRange * 0.8f;
-            preferRangedCombat = false;
         }
         else
         {
             optimalCombatRange = Rangeattack * 0.7f;
-            preferRangedCombat = true;
         }
 
         if (idealCombatDistance > 0)
@@ -146,7 +189,10 @@ public class Enamy : MonoBehaviour, IDamable
             optimalCombatRange = idealCombatDistance;
         }
 
-        Debug.Log($"{enemyName}: Melee DPS: {meleeDPS:F1}, Ranged DPS: {rangedDPS:F1}, Optimal Range: {optimalCombatRange:F1}");
+        if (ShowDebugInfo())
+        {
+            Debug.Log($"{enemyName}: Melee DPS: {meleeDPS:F1}, Ranged DPS: {rangedDPS:F1}, Optimal Range: {optimalCombatRange:F1}");
+        }
     }
 
     private void Update()
@@ -154,28 +200,30 @@ public class Enamy : MonoBehaviour, IDamable
         if (IsDead && !hasGivenExp)
         {
             Die();
-            return; // Exit early to prevent further updates
+            return;
+        }
+
+        if (player != null)
+        {
+            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+
+            if (distanceToPlayer <= chaseRange)
+            {
+                targetLostTimer = 0f;
+                UpdateAI(distanceToPlayer);
+            }
+            else
+            {
+                targetLostTimer += Time.deltaTime;
+                if (targetLostTimer >= loseTargetTime)
+                {
+                    StopMovement();
+                }
+            }
         }
         else
         {
-            if (player != null)
-            {
-                float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-
-                if (distanceToPlayer <= chaseRange)
-                {
-                    targetLostTimer = 0f;
-                    UpdateAI(distanceToPlayer);
-                }
-                else
-                {
-                    targetLostTimer += Time.deltaTime;
-                    if (targetLostTimer >= loseTargetTime)
-                    {
-                        StopMovement();
-                    }
-                }
-            }
+            findtarget();
         }
     }
 
@@ -205,7 +253,6 @@ public class Enamy : MonoBehaviour, IDamable
 
         Vector2 targetPosition = player.position;
 
-        // Determine desired positioning
         if (preferRangedCombat || !hasLineOfSight)
         {
             if (distanceToPlayer > optimalCombatRange + 1f)
@@ -241,7 +288,10 @@ public class Enamy : MonoBehaviour, IDamable
     private void StopMovement()
     {
         isMoving = false;
-        rb2d.velocity = Vector2.zero;
+        if (rb2d != null)
+        {
+            rb2d.velocity = Vector2.zero;
+        }
     }
 
     private void MoveTowardsTarget()
@@ -250,21 +300,16 @@ public class Enamy : MonoBehaviour, IDamable
         Vector2 directionToTarget = (currentTarget - currentPos).normalized;
         float distanceToTarget = Vector2.Distance(currentPos, currentTarget);
 
-        // Stop if close enough to target
         if (distanceToTarget <= stoppingDistance)
         {
             StopMovement();
             return;
         }
 
-        // Check for obstacles in the direct path
         Vector2 desiredVelocity = directionToTarget * moveSpeed;
         Vector2 avoidanceForceVec = CalculateAvoidanceForce(currentPos, directionToTarget);
 
-        // Combine desired movement with obstacle avoidance
         Vector2 finalDirection = (desiredVelocity + avoidanceForceVec).normalized;
-
-        // Apply movement
         rb2d.velocity = finalDirection * moveSpeed;
     }
 
@@ -272,7 +317,6 @@ public class Enamy : MonoBehaviour, IDamable
     {
         Vector2 avoidanceForceVec = Vector2.zero;
 
-        // Check multiple directions for obstacles
         for (int i = 0; i < pathfindingSteps; i++)
         {
             float angle = (360f / pathfindingSteps) * i;
@@ -282,7 +326,6 @@ public class Enamy : MonoBehaviour, IDamable
 
             if (hit.collider != null)
             {
-                // Calculate repulsion force away from obstacle
                 Vector2 awayFromObstacle = (currentPos - hit.point).normalized;
                 float distance = hit.distance;
                 float forceStrength = avoidanceForce * (raycastDistance - distance) / raycastDistance;
@@ -291,14 +334,11 @@ public class Enamy : MonoBehaviour, IDamable
             }
         }
 
-        // Also check the desired direction specifically
         RaycastHit2D directHit = Physics2D.Raycast(currentPos, desiredDirection, raycastDistance, obstacleLayer);
         if (directHit.collider != null)
         {
-            // Strong avoidance for direct obstacles
             Vector2 perpendicular = Vector2.Perpendicular(desiredDirection);
 
-            // Choose left or right based on which is more clear
             RaycastHit2D leftHit = Physics2D.Raycast(currentPos, perpendicular, raycastDistance, obstacleLayer);
             RaycastHit2D rightHit = Physics2D.Raycast(currentPos, -perpendicular, raycastDistance, obstacleLayer);
 
@@ -312,7 +352,6 @@ public class Enamy : MonoBehaviour, IDamable
             }
             else if (leftHit.collider == null && rightHit.collider == null)
             {
-                // Both sides clear, choose randomly or based on previous movement
                 avoidanceForceVec += perpendicular * avoidanceForce * (Mathf.Sin(Time.time) > 0 ? 1 : -1);
             }
         }
@@ -322,24 +361,26 @@ public class Enamy : MonoBehaviour, IDamable
 
     private bool CheckLineOfSight()
     {
-        if (player == null) return false;
+        if (player == null)
+        {
+            findtarget();
+            return false;
+        }
 
         Vector2 directionToPlayer = ((Vector2)player.position - (Vector2)transform.position).normalized;
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-        // Use a slightly smaller distance to avoid edge cases
         RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, distanceToPlayer - 0.1f, obstacleLayer);
-
-        bool hasLOS = hit.collider == null;
-
-        // Debug line of sight
-       // Debug.Log($"{enemyName} LOS check: {hasLOS}, Hit: {(hit.collider != null ? hit.collider.name : "none")}");
-
-        return hasLOS;
+        return hit.collider == null;
     }
 
     private Vector2 GetPositionTowardsPlayer(float desiredDistance)
     {
+        if (player == null)
+        {
+            findtarget();
+            return Vector2.zero;
+        }
         Vector2 directionToPlayer = ((Vector2)player.position - (Vector2)transform.position).normalized;
         return (Vector2)player.position - directionToPlayer * desiredDistance;
     }
@@ -352,6 +393,11 @@ public class Enamy : MonoBehaviour, IDamable
 
     private Vector2 GetStrafePosition()
     {
+        if (player == null)
+        {
+            findtarget();
+            return Vector2.zero;
+        }
         Vector2 directionToPlayer = ((Vector2)player.position - (Vector2)transform.position).normalized;
         Vector2 perpendicular = Vector2.Perpendicular(directionToPlayer);
 
@@ -361,15 +407,11 @@ public class Enamy : MonoBehaviour, IDamable
 
     private void UpdateCombat(float distanceToPlayer)
     {
-      //  Debug.Log($"{enemyName}: Distance={distanceToPlayer:F2}, Ranged={Rangeattack:F2}, Melee={MeleeAttackRange:F2}, LOS={hasLineOfSight}, PreferRanged={preferRangedCombat}");
-
-        // SIMPLE TEST VERSION - Just try ranged attack if in range
         if (distanceToPlayer <= Rangeattack && !IsDead)
         {
             TryRangedAttack();
         }
 
-        // Also try melee if very close
         if (distanceToPlayer <= MeleeAttackRange && !IsDead)
         {
             TryMeleeAttack();
@@ -387,11 +429,8 @@ public class Enamy : MonoBehaviour, IDamable
 
     private void TryRangedAttack()
     {
-      //  Debug.Log($"{enemyName} trying ranged attack - Cooldown ready: {Time.time >= lastRangeAttackTime + RangeAttackCooldown}");
-
         if (Time.time >= lastRangeAttackTime + RangeAttackCooldown && !IsDead)
         {
-           // Debug.Log($"{enemyName} FIRING ranged attack!");
             PerformRangedAttack();
             lastRangeAttackTime = Time.time;
         }
@@ -405,24 +444,42 @@ public class Enamy : MonoBehaviour, IDamable
         StopMovement();
 
         Vector3 attackPosition = transform.position;
-
         GameObject damageArea = null;
+
+        // Create or instantiate melee attack visual
         if (meleeAreaPrefab != null && !IsDead)
         {
             damageArea = Instantiate(meleeAreaPrefab, attackPosition, Quaternion.identity);
-            BasicProjectile projectile = damageArea.AddComponent<BasicProjectile>();
+            damageArea.SetActive(true);
+            yield return ChangeSprite(meleeAttackSprite, 0.2f);
+            // Rotate toward player if enabled
+            if (rotateAttackSprite && player != null)
+            {
+                Vector2 direction = (player.position - transform.position).normalized;
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                damageArea.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            }
+
+            // Set up projectile component for lifetime management
+            BasicProjectile projectile = damageArea.GetComponent<BasicProjectile>();
+            if (projectile == null)
+            {
+                projectile = damageArea.AddComponent<BasicProjectile>();
+            }
             projectile.Initialize(0, 0, meleeAreaDuration);
 
-
+            // Deal damage to nearby enemies
             Collider2D[] hitColliders = Physics2D.OverlapCircleAll(attackPosition, meleeAreaRadius, playerLayer);
             foreach (Collider2D hitCollider in hitColliders)
             {
-                damageArea.transform.position = hitCollider.GetComponent<Collider2D>().bounds.center;
                 IDamable damageTarget = hitCollider.GetComponent<IDamable>();
                 if (damageTarget != null)
                 {
                     damageTarget.TakeDamage(MeleeAttackDamage);
-                   // Debug.Log($"{enemyName} dealt {MeleeAttackDamage} melee damage to {hitCollider.name}");
+                    if (ShowDebugInfo())
+                    {
+                        Debug.Log($"{enemyName} dealt {MeleeAttackDamage} melee damage to {hitCollider.name}");
+                    }
                 }
             }
 
@@ -433,62 +490,60 @@ public class Enamy : MonoBehaviour, IDamable
                 Destroy(damageArea);
             }
         }
-        else
-        {
-            if (damageArea != null)
-            {
-                Destroy(damageArea);
-            }
-        }
+
         isAttacking = false;
     }
 
     private void PerformRangedAttack()
     {
         OnRangedAttack?.Invoke();
-
+        StartCoroutine(ChangeSprite(rangedAttackSprite, 0.2f));
         if (projectilePrefab != null && player != null && !IsDead)
         {
             Vector2 direction = ((Vector2)player.position - (Vector2)firePoint.position).normalized;
 
-            // Calculate 2D rotation angle
+            // Calculate rotation
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            Quaternion rotation = rotateAttackSprite ? Quaternion.AngleAxis(angle, Vector3.forward) : Quaternion.identity;
 
             // Spawn projectile
             GameObject projectile = Instantiate(projectilePrefab, firePoint.position, rotation);
+            projectile.SetActive(true);
 
-      
-                // Fallback to BasicProjectile
-                BasicProjectile basicProjectile = projectile.GetComponent<BasicProjectile>();
-                if (basicProjectile == null)
-                {
-                    basicProjectile = projectile.AddComponent<BasicProjectile>();
-                }
+            // Set up BasicProjectile component
+            BasicProjectile basicProjectile = projectile.GetComponent<BasicProjectile>();
+            if (basicProjectile == null)
+            {
+                basicProjectile = projectile.AddComponent<BasicProjectile>();
+            }
 
-                // Add Rigidbody2D if needed
-                Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-                if (rb == null)
-                {
-                    rb = projectile.AddComponent<Rigidbody2D>();
-                    rb.gravityScale = 0f;
-                    rb.freezeRotation = true;
-                }
+            // Add Rigidbody2D if needed
+            Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+            if (rb == null)
+            {
+                rb = projectile.AddComponent<Rigidbody2D>();
+                rb.gravityScale = 0f;
+                rb.freezeRotation = true;
+            }
 
-                rb.velocity = direction * projectileSpeed;
-                basicProjectile.Initialize(RangeAttackDamage, playerLayer, projectileLifetime);
+            rb.velocity = direction * projectileSpeed;
+            basicProjectile.Initialize(RangeAttackDamage, playerLayer, projectileLifetime);
 
-              //  Debug.Log($"{enemyName} fired BasicProjectile at {player.name} (LOS: {hasLineOfSight})");
-        }
-        else
-        {
-            if (projectilePrefab == null)
-               // Debug.LogWarning($"{enemyName} projectilePrefab is null!");
-            if (player == null)
-                Debug.LogWarning($"{enemyName} player reference is null!");
+            if (ShowDebugInfo())
+            {
+                Debug.Log($"{enemyName} fired projectile at {player.name}");
+            }
         }
     }
-
+    private IEnumerator ChangeSprite(Sprite newSprite, float duration)
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sprite = newSprite;
+            yield return new WaitForSeconds(duration);
+            spriteRenderer.sprite = enemyIcon; // Reset to original icon
+        }
+    }
     // Health and damage system
     public float Health
     {
@@ -507,7 +562,10 @@ public class Enamy : MonoBehaviour, IDamable
         currentHealth = currentHealth - actualDamage;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
-        Debug.Log($"{enemyName} took {actualDamage:F1} damage (reduced from {damage:F1}). Health: {currentHealth:F1}/{maxHealth:F1}");
+        if (ShowDebugInfo())
+        {
+            Debug.Log($"{enemyName} took {actualDamage:F1} damage (reduced from {damage:F1}). Health: {currentHealth:F1}/{maxHealth:F1}");
+        }
 
         if (IsDead)
         {
@@ -515,29 +573,39 @@ public class Enamy : MonoBehaviour, IDamable
         }
         StartCoroutine(takeDamge());
     }
+
     private IEnumerator takeDamge()
     {
         takeDamage = true;
-        spriteRenderer.color = Color.red;
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = Color.red;
+        }
         yield return new WaitForSeconds(0.4f);
-        spriteRenderer.color = Color.white;
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = Color.white;
+        }
         takeDamage = false;
     }
+
     public bool IsDead => currentHealth <= 0;
+
     private void Die()
     {
-        if (deadIcon != null)
+        if (deadIcon != null && spriteRenderer != null)
         {
             spriteRenderer.sprite = deadIcon;
         }
-     
 
-        // Only give exp once
         if (PlayerStats.instance != null && !hasGivenExp)
         {
             hasGivenExp = true;
             PlayerStats.instance.GainExp(expGiven);
-            Debug.Log($"{enemyName} gave {expGiven} exp to player");
+            if (ShowDebugInfo())
+            {
+                Debug.Log($"{enemyName} gave {expGiven} exp to player");
+            }
         }
 
         OnDeath?.Invoke();
@@ -591,5 +659,4 @@ public class Enamy : MonoBehaviour, IDamable
         }
     }
 
-  
 }
