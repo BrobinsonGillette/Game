@@ -57,9 +57,6 @@ public class HexTile : MonoBehaviour
 
         isHovered = true;
         UpdateVisual();
-
-        // Optional: Show tile info
-       // Debug.Log($"Hex Tile: {coordinates} - Cost: {movementCost}");
     }
 
     public void MouseExit()
@@ -84,23 +81,7 @@ public class HexTile : MonoBehaviour
         {
             // Show neighbors or perform other selection logic
             var neighbors = gridManager.GetNeighbors(coordinates);
-            //Debug.Log($"Selected hex {coordinates} has {neighbors.Count} neighbors");
         }
     }
-    // Pathfinding helper methods
-    public void SetWalkable(bool walkable)
-    {
-        isWalkable = walkable;
-        UpdateVisual();
-    }
-
-    public void SetMovementCost(int cost)
-    {
-        movementCost = Mathf.Max(1, cost);
-    }
-    public float GetDistanceTo(HexTile other)
-    {
-        if (other == null) return float.MaxValue;
-        return gridManager.GetDistance(coordinates, other.coordinates);
-    }
+ 
 }

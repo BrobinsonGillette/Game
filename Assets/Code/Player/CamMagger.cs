@@ -12,12 +12,14 @@ public class CamMagger : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float followSpeed = 8f;
     [SerializeField] private float freeMovementSpeed = 15f;
+    [Range(0f, 1f)]
     [SerializeField] private float movementDamping = 0.9f;
 
     [Header("Zoom Settings")]
     [SerializeField] private float zoomSpeed = 8f;
     [SerializeField] private float minZoom = 0.98f;
     [SerializeField] private float maxZoom = 7f;
+    [Range(0f, 1f)]
     [SerializeField] private float zoomDamping = 0.85f;
 
     public Vector3 WorldMousePosition => mainCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -105,12 +107,15 @@ public class CamMagger : MonoBehaviour
 
         if (target == null)
         {
-            // Free camera movement - more responsive
+            // Free camera movement - scale speed by zoom level for consistent feel
             Vector2 input = InputManager.instance.MovementInput;
 
+            // Scale movement speed by current orthographic size to maintain consistent feel
+            float zoomScaledSpeed = freeMovementSpeed * mainCamera.orthographicSize;
+
             // Add to velocity instead of direct position change
-            velocity.x += input.x * freeMovementSpeed * Time.deltaTime;
-            velocity.y += input.y * freeMovementSpeed * Time.deltaTime;
+            velocity.x += input.x * zoomScaledSpeed * Time.deltaTime;
+            velocity.y += input.y * zoomScaledSpeed * Time.deltaTime;
 
             // Apply damping
             velocity *= movementDamping;

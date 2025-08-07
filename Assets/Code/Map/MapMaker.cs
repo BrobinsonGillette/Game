@@ -8,18 +8,16 @@ public class MapMaker : MonoBehaviour
     [SerializeField] private int gridWidth = 10;
     [SerializeField] private int gridHeight = 10;
     [SerializeField] private float hexSize = 1f;
-    [SerializeField] private bool centerGrid = true;
+
 
     [Header("Prefabs")]
     [SerializeField] private GameObject hexTilePrefab;
 
 
     [Header("Performance")]
-    [SerializeField] private bool useObjectPooling = false;
     [SerializeField] private Transform tilesParent;
 
     [Header("Generation Constraints")]
-    [SerializeField] private bool useWorldBounds = true;
     [SerializeField] private float worldBoundSize = 52f;
 
     // Cache frequently used values
@@ -89,7 +87,7 @@ public class MapMaker : MonoBehaviour
         }
 
         // Calculate grid center once
-        gridCenter = centerGrid ? CalculateGridCenter() : Vector3.zero;
+        gridCenter = CalculateGridCenter();
 
         // Pre-allocate collections
         int estimatedTileCount = gridWidth * gridHeight;
@@ -140,8 +138,6 @@ public class MapMaker : MonoBehaviour
     /// </summary>
     private bool ShouldCreateTileAt(Vector2Int hexCoord)
     {
-        if (!useWorldBounds) return true;
-
         Vector3 worldPos = HexToWorldPosition(hexCoord) - gridCenter;
         return Mathf.Abs(worldPos.x) <= worldBoundSize &&
                Mathf.Abs(worldPos.y) <= worldBoundSize;
@@ -253,24 +249,6 @@ public class MapMaker : MonoBehaviour
         return neighbors;
     }
 
-    /// <summary>
-    /// Get all neighboring tiles of a hex
-    /// </summary>
-    public List<HexTile> GetNeighborTiles(Vector2Int hexCoord)
-    {
-        List<HexTile> neighborTiles = new List<HexTile>(6);
-
-        foreach (Vector2Int neighborCoord in GetNeighbors(hexCoord))
-        {
-            HexTile tile = GetHexTile(neighborCoord);
-            if (tile != null)
-            {
-                neighborTiles.Add(tile);
-            }
-        }
-
-        return neighborTiles;
-    }
 
     /// <summary>
     /// Check if hex coordinate is within grid bounds
@@ -281,13 +259,6 @@ public class MapMaker : MonoBehaviour
                hexCoord.y >= 0 && hexCoord.y < gridHeight;
     }
 
-    /// <summary>
-    /// Check if a tile exists at the given coordinate
-    /// </summary>
-    public bool HasTileAt(Vector2Int hexCoord)
-    {
-        return hexTiles.ContainsKey(hexCoord);
-    }
 
     /// <summary>
     /// Get hex tile at specified coordinates
@@ -325,16 +296,6 @@ public class MapMaker : MonoBehaviour
     }
 
     /// <summary>
-    /// Calculate distance between two hex coordinates
-    /// </summary>
-    public int GetDistance(Vector2Int hexA, Vector2Int hexB)
-    {
-        return (Mathf.Abs(hexA.x - hexB.x) +
-                Mathf.Abs(hexA.x + hexA.y - hexB.x - hexB.y) +
-                Mathf.Abs(hexA.y - hexB.y)) / 2;
-    }
-
-    /// <summary>
     /// Get a line of coordinates between two hex positions
     /// </summary>
     public List<Vector2Int> GetLine(Vector2Int hexA, Vector2Int hexB)
@@ -353,7 +314,15 @@ public class MapMaker : MonoBehaviour
 
         return results;
     }
-
+    /// <summary>
+    /// Calculate distance between two hex coordinates
+    /// </summary>
+    public int GetDistance(Vector2Int hexA, Vector2Int hexB)
+    {
+        return (Mathf.Abs(hexA.x - hexB.x) +
+                Mathf.Abs(hexA.x + hexA.y - hexB.x - hexB.y) +
+                Mathf.Abs(hexA.y - hexB.y)) / 2;
+    }
     /// <summary>
     /// Convert axial coordinates to cube coordinates
     /// </summary>
