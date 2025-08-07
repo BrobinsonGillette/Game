@@ -8,9 +8,10 @@ public class CamMagger : MonoBehaviour
     public static CamMagger instance { get; private set; }
     public Camera mainCamera { get; private set; }
     [Header("Camera Settings")]
-    [SerializeField] private Transform target; // Player transform
     [SerializeField] private float smoothSpeed = 0.125f;
-    private Vector3 offset = new Vector3(0, 0, -10);
+    public Vector3 WorldMousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    private Transform target; // Player transform
+    Vector3 offset = new Vector3(0, 0, -10);
     Vector3 smoothedPosition = Vector3.zero;
     private void Awake()
     {
