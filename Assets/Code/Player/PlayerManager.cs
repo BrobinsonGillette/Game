@@ -23,22 +23,12 @@ public class PlayerManager : MonoBehaviour
             return;
         }
 
-        if (playerCharacter == null)
-        {
-            playerCharacter = FindObjectOfType<ChartorMove>();
-        }
 
-        if (playerCharacter == null)
-        {
-            Debug.LogError("PlayerManager: ChartorMove component not found!");
-            return;
-        }
 
         // Subscribe to player movement events
         playerCharacter.OnMoveStarted += OnPlayerMoveStarted;
         playerCharacter.OnMoveCompleted += OnPlayerMoveCompleted;
-        playerCharacter.OnMovementModeActivated += OnMovementModeActivated;
-        playerCharacter.OnMovementModeDeactivated += OnMovementModeDeactivated;
+
 
         // Wait a frame to ensure map is generated, then set initial position
         StartCoroutine(SetInitialPlayerPosition());
@@ -51,8 +41,6 @@ public class PlayerManager : MonoBehaviour
         {
             playerCharacter.OnMoveStarted -= OnPlayerMoveStarted;
             playerCharacter.OnMoveCompleted -= OnPlayerMoveCompleted;
-            playerCharacter.OnMovementModeActivated -= OnMovementModeActivated;
-            playerCharacter.OnMovementModeDeactivated -= OnMovementModeDeactivated;
         }
     }
 
@@ -145,35 +133,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Called when movement mode is activated
-    /// </summary>
-    private void OnMovementModeActivated()
-    {
-        Debug.Log("PlayerManager: Movement mode activated");
-    }
+   
 
-    /// <summary>
-    /// Called when movement mode is deactivated
-    /// </summary>
-    private void OnMovementModeDeactivated()
-    {
-        Debug.Log("PlayerManager: Movement mode deactivated");
-    }
-
-    /// <summary>
-    /// Get the current tile the player is on
-    /// </summary>
-    public HexTile GetCurrentPlayerTile()
-    {
-        return currentPlayerTile;
-    }
-
-    /// <summary>
-    /// Get the player's current hex position
-    /// </summary>
-    public Vector2Int GetPlayerHexPosition()
-    {
-        return playerCharacter != null ? playerCharacter.GetCurrentHexPosition() : Vector2Int.zero;
-    }
+  
 }

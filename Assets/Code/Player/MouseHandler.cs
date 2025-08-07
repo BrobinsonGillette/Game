@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class HexMouseHandler : MonoBehaviour
+public class MouseHandler : MonoBehaviour
 {
     private MapMaker mapMaker;
     private HexTile currentHoveredTile = null;
