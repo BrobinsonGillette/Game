@@ -184,7 +184,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: -3.28
+  orthographic size: 0.98
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -227,8 +227,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37c859c6b3176c4449250a862119bae5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  smoothSpeed: 3
+  smoothSpeed: 18
+  zoomSpeed: 3
+  minZoom: 0.98
+  maxZoom: 7
 --- !u!1 &1845803232
 GameObject:
   m_ObjectHideFlags: 0
@@ -239,6 +241,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1845803234}
   - component: {fileID: 1845803233}
+  - component: {fileID: 1845803235}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -258,8 +261,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fd83599d6a81d741adc5a3ed2380b83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridWidth: 50
-  gridHeight: 50
+  gridWidth: 150
+  gridHeight: 150
   hexSize: 1
   hexTilePrefab: {fileID: 1116374855099247377, guid: 7d3c4b5a61bac6d4c804b8e796833576, type: 3}
   showCoordinates: 1
@@ -279,6 +282,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1845803235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1845803232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8391afd94541c7c4ca00c3986cb2bac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1954903869
 GameObject:
   m_ObjectHideFlags: 0
@@ -572,7 +587,7 @@ SpriteRenderer:
   m_SortingLayerID: -1000982105
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 316121788, guid: 583dbebd11ba65e469ec015f77a50ae9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -38,12 +38,15 @@ public class MapMaker : MonoBehaviour
 
     void GenerateGrid()
     {
+        // Calculate offset to center the grid
+        Vector3 gridCenter = CalculateGridCenter();
+
         for (int q = 0; q < gridWidth; q++)
         {
             for (int r = 0; r < gridHeight; r++)
             {
                 Vector2Int hexCoord = new Vector2Int(q, r);
-                Vector3 worldPos = HexToWorldPosition(hexCoord);
+                Vector3 worldPos = HexToWorldPosition(hexCoord) - gridCenter;
 
                 GameObject hexObj = Instantiate(hexTilePrefab, worldPos, Quaternion.identity, transform);
                 HexTile hexTile = hexObj.GetComponent<HexTile>();
@@ -58,6 +61,13 @@ public class MapMaker : MonoBehaviour
         }
     }
 
+    Vector3 CalculateGridCenter()
+    {
+        // Calculate the center point of the entire grid
+        Vector2Int centerCoord = new Vector2Int(gridWidth / 2, gridHeight / 2);
+        return HexToWorldPosition(centerCoord);
+    }
+
     public Vector3 HexToWorldPosition(Vector2Int hexCoord)
     {
         float x = hexSize * (sqrt3 * hexCoord.x + sqrt3 / 2f * hexCoord.y);
@@ -68,8 +78,12 @@ public class MapMaker : MonoBehaviour
 
     public Vector2Int WorldToHexPosition(Vector3 worldPos)
     {
-        float q = (sqrt3 / 3f * worldPos.x - 1f / 3f * worldPos.y) / hexSize;
-        float r = (2f / 3f * worldPos.y) / hexSize;
+        // Add the grid center offset back when converting from world to hex
+        Vector3 gridCenter = CalculateGridCenter();
+        Vector3 adjustedWorldPos = worldPos + gridCenter;
+
+        float q = (sqrt3 / 3f * adjustedWorldPos.x - 1f / 3f * adjustedWorldPos.y) / hexSize;
+        float r = (2f / 3f * adjustedWorldPos.y) / hexSize;
 
         return CubeToAxial(CubeRound(new Vector3(q, -q - r, r)));
     }
@@ -144,13 +158,14 @@ public class MapMaker : MonoBehaviour
         if (!showGridLines) return;
 
         CalculateHexDimensions();
+        Vector3 gridCenter = CalculateGridCenter();
 
         Gizmos.color = Color.white;
         for (int q = 0; q < gridWidth; q++)
         {
             for (int r = 0; r < gridHeight; r++)
             {
-                Vector3 center = HexToWorldPosition(new Vector2Int(q, r));
+                Vector3 center = HexToWorldPosition(new Vector2Int(q, r)) - gridCenter;
                 DrawHexagonGizmo(center);
             }
         }
@@ -175,5 +190,4 @@ public class MapMaker : MonoBehaviour
             Gizmos.DrawLine(corners[i], corners[(i + 1) % 6]);
         }
     }
-
 }

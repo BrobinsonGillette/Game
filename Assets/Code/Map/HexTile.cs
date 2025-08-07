@@ -59,7 +59,7 @@ public class HexTile : MonoBehaviour
         UpdateVisual();
 
         // Optional: Show tile info
-        Debug.Log($"Hex Tile: {coordinates} - Cost: {movementCost}");
+       // Debug.Log($"Hex Tile: {coordinates} - Cost: {movementCost}");
     }
 
     public void MouseExit()
