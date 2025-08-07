@@ -235,6 +235,168 @@ MonoBehaviour:
   maxZoom: 7
   zoomDamping: 0.85
   maxCamBounds: {x: 53, y: 53}
+--- !u!1 &888355587
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 888355593}
+  - component: {fileID: 888355589}
+  - component: {fileID: 888355588}
+  - component: {fileID: 888355594}
+  m_Layer: 6
+  m_Name: PlayerInput
+  m_TagString: Player
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &888355588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 888355587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b5ee4169ef06624a8d702b30e67938f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Movement:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Movement
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 3c6622d8-63a7-435d-abb3-c32996d04465
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 8826367256279768987, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  Zoom:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Zoom
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 48d76535-81f0-4e66-94e3-8e90bff0c143
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 5935431311767401091, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  Pause:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Pause
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 79101571-4f5d-42ea-9161-52459c3fd986
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: -8332689185128867187, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  Interact:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Interact
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: e5691c8c-1043-4b3e-bfc6-3639cc815137
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 7736209768034127304, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  Select:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Select
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: ab3626df-5090-4d66-8f00-f7f8bf7fa608
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: -5978756817193942494, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  Inventory:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Inventory
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: f3e66bf3-1751-4a6a-aae4-8ce3fef79235
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: -3679570933039243683, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+--- !u!114 &888355589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 888355587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: Keyboard&Mouse
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
+--- !u!4 &888355593
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 888355587}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &888355594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 888355587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d1db33cc4078e146a84cd0e74783066, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCharacter: {fileID: 0}
+  startingHexPosition: {x: 0, y: 0}
 --- !u!1 &1845803232
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,7 +409,7 @@ GameObject:
   - component: {fileID: 1845803233}
   - component: {fileID: 1845803235}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -310,8 +472,6 @@ GameObject:
   - component: {fileID: 1954903871}
   - component: {fileID: 1954903872}
   - component: {fileID: 1954903873}
-  - component: {fileID: 1954903874}
-  - component: {fileID: 1954903875}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -419,120 +579,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f150da32b6180754d9b4c41036717301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1954903874
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1954903869}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: Keyboard&Mouse
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
---- !u!114 &1954903875
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1954903869}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b5ee4169ef06624a8d702b30e67938f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Movement:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Movement
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 3c6622d8-63a7-435d-abb3-c32996d04465
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 8826367256279768987, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-  Zoom:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Zoom
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 48d76535-81f0-4e66-94e3-8e90bff0c143
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 5935431311767401091, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-  Pause:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Pause
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 79101571-4f5d-42ea-9161-52459c3fd986
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: -8332689185128867187, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-  Interact:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Interact
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: e5691c8c-1043-4b3e-bfc6-3639cc815137
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 7736209768034127304, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-  Select:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Select
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: ab3626df-5090-4d66-8f00-f7f8bf7fa608
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: -5978756817193942494, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-  Inventory:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Inventory
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: f3e66bf3-1751-4a6a-aae4-8ce3fef79235
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: -3679570933039243683, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  moveSpeed: 2
+  moveCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  currentHexPosition: {x: 0, y: 0}
 --- !u!1 &2108734101
 GameObject:
   m_ObjectHideFlags: 0
@@ -623,4 +695,5 @@ SceneRoots:
   m_Roots:
   - {fileID: 349593937}
   - {fileID: 1954903870}
+  - {fileID: 888355593}
   - {fileID: 1845803234}

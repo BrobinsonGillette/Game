@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MapMaker : MonoBehaviour
 {
+    public static MapMaker instance { get; private set; }
     [Header("Grid Settings")]
     [SerializeField] private int gridWidth = 10;
     [SerializeField] private int gridHeight = 10;
@@ -50,6 +51,18 @@ public class MapMaker : MonoBehaviour
     public float HexSize => hexSize;
     public int TileCount => allTiles.Count;
     public Vector3 GridCenter => gridCenter;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -267,71 +280,6 @@ public class MapMaker : MonoBehaviour
     {
         hexTiles.TryGetValue(hexCoord, out HexTile tile);
         return tile;
-    }
-
-    /// <summary>
-    /// Get all tiles within a certain distance from a center coordinate
-    /// </summary>
-    public List<HexTile> GetTilesInRange(Vector2Int centerCoord, int range)
-    {
-        List<HexTile> tilesInRange = new List<HexTile>();
-
-        for (int q = -range; q <= range; q++)
-        {
-            int r1 = Mathf.Max(-range, -q - range);
-            int r2 = Mathf.Min(range, -q + range);
-
-            for (int r = r1; r <= r2; r++)
-            {
-                Vector2Int coord = centerCoord + new Vector2Int(q, r);
-                HexTile tile = GetHexTile(coord);
-                if (tile != null)
-                {
-                    tilesInRange.Add(tile);
-                }
-            }
-        }
-
-        return tilesInRange;
-    }
-
-    /// <summary>
-    /// Get a line of coordinates between two hex positions
-    /// </summary>
-    public List<Vector2Int> GetLine(Vector2Int hexA, Vector2Int hexB)
-    {
-        int distance = GetDistance(hexA, hexB);
-        List<Vector2Int> results = new List<Vector2Int>(distance + 1);
-
-        for (int i = 0; i <= distance; i++)
-        {
-            float t = distance == 0 ? 0f : (float)i / distance;
-            Vector3 cubeA = AxialToCube(hexA);
-            Vector3 cubeB = AxialToCube(hexB);
-            Vector3 lerpedCube = Vector3.Lerp(cubeA, cubeB, t);
-            results.Add(CubeToAxial(CubeRound(lerpedCube)));
-        }
-
-        return results;
-    }
-    /// <summary>
-    /// Calculate distance between two hex coordinates
-    /// </summary>
-    public int GetDistance(Vector2Int hexA, Vector2Int hexB)
-    {
-        return (Mathf.Abs(hexA.x - hexB.x) +
-                Mathf.Abs(hexA.x + hexA.y - hexB.x - hexB.y) +
-                Mathf.Abs(hexA.y - hexB.y)) / 2;
-    }
-    /// <summary>
-    /// Convert axial coordinates to cube coordinates
-    /// </summary>
-    private Vector3 AxialToCube(Vector2Int axial)
-    {
-        float x = axial.x;
-        float z = axial.y;
-        float y = -x - z;
-        return new Vector3(x, y, z);
     }
 
     /// <summary>

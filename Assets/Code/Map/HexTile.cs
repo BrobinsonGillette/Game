@@ -13,16 +13,22 @@ public class HexTile : MonoBehaviour
     [Header("Visual")]
     public SpriteRenderer spriteRenderer;
 
-
     [Header("Colors")]
     public Color normalColor = Color.white;
     public Color hoverColor = Color.yellow;
     public Color selectedColor = Color.green;
-    public Color blockedColor = Color.red;
+    public Color blockedColor = Color.black;
+    public Color playerPositionColor = Color.blue;
+    public Color movementTargetColor = Color.cyan;
 
     private MapMaker gridManager;
-    private bool isSelected = false;
+    public bool isSelected = false;
     private bool isHovered = false;
+    private bool hasPlayer = false;
+    private bool isMovementTarget = false;
+
+    // Reference to the player
+    private static ChartorMove playerCharacter;
 
     public void Initialize(Vector2Int coords, MapMaker manager)
     {
@@ -31,6 +37,12 @@ public class HexTile : MonoBehaviour
 
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Find the player if we haven't already
+        if (playerCharacter == null)
+        {
+            playerCharacter = FindObjectOfType<ChartorMove>();
+        }
 
         UpdateVisual();
     }
@@ -43,6 +55,10 @@ public class HexTile : MonoBehaviour
 
         if (!isWalkable)
             targetColor = blockedColor;
+        else if (hasPlayer)
+            targetColor = playerPositionColor;
+        else if (isMovementTarget)
+            targetColor = movementTargetColor;
         else if (isSelected)
             targetColor = selectedColor;
         else if (isHovered)
@@ -69,7 +85,65 @@ public class HexTile : MonoBehaviour
     {
         if (!isWalkable) return;
 
-        ToggleSelection();
+        // If the player is on this tile, activate movement mode
+        if (hasPlayer && playerCharacter != null)
+        {
+            ActivateCharacterMovement();
+        }
+        // If this tile is a movement target, try to move the player here
+        else if (isMovementTarget && playerCharacter != null)
+        {
+            TryMovePlayerHere();
+        }
+        else
+        {
+            // Regular tile selection for other tiles
+            ToggleSelection();
+        }
+    }
+
+    /// <summary>
+    /// Activate the character's movement mode when clicking on their current tile
+    /// </summary>
+    private void ActivateCharacterMovement()
+    {
+        if (playerCharacter == null)
+        {
+            Debug.LogWarning("HexTile: No player character found!");
+            return;
+        }
+
+        if (playerCharacter.IsMoving())
+        {
+            Debug.Log("HexTile: Player is already moving, ignoring click");
+            return;
+        }
+
+        // Activate movement mode
+        playerCharacter.ActivateMovementMode();
+    }
+
+    /// <summary>
+    /// Try to move the player to this tile (only works if this is a movement target)
+    /// </summary>
+    private void TryMovePlayerHere()
+    {
+        if (playerCharacter == null || !isMovementTarget)
+        {
+            return;
+        }
+
+        // Attempt to move the player here
+        playerCharacter.TryMoveToTile(coordinates);
+    }
+
+    /// <summary>
+    /// Set this tile as a movement target
+    /// </summary>
+    public void SetAsMovementTarget(bool isTarget)
+    {
+        isMovementTarget = isTarget;
+        UpdateVisual();
     }
 
     public void ToggleSelection()
@@ -83,5 +157,27 @@ public class HexTile : MonoBehaviour
             var neighbors = gridManager.GetNeighbors(coordinates);
         }
     }
- 
+
+    public void DeSelect()
+    {
+        isSelected = false;
+        UpdateVisual();
+    }
+
+    /// <summary>
+    /// Set whether the player is currently on this tile
+    /// </summary>
+    public void SetPlayerPresence(bool hasPlayerOnTile)
+    {
+        hasPlayer = hasPlayerOnTile;
+        UpdateVisual();
+    }
+
+    /// <summary>
+    /// Check if the player is currently on this tile
+    /// </summary>
+    public bool HasPlayer()
+    {
+        return hasPlayer;
+    }
 }
