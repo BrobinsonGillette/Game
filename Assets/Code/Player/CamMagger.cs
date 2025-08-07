@@ -55,7 +55,13 @@ public class CamMagger : MonoBehaviour
         }
    
     }
-
+    public void SetCamBounds(Vector2 min, Vector2 max)
+    {
+        Vector3 clampedPosition = transform.position;
+        clampedPosition.x = Mathf.Clamp(clampedPosition.x, min.x, max.x);
+        clampedPosition.y = Mathf.Clamp(clampedPosition.y, min.y, max.y);
+        transform.position = clampedPosition;
+    }
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
