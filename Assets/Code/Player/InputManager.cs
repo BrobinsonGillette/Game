@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 [System.Serializable]
 public class InputManager : MonoBehaviour
 {
-
+    public static InputManager instance { get; private set; }
     [Header("~~InputManager Hand~~")]
     public InputActionProperty Movement;
     public InputActionProperty Pause;
@@ -16,7 +16,17 @@ public class InputManager : MonoBehaviour
 
 
 
-
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
 
     public void StartUp()
