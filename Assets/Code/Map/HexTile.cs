@@ -28,7 +28,7 @@ public class HexTile : MonoBehaviour
     private bool isMovementTarget = false;
 
     // Reference to the player
-    private static ChartorMove playerCharacter;
+   public ChartorMove playerCharacter;
 
     public void Initialize(Vector2Int coords, MapMaker manager)
     {
@@ -37,12 +37,6 @@ public class HexTile : MonoBehaviour
 
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
-
-        // Find the player if we haven't already
-        if (playerCharacter == null)
-        {
-            playerCharacter = FindObjectOfType<ChartorMove>();
-        }
 
         UpdateVisual();
     }
@@ -109,13 +103,11 @@ public class HexTile : MonoBehaviour
     {
         if (playerCharacter == null)
         {
-            Debug.LogWarning("HexTile: No player character found!");
             return;
         }
 
         if (playerCharacter.IsMoving())
         {
-            Debug.Log("HexTile: Player is already moving, ignoring click");
             return;
         }
 

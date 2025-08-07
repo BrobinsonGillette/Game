@@ -25,6 +25,11 @@ public class PlayerManager : MonoBehaviour
 
 
 
+
+    }
+    public void SetPlayerCharacter(ChartorMove playerChar)
+    {
+        playerCharacter = playerChar;
         // Subscribe to player movement events
         playerCharacter.OnMoveStarted += OnPlayerMoveStarted;
         playerCharacter.OnMoveCompleted += OnPlayerMoveCompleted;
@@ -33,8 +38,7 @@ public class PlayerManager : MonoBehaviour
         // Wait a frame to ensure map is generated, then set initial position
         StartCoroutine(SetInitialPlayerPosition());
     }
-
-    void OnDestroy()
+    public void DeselectPlayerCharacter()
     {
         // Unsubscribe from events
         if (playerCharacter != null)
@@ -42,6 +46,7 @@ public class PlayerManager : MonoBehaviour
             playerCharacter.OnMoveStarted -= OnPlayerMoveStarted;
             playerCharacter.OnMoveCompleted -= OnPlayerMoveCompleted;
         }
+        playerCharacter= null;
     }
 
     /// <summary>
