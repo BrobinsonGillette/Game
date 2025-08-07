@@ -61,18 +61,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ZoomIn",
+                    "name": "Zoom",
                     "type": "Value",
                     "id": "5d557ae0-9afc-415c-9da8-5749f815caf7",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "ZoomOut",
-                    "type": "Value",
-                    "id": "a14d312d-7340-4c07-b3d1-ecd90d86c907",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -213,48 +204,37 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "59186ead-ea50-4f0f-ba88-fec942594b80",
-                    "path": "<Mouse>/scroll/up",
+                    "name": "1D Axis",
+                    "id": "5071a621-9939-4184-8f57-3042053f6162",
+                    "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ZoomIn",
-                    "isComposite": false,
+                    "action": "Zoom",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "dbef5b36-8120-46d8-847a-8a990f0c3ac5",
-                    "path": "<Keyboard>/z",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ZoomIn",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "fa3f9136-a5c3-4a7c-908c-8d738d667709",
+                    "name": "negative",
+                    "id": "357d548a-a694-4851-b92c-e92ce2925437",
                     "path": "<Mouse>/scroll/down",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ZoomOut",
+                    "action": "Zoom",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "e9c7b262-3fc5-44a8-822b-0a4d27684477",
-                    "path": "<Keyboard>/x",
+                    "name": "positive",
+                    "id": "f38f58f7-8717-4c1f-84f0-b9c982903b3d",
+                    "path": "<Mouse>/scroll/up",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ZoomOut",
+                    "action": "Zoom",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 }
             ]
         }

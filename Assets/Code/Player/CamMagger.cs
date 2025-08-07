@@ -6,11 +6,12 @@ using UnityEngine;
 public class CamMagger : MonoBehaviour
 {
     public static CamMagger instance { get; private set; }
+    public Camera mainCamera { get; private set; }
     [Header("Camera Settings")]
     [SerializeField] private Transform target; // Player transform
     [SerializeField] private float smoothSpeed = 0.125f;
-    [SerializeField] private Vector3 offset = new Vector3(0, 0, -10);
-
+    private Vector3 offset = new Vector3(0, 0, -10);
+    Vector3 smoothedPosition = Vector3.zero;
     private void Awake()
     {
         if (instance == null)
@@ -25,14 +26,22 @@ public class CamMagger : MonoBehaviour
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
+        mainCamera = Camera.main;
     }
     private void Update()
     {
-        Vector3 smoothedPosition = Vector3.zero;
+        float zoomInput = InputManager.instance.ZoomInput;
+        if (zoomInput != 0)
+        {
+            mainCamera.orthographicSize =Mathf.Lerp(mainCamera.orthographicSize, mainCamera.orthographicSize + zoomInput,Time.deltaTime); 
+        }
+        mainCamera.orthographicSize = Mathf.Clamp(mainCamera.orthographicSize, -3.28f, - 0.12f); 
+
+
 
         if (target == null)
         {
-            Vector2 input = InputManager.instance.Movement.action.ReadValue<Vector2>();
+            Vector2 input = InputManager.instance.MovementInput;
             smoothedPosition = Vector3.Lerp(transform.position, new Vector3(transform.position .x- input.x, transform.position.y - input.y, offset.z), smoothSpeed * Time.deltaTime);
             transform.position = smoothedPosition;
             return;
