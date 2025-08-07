@@ -1,10 +1,11 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
 public class PlayerCam : MonoBehaviour
 {
+    public static PlayerCam instance { get; private set; }
     [Header("Camera Settings")]
     [SerializeField] private Transform target; // Player transform
     [SerializeField] private float smoothSpeed = 0.125f;
@@ -15,6 +16,17 @@ public class PlayerCam : MonoBehaviour
     [SerializeField] private bool useBoundaries = false;
     [SerializeField] private Vector2 minBounds;
     [SerializeField] private Vector2 maxBounds;
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     private void Start()
     {
         DontDestroyOnLoad(gameObject);

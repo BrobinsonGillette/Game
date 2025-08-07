@@ -234,186 +234,6 @@ MonoBehaviour:
   useBoundaries: 0
   minBounds: {x: 0, y: 0}
   maxBounds: {x: 0, y: 0}
---- !u!1 &562969126
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 562969127}
-  - component: {fileID: 562969129}
-  - component: {fileID: 562969130}
-  m_Layer: 5
-  m_Name: EventSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &562969127
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 562969126}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2100236608}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &562969129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 562969126}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
-  m_DragThreshold: 10
---- !u!114 &562969130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 562969126}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
-  m_MoveRepeatDelay: 0.5
-  m_MoveRepeatRate: 0.1
-  m_XRTrackingOrigin: {fileID: 0}
-  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_DeselectOnBackgroundClick: 1
-  m_PointerBehavior: 0
-  m_CursorLockBehavior: 0
-  m_ScrollDeltaPerTick: 6
---- !u!1 &1597096896
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1597096900}
-  - component: {fileID: 1597096899}
-  - component: {fileID: 1597096898}
-  - component: {fileID: 1597096897}
-  m_Layer: 5
-  m_Name: Canvas (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1597096897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1597096896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
---- !u!114 &1597096898
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1597096896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
-  m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
-  m_PhysicalUnit: 3
-  m_FallbackScreenDPI: 96
-  m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
---- !u!223 &1597096899
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1597096896}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 1
-  m_TargetDisplay: 0
---- !u!224 &1597096900
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1597096896}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
 --- !u!1 &1954903869
 GameObject:
   m_ObjectHideFlags: 0
@@ -428,7 +248,6 @@ GameObject:
   - component: {fileID: 1954903873}
   - component: {fileID: 1954903874}
   - component: {fileID: 1954903875}
-  - component: {fileID: 1954903876}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -484,7 +303,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.07454796, y: 0}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -495,7 +314,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5527122, y: 1}
+  m_Size: {x: 0.5, y: 1}
   m_EdgeRadius: 0
 --- !u!50 &1954903872
 Rigidbody2D:
@@ -536,109 +355,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f150da32b6180754d9b4c41036717301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCam: {fileID: 349593938}
-  spriteRenderer: {fileID: 2108734102}
-  inputSystem:
-    Movement:
-      m_UseReference: 1
-      m_Action:
-        m_Name: Movement
-        m_Type: 0
-        m_ExpectedControlType: 
-        m_Id: b1a44e56-f815-4404-86e1-7150fbe6c47c
-        m_Processors: 
-        m_Interactions: 
-        m_SingletonActionBindings: []
-        m_Flags: 0
-      m_Reference: {fileID: 8826367256279768987, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-    Attack:
-      m_UseReference: 1
-      m_Action:
-        m_Name: Attack
-        m_Type: 0
-        m_ExpectedControlType: 
-        m_Id: bf15179a-d62a-4d1f-8d5d-cecbca2c493b
-        m_Processors: 
-        m_Interactions: 
-        m_SingletonActionBindings: []
-        m_Flags: 0
-      m_Reference: {fileID: -3181897068192926323, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-    Pause:
-      m_UseReference: 1
-      m_Action:
-        m_Name: Pause
-        m_Type: 0
-        m_ExpectedControlType: 
-        m_Id: 52566fe6-1f40-4dc6-b384-c459fda708f1
-        m_Processors: 
-        m_Interactions: 
-        m_SingletonActionBindings: []
-        m_Flags: 0
-      m_Reference: {fileID: -8332689185128867187, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-    Interact:
-      m_UseReference: 1
-      m_Action:
-        m_Name: Interact
-        m_Type: 0
-        m_ExpectedControlType: 
-        m_Id: f43e4e86-76d3-4f2d-9db0-10d772a0152e
-        m_Processors: 
-        m_Interactions: 
-        m_SingletonActionBindings: []
-        m_Flags: 0
-      m_Reference: {fileID: 2478078615739851097, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-    Select:
-      m_UseReference: 1
-      m_Action:
-        m_Name: Select
-        m_Type: 0
-        m_ExpectedControlType: 
-        m_Id: 28064495-9a96-4ad3-8734-ba1a5d8bf782
-        m_Processors: 
-        m_Interactions: 
-        m_SingletonActionBindings: []
-        m_Flags: 0
-      m_Reference: {fileID: -8769290665377959082, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-    Inventory:
-      m_UseReference: 1
-      m_Action:
-        m_Name: Inventory
-        m_Type: 0
-        m_ExpectedControlType: 
-        m_Id: d6b2d671-e4af-4026-a67e-3773a95e3058
-        m_Processors: 
-        m_Interactions: 
-        m_SingletonActionBindings: []
-        m_Flags: 0
-      m_Reference: {fileID: -3679570933039243683, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-    Sprint:
-      m_UseReference: 1
-      m_Action:
-        m_Name: Sprint
-        m_Type: 0
-        m_ExpectedControlType: 
-        m_Id: 349b6057-435c-4bd2-ad70-12d56528df68
-        m_Processors: 
-        m_Interactions: 
-        m_SingletonActionBindings: []
-        m_Flags: 0
-      m_Reference: {fileID: 5205385536065672382, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-    loop:
-      m_UseReference: 1
-      m_Action:
-        m_Name: Loop
-        m_Type: 0
-        m_ExpectedControlType: 
-        m_Id: 0b306ac9-6c86-4e7b-aab1-495cdf5e9e26
-        m_Processors: 
-        m_Interactions: 
-        m_SingletonActionBindings: []
-        m_Flags: 0
-      m_Reference: {fileID: 6804419962063838897, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
-  moveSpeed: 5
-  sprintSpeed: 10
-  acceleration: 10
-  deceleration: 10
 --- !u!114 &1954903874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -648,16 +364,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 1954903869}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9270b169bb6a245458a0b6487f9bf14e, type: 3}
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionRange: 2.8
-  interactionLayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  interactionCooldown: 0.5
-  searchRadius: 2
-  prioritizePlayerPosition: 1
+  m_Actions: {fileID: -944628639613478452, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: Keyboard&Mouse
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!114 &1954903875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -667,653 +394,69 @@ MonoBehaviour:
   m_GameObject: {fileID: 1954903869}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e389451507958614483d9b4dd82aaeed, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b5ee4169ef06624a8d702b30e67938f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  might: 1
-  agility: 1
-  endurance: 1
-  luck: 1
-  deaths: 0
-  currentWeapon: {fileID: 11400000, guid: a1e6189975edbd74791ea95f8b61e9a8, type: 2}
-  firePoint: {fileID: 2035129709}
-  level: 1
-  currentExp: 0
-  maxExp: 100
-  availablePoints: 0
-  pointsPerLevel: 5
-  maxHealth: 10
-  currentHealth: 10
-  baseSpeed: 5
-  baseSprint: 10
-  healthPerLevel: 5
-  speedPerLevel: 0.5
-  expMultiplier: 1.5
-  enduranceHealthBonus: 3
---- !u!114 &1954903876
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1954903869}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89f27fc07b647814db7111b4bcec13c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxWeapons: 5
-  weapons:
-  - {fileID: 11400000, guid: a1e6189975edbd74791ea95f8b61e9a8, type: 2}
-  currentWeaponIndex: 0
-  nextWeaponKey: 113
-  previousWeaponKey: 9
-  weapon1Key: 49
-  weapon2Key: 50
-  weapon3Key: 51
-  weapon4Key: 52
-  weapon5Key: 53
-  startingWeapon: {fileID: 11400000, guid: a1e6189975edbd74791ea95f8b61e9a8, type: 2}
---- !u!1 &2035129708
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2035129709}
-  m_Layer: 6
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2035129709
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2035129708}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.393, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2108734103}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2100236604
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2100236608}
-  - component: {fileID: 2100236607}
-  - component: {fileID: 2100236606}
-  - component: {fileID: 2100236605}
-  - component: {fileID: 2100236609}
-  - component: {fileID: 2100236613}
-  - component: {fileID: 2100236611}
-  - component: {fileID: 2100236610}
-  m_Layer: 5
-  m_Name: Canvas
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2100236605
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100236604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
---- !u!114 &2100236606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100236604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
-  m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
-  m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
-  m_PhysicalUnit: 3
-  m_FallbackScreenDPI: 96
-  m_DefaultSpriteDPI: 96
-  m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
---- !u!223 &2100236607
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100236604}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
---- !u!224 &2100236608
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100236604}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 562969127}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
---- !u!114 &2100236609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100236604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8c55555c9fc3c443ab7457db5c4fcc8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainCanvas: {fileID: 2100236607}
-  slotMachine: {fileID: 2100236613}
---- !u!114 &2100236610
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100236604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7a31ad13f5b41b438cd828cf8106093, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slotMachine: {fileID: 2100236613}
-  mainCanvas: {fileID: 1597096899}
---- !u!114 &2100236611
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100236604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87852c257e4310942a467a5541a7f46f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slotMachine: {fileID: 2100236613}
-  autoSetupOnStart: 1
-  trashWeapons:
-  - {fileID: 11400000, guid: 3b228b0297593884c95e4c1beca1a872, type: 2}
-  - {fileID: 11400000, guid: 025a10a384d65bf4e9bbdbcc5d4ef3b7, type: 2}
-  commonWeapons:
-  - {fileID: 11400000, guid: 5288d2e799bc4e04a88fa5e2c3c09abf, type: 2}
-  - {fileID: 11400000, guid: fe4037a40a64dba42b9f1bdc960d6977, type: 2}
-  - {fileID: 11400000, guid: 7190a072a40dafd4f90db7f5ab9100ea, type: 2}
-  - {fileID: 11400000, guid: aac9da8bf179d314186369c1f82ddd2f, type: 2}
-  - {fileID: 11400000, guid: 5eb4c0156bd7c024dbf1c2c757991611, type: 2}
-  - {fileID: 11400000, guid: a1e6189975edbd74791ea95f8b61e9a8, type: 2}
-  uncommonWeapons:
-  - {fileID: 11400000, guid: e8e048116f869b74ead09675101b1f3c, type: 2}
-  - {fileID: 11400000, guid: e9899b9698c378c41b1e596a8599804b, type: 2}
-  - {fileID: 11400000, guid: dd5095a29f5534844924286687909709, type: 2}
-  rareWeapons:
-  - {fileID: 11400000, guid: a10ee0f0bce7fd04ab6826d59b41d482, type: 2}
-  - {fileID: 11400000, guid: 4352bbf165e481546988cfda401d0a89, type: 2}
-  - {fileID: 11400000, guid: 4b9dd4178ca7f8241b3334b9adf95dd6, type: 2}
-  - {fileID: 11400000, guid: 0fa68c99333eaa34a89dee08354d10ab, type: 2}
-  epicWeapons:
-  - {fileID: 11400000, guid: ed4e254731b8d084da187e2d7b12c137, type: 2}
-  - {fileID: 11400000, guid: 8a0866a156627e2468777be9c3fa950b, type: 2}
-  legendaryWeapons:
-  - {fileID: 11400000, guid: 9a602f69478151445bf9b9084ba53220, type: 2}
-  mythicWeapons:
-  - {fileID: 11400000, guid: 09f320fb3d6c8d442ac659da46a17186, type: 2}
-  exoticWeapons:
-  - {fileID: 11400000, guid: b0798a306cacee145a63be7b9563c936, type: 2}
-  ultimateWeapons:
-  - {fileID: 11400000, guid: ada7378dfa600c24ba8b6d1445b7dab8, type: 2}
-  - {fileID: 11400000, guid: 96f8f76b096016b4ebb4ce0b34d2eddc, type: 2}
-  superUltimateWeapons:
-  - {fileID: 11400000, guid: dae82247a331e474dbe14381a65fb1a0, type: 2}
-  godlikeWeapons:
-  - {fileID: 11400000, guid: 1c417a87879fd7b459b87bc2585a2f95, type: 2}
-  - {fileID: 11400000, guid: ca9c045a69244f140a87747d1b017b01, type: 2}
-  - {fileID: 11400000, guid: e4b2368fadb1ed64a9ffe160fccc0bb4, type: 2}
-  weaponIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-  expIcon: {fileID: -2079208636, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-  healthIcon: {fileID: -1201643186, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
---- !u!114 &2100236613
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100236604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d951553359beb3e4c84119a18e4c63f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spinDuration: 3
-  reelSpeed: 10
-  trashWeight: 45
-  commonWeight: 25
-  uncommonWeight: 15
-  rareWeight: 8
-  epicWeight: 4
-  legendaryWeight: 2
-  mythicWeight: 0.8
-  exoticWeight: 0.15
-  ultimateWeight: 0.1
-  superUltimateWeight: 0.1
-  godlikeWeight: 0.1
-  weaponPrizes:
-  - prizeType: 1
-    weapon: {fileID: 11400000, guid: 3b228b0297593884c95e4c1beca1a872, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: hammer_1
-    prizeColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  - prizeType: 1
-    weapon: {fileID: 11400000, guid: 025a10a384d65bf4e9bbdbcc5d4ef3b7, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_28
-    prizeColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  - prizeType: 2
-    weapon: {fileID: 11400000, guid: 5288d2e799bc4e04a88fa5e2c3c09abf, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Hamer_3
-    prizeColor: {r: 1, g: 1, b: 1, a: 1}
-  - prizeType: 2
-    weapon: {fileID: 11400000, guid: fe4037a40a64dba42b9f1bdc960d6977, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Hamer_4
-    prizeColor: {r: 1, g: 1, b: 1, a: 1}
-  - prizeType: 2
-    weapon: {fileID: 11400000, guid: 7190a072a40dafd4f90db7f5ab9100ea, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Sword_45
-    prizeColor: {r: 1, g: 1, b: 1, a: 1}
-  - prizeType: 2
-    weapon: {fileID: 11400000, guid: aac9da8bf179d314186369c1f82ddd2f, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_27
-    prizeColor: {r: 1, g: 1, b: 1, a: 1}
-  - prizeType: 2
-    weapon: {fileID: 11400000, guid: 5eb4c0156bd7c024dbf1c2c757991611, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_29
-    prizeColor: {r: 1, g: 1, b: 1, a: 1}
-  - prizeType: 2
-    weapon: {fileID: 11400000, guid: a1e6189975edbd74791ea95f8b61e9a8, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Hamer_0
-    prizeColor: {r: 1, g: 1, b: 1, a: 1}
-  - prizeType: 3
-    weapon: {fileID: 11400000, guid: e8e048116f869b74ead09675101b1f3c, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: harp_9
-    prizeColor: {r: 0, g: 1, b: 0, a: 1}
-  - prizeType: 3
-    weapon: {fileID: 11400000, guid: e9899b9698c378c41b1e596a8599804b, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_12
-    prizeColor: {r: 0, g: 1, b: 0, a: 1}
-  - prizeType: 3
-    weapon: {fileID: 11400000, guid: dd5095a29f5534844924286687909709, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_15
-    prizeColor: {r: 0, g: 1, b: 0, a: 1}
-  - prizeType: 4
-    weapon: {fileID: 11400000, guid: a10ee0f0bce7fd04ab6826d59b41d482, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: FireSpell_96
-    prizeColor: {r: 0, g: 0, b: 1, a: 1}
-  - prizeType: 4
-    weapon: {fileID: 11400000, guid: 4352bbf165e481546988cfda401d0a89, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Pixaxe_2
-    prizeColor: {r: 0, g: 0, b: 1, a: 1}
-  - prizeType: 4
-    weapon: {fileID: 11400000, guid: 4b9dd4178ca7f8241b3334b9adf95dd6, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Staff_6
-    prizeColor: {r: 0, g: 0, b: 1, a: 1}
-  - prizeType: 4
-    weapon: {fileID: 11400000, guid: 0fa68c99333eaa34a89dee08354d10ab, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_16
-    prizeColor: {r: 0, g: 0, b: 1, a: 1}
-  - prizeType: 5
-    weapon: {fileID: 11400000, guid: ed4e254731b8d084da187e2d7b12c137, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: nokeldusters_10
-    prizeColor: {r: 1, g: 0, b: 1, a: 1}
-  - prizeType: 5
-    weapon: {fileID: 11400000, guid: 8a0866a156627e2468777be9c3fa950b, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_26
-    prizeColor: {r: 1, g: 0, b: 1, a: 1}
-  - prizeType: 6
-    weapon: {fileID: 11400000, guid: 9a602f69478151445bf9b9084ba53220, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Staff_5
-    prizeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  - prizeType: 7
-    weapon: {fileID: 11400000, guid: 09f320fb3d6c8d442ac659da46a17186, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Staff_7
-    prizeColor: {r: 1, g: 0.5, b: 0, a: 1}
-  - prizeType: 8
-    weapon: {fileID: 11400000, guid: b0798a306cacee145a63be7b9563c936, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_25
-    prizeColor: {r: 0, g: 1, b: 1, a: 1}
-  - prizeType: 9
-    weapon: {fileID: 11400000, guid: ada7378dfa600c24ba8b6d1445b7dab8, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_18
-    prizeColor: {r: 1, g: 0, b: 1, a: 1}
-  - prizeType: 9
-    weapon: {fileID: 11400000, guid: 96f8f76b096016b4ebb4ce0b34d2eddc, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_19
-    prizeColor: {r: 1, g: 0, b: 1, a: 1}
-  - prizeType: 10
-    weapon: {fileID: 11400000, guid: dae82247a331e474dbe14381a65fb1a0, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_11
-    prizeColor: {r: 0.5, g: 0, b: 1, a: 1}
-  - prizeType: 11
-    weapon: {fileID: 11400000, guid: 1c417a87879fd7b459b87bc2585a2f95, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_13
-    prizeColor: {r: 1, g: 0.8, b: 0, a: 1}
-  - prizeType: 11
-    weapon: {fileID: 11400000, guid: ca9c045a69244f140a87747d1b017b01, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_14
-    prizeColor: {r: 1, g: 0.8, b: 0, a: 1}
-  - prizeType: 11
-    weapon: {fileID: 11400000, guid: e4b2368fadb1ed64a9ffe160fccc0bb4, type: 2}
-    expAmount: 0
-    healthAmount: 0
-    prizeIcon: {fileID: -667268523, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: wepon_17
-    prizeColor: {r: 1, g: 0.8, b: 0, a: 1}
-  expPrizes:
-  - prizeType: 1
-    weapon: {fileID: 0}
-    expAmount: 5
-    healthAmount: 0
-    prizeIcon: {fileID: -2079208636, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Small EXP Boost
-    prizeColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  - prizeType: 2
-    weapon: {fileID: 0}
-    expAmount: 15
-    healthAmount: 0
-    prizeIcon: {fileID: -2079208636, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: EXP Boost
-    prizeColor: {r: 1, g: 1, b: 1, a: 1}
-  - prizeType: 3
-    weapon: {fileID: 0}
-    expAmount: 30
-    healthAmount: 0
-    prizeIcon: {fileID: -2079208636, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Good EXP Boost
-    prizeColor: {r: 0, g: 1, b: 0, a: 1}
-  - prizeType: 4
-    weapon: {fileID: 0}
-    expAmount: 60
-    healthAmount: 0
-    prizeIcon: {fileID: -2079208636, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Great EXP Boost
-    prizeColor: {r: 0, g: 0, b: 1, a: 1}
-  - prizeType: 5
-    weapon: {fileID: 0}
-    expAmount: 120
-    healthAmount: 0
-    prizeIcon: {fileID: -2079208636, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Epic EXP Boost
-    prizeColor: {r: 1, g: 0, b: 1, a: 1}
-  - prizeType: 6
-    weapon: {fileID: 0}
-    expAmount: 250
-    healthAmount: 0
-    prizeIcon: {fileID: -2079208636, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Legendary EXP Boost
-    prizeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  - prizeType: 7
-    weapon: {fileID: 0}
-    expAmount: 500
-    healthAmount: 0
-    prizeIcon: {fileID: -2079208636, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Mythic EXP Boost
-    prizeColor: {r: 1, g: 0.5, b: 0, a: 1}
-  - prizeType: 8
-    weapon: {fileID: 0}
-    expAmount: 1000
-    healthAmount: 0
-    prizeIcon: {fileID: -2079208636, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Exotic EXP Boost
-    prizeColor: {r: 0, g: 1, b: 1, a: 1}
-  - prizeType: 9
-    weapon: {fileID: 0}
-    expAmount: 2000
-    healthAmount: 0
-    prizeIcon: {fileID: -2079208636, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Ultimate EXP Boost
-    prizeColor: {r: 1, g: 0, b: 1, a: 1}
-  - prizeType: 10
-    weapon: {fileID: 0}
-    expAmount: 5000
-    healthAmount: 0
-    prizeIcon: {fileID: -2079208636, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Super Ultimate EXP Boost
-    prizeColor: {r: 0.5, g: 0, b: 1, a: 1}
-  - prizeType: 11
-    weapon: {fileID: 0}
-    expAmount: 10000
-    healthAmount: 0
-    prizeIcon: {fileID: -2079208636, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Godlike EXP Boost
-    prizeColor: {r: 1, g: 0.8, b: 0, a: 1}
-  healthPrizes:
-  - prizeType: 1
-    weapon: {fileID: 0}
-    expAmount: 0
-    healthAmount: 10
-    prizeIcon: {fileID: -1201643186, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Small Health Potion
-    prizeColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  - prizeType: 2
-    weapon: {fileID: 0}
-    expAmount: 0
-    healthAmount: 25
-    prizeIcon: {fileID: -1201643186, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Health Potion
-    prizeColor: {r: 1, g: 1, b: 1, a: 1}
-  - prizeType: 3
-    weapon: {fileID: 0}
-    expAmount: 0
-    healthAmount: 50
-    prizeIcon: {fileID: -1201643186, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Good Health Potion
-    prizeColor: {r: 0, g: 1, b: 0, a: 1}
-  - prizeType: 4
-    weapon: {fileID: 0}
-    expAmount: 0
-    healthAmount: 100
-    prizeIcon: {fileID: -1201643186, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Great Health Potion
-    prizeColor: {r: 0, g: 0, b: 1, a: 1}
-  - prizeType: 5
-    weapon: {fileID: 0}
-    expAmount: 0
-    healthAmount: 200
-    prizeIcon: {fileID: -1201643186, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Epic Health Potion
-    prizeColor: {r: 1, g: 0, b: 1, a: 1}
-  - prizeType: 6
-    weapon: {fileID: 0}
-    expAmount: 0
-    healthAmount: 400
-    prizeIcon: {fileID: -1201643186, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Legendary Health Potion
-    prizeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  - prizeType: 7
-    weapon: {fileID: 0}
-    expAmount: 0
-    healthAmount: 750
-    prizeIcon: {fileID: -1201643186, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Mythic Health Potion
-    prizeColor: {r: 1, g: 0.5, b: 0, a: 1}
-  - prizeType: 8
-    weapon: {fileID: 0}
-    expAmount: 0
-    healthAmount: 1500
-    prizeIcon: {fileID: -1201643186, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Exotic Health Potion
-    prizeColor: {r: 0, g: 1, b: 1, a: 1}
-  - prizeType: 9
-    weapon: {fileID: 0}
-    expAmount: 0
-    healthAmount: 3000
-    prizeIcon: {fileID: -1201643186, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Ultimate Health Potion
-    prizeColor: {r: 1, g: 0, b: 1, a: 1}
-  - prizeType: 10
-    weapon: {fileID: 0}
-    expAmount: 0
-    healthAmount: 6000
-    prizeIcon: {fileID: -1201643186, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Super Ultimate Health Potion
-    prizeColor: {r: 0.5, g: 0, b: 1, a: 1}
-  - prizeType: 11
-    weapon: {fileID: 0}
-    expAmount: 0
-    healthAmount: 10000
-    prizeIcon: {fileID: -1201643186, guid: 438c7a42fab2aed498127c7999b421f3, type: 3}
-    prizeName: Godlike Health Potion
-    prizeColor: {r: 1, g: 0.8, b: 0, a: 1}
-  slotMachinePanel: {fileID: 0}
-  reelImages:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  spinButton: {fileID: 0}
-  resultText: {fileID: 0}
-  prizeDisplayPanel: {fileID: 0}
-  prizeIcon: {fileID: 0}
-  prizeNameText: {fileID: 0}
-  prizeDescriptionText: {fileID: 0}
-  claimPrizeButton: {fileID: 0}
-  closeButton: {fileID: 0}
-  audioSource: {fileID: 0}
-  spinSound: {fileID: 0}
-  winSound: {fileID: 0}
-  loseSound: {fileID: 0}
+  Movement:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Movement
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 3c6622d8-63a7-435d-abb3-c32996d04465
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 8826367256279768987, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  Pause:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Pause
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 79101571-4f5d-42ea-9161-52459c3fd986
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: -8332689185128867187, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  Interact:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Interact
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: e5691c8c-1043-4b3e-bfc6-3639cc815137
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 7736209768034127304, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  Select:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Select
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: ab3626df-5090-4d66-8f00-f7f8bf7fa608
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: -5978756817193942494, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  Inventory:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Inventory
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: f3e66bf3-1751-4a6a-aae4-8ce3fef79235
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: -3679570933039243683, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
 --- !u!1 &2108734101
 GameObject:
   m_ObjectHideFlags: 0
@@ -1380,7 +523,7 @@ SpriteRenderer:
   m_Size: {x: 0.13, y: 0.13}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &2108734103
@@ -1395,8 +538,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2035129709}
+  m_Children: []
   m_Father: {fileID: 1954903870}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
@@ -1405,5 +547,3 @@ SceneRoots:
   m_Roots:
   - {fileID: 349593937}
   - {fileID: 1954903870}
-  - {fileID: 2100236608}
-  - {fileID: 1597096900}
