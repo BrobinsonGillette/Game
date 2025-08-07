@@ -5,90 +5,208 @@ using UnityEngine;
 public class MapMaker : MonoBehaviour
 {
     [Header("Grid Settings")]
-    public int gridWidth = 10;
-    public int gridHeight = 10;
-    public float hexSize = 1f;
+    [SerializeField] private int gridWidth = 10;
+    [SerializeField] private int gridHeight = 10;
+    [SerializeField] private float hexSize = 1f;
+    [SerializeField] private bool centerGrid = true;
 
     [Header("Prefabs")]
-    public GameObject hexTilePrefab;
+    [SerializeField] private GameObject hexTilePrefab;
 
-    [Header("Visual Settings")]
-    public bool showCoordinates = true;
-    public bool showGridLines = true;
 
-    private Dictionary<Vector2Int, HexTile> hexTiles = new Dictionary<Vector2Int, HexTile>();
-    private float hexWidth;
-    private float hexHeight;
+    [Header("Performance")]
+    [SerializeField] private bool useObjectPooling = false;
+    [SerializeField] private Transform tilesParent;
 
-    // Hexagon math constants for pointed-top orientation
+    [Header("Generation Constraints")]
+    [SerializeField] private bool useWorldBounds = true;
+    [SerializeField] private float worldBoundSize = 52f;
+
+    // Cache frequently used values
     private readonly float sqrt3 = Mathf.Sqrt(3f);
+    private readonly float sqrt3Div3 = Mathf.Sqrt(3f) / 3f;
+    private readonly float sqrt3Div2 = Mathf.Sqrt(3f) / 2f;
+    private readonly float twoThirds = 2f / 3f;
+    private readonly float oneThird = 1f / 3f;
+    private readonly float threeHalfs = 3f / 2f;
+
+    // Hex direction vectors for neighbor calculation
+    private static readonly Vector2Int[] HexDirections = new Vector2Int[]
+    {
+        new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, -1),
+        new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, 1)
+    };
+
+    // Data structures
+    private Dictionary<Vector2Int, HexTile> hexTiles = new Dictionary<Vector2Int, HexTile>();
+    private List<HexTile> allTiles = new List<HexTile>();
+    private Vector3 gridCenter;
+
+    // Events
+    public System.Action<HexTile> OnTileCreated;
+    public System.Action OnGridGenerated;
+
+    // Properties
+    public int GridWidth => gridWidth;
+    public int GridHeight => gridHeight;
+    public float HexSize => hexSize;
+    public int TileCount => allTiles.Count;
+    public Vector3 GridCenter => gridCenter;
 
     void Start()
     {
-        CalculateHexDimensions();
         GenerateGrid();
     }
 
-    void CalculateHexDimensions()
+    void OnValidate()
     {
-        // For pointed-top hexagons
-        hexWidth = sqrt3 * hexSize;
-        hexHeight = 2f * hexSize;
+        // Clamp values to reasonable ranges
+        gridWidth = Mathf.Max(1, gridWidth);
+        gridHeight = Mathf.Max(1, gridHeight);
+        hexSize = Mathf.Max(0.1f, hexSize);
+        worldBoundSize = Mathf.Max(1f, worldBoundSize);
     }
 
-    void GenerateGrid()
+    /// <summary>
+    /// Generate the hex grid based on current settings
+    /// </summary>
+    public void GenerateGrid()
     {
-        // Calculate offset to center the grid
-        Vector3 gridCenter = CalculateGridCenter();
+        ClearExistingGrid();
 
+        if (hexTilePrefab == null)
+        {
+            Debug.LogError("MapMaker: hexTilePrefab is not assigned!");
+            return;
+        }
+
+        // Setup parent transform
+        if (tilesParent == null)
+        {
+            GameObject parentObj = new GameObject("HexTiles");
+            parentObj.transform.SetParent(transform);
+            tilesParent = parentObj.transform;
+        }
+
+        // Calculate grid center once
+        gridCenter = centerGrid ? CalculateGridCenter() : Vector3.zero;
+
+        // Pre-allocate collections
+        int estimatedTileCount = gridWidth * gridHeight;
+        hexTiles = new Dictionary<Vector2Int, HexTile>(estimatedTileCount);
+        allTiles = new List<HexTile>(estimatedTileCount);
+
+        // Generate tiles
         for (int q = 0; q < gridWidth; q++)
         {
             for (int r = 0; r < gridHeight; r++)
             {
                 Vector2Int hexCoord = new Vector2Int(q, r);
-                Vector3 worldPos = HexToWorldPosition(hexCoord) - gridCenter;
 
-                GameObject hexObj = Instantiate(hexTilePrefab, worldPos, Quaternion.identity, transform);
-                HexTile hexTile = hexObj.GetComponent<HexTile>();
-
-                if (hexTile != null)
+                if (ShouldCreateTileAt(hexCoord))
                 {
-                    hexTile.Initialize(hexCoord, this);
+                    CreateHexTile(hexCoord);
                 }
-
-                hexTiles[hexCoord] = hexTile;
             }
         }
+
+        OnGridGenerated?.Invoke();
+        Debug.Log($"MapMaker: Generated {allTiles.Count} hex tiles");
     }
 
-    Vector3 CalculateGridCenter()
+    /// <summary>
+    /// Clear all existing tiles from the grid
+    /// </summary>
+    public void ClearExistingGrid()
     {
-        // Calculate the center point of the entire grid
+        // Destroy existing tiles
+        foreach (var tile in allTiles)
+        {
+            if (tile != null && tile.gameObject != null)
+            {
+                if (Application.isPlaying)
+                    Destroy(tile.gameObject);
+                else
+                    DestroyImmediate(tile.gameObject);
+            }
+        }
+
+        hexTiles.Clear();
+        allTiles.Clear();
+    }
+
+    /// <summary>
+    /// Check if a tile should be created at the given coordinate
+    /// </summary>
+    private bool ShouldCreateTileAt(Vector2Int hexCoord)
+    {
+        if (!useWorldBounds) return true;
+
+        Vector3 worldPos = HexToWorldPosition(hexCoord) - gridCenter;
+        return Mathf.Abs(worldPos.x) <= worldBoundSize &&
+               Mathf.Abs(worldPos.y) <= worldBoundSize;
+    }
+
+    /// <summary>
+    /// Create a hex tile at the specified coordinate
+    /// </summary>
+    private void CreateHexTile(Vector2Int hexCoord)
+    {
+        Vector3 worldPos = HexToWorldPosition(hexCoord) - gridCenter;
+
+        GameObject hexObj = Instantiate(hexTilePrefab, worldPos, Quaternion.identity, tilesParent);
+        hexObj.name = $"HexTile_{hexCoord.x}_{hexCoord.y}";
+
+        HexTile hexTile = hexObj.GetComponent<HexTile>();
+        if (hexTile == null)
+        {
+            Debug.LogWarning($"MapMaker: HexTile component not found on prefab at {hexCoord}");
+            hexTile = hexObj.AddComponent<HexTile>();
+        }
+
+        hexTile.Initialize(hexCoord, this);
+        hexTiles[hexCoord] = hexTile;
+        allTiles.Add(hexTile);
+
+        OnTileCreated?.Invoke(hexTile);
+    }
+
+    /// <summary>
+    /// Calculate the center point of the entire grid
+    /// </summary>
+    private Vector3 CalculateGridCenter()
+    {
         Vector2Int centerCoord = new Vector2Int(gridWidth / 2, gridHeight / 2);
         return HexToWorldPosition(centerCoord);
     }
 
+    /// <summary>
+    /// Convert hex coordinates to world position
+    /// </summary>
     public Vector3 HexToWorldPosition(Vector2Int hexCoord)
     {
-        float x = hexSize * (sqrt3 * hexCoord.x + sqrt3 / 2f * hexCoord.y);
-        float y = hexSize * (3f / 2f * hexCoord.y);
-
+        float x = hexSize * (sqrt3 * hexCoord.x + sqrt3Div2 * hexCoord.y);
+        float y = hexSize * (threeHalfs * hexCoord.y);
         return new Vector3(x, y, 0f);
     }
 
+    /// <summary>
+    /// Convert world position to hex coordinates
+    /// </summary>
     public Vector2Int WorldToHexPosition(Vector3 worldPos)
     {
-        // Add the grid center offset back when converting from world to hex
-        Vector3 gridCenter = CalculateGridCenter();
         Vector3 adjustedWorldPos = worldPos + gridCenter;
 
-        float q = (sqrt3 / 3f * adjustedWorldPos.x - 1f / 3f * adjustedWorldPos.y) / hexSize;
-        float r = (2f / 3f * adjustedWorldPos.y) / hexSize;
+        float q = (sqrt3Div3 * adjustedWorldPos.x - oneThird * adjustedWorldPos.y) / hexSize;
+        float r = (twoThirds * adjustedWorldPos.y) / hexSize;
 
         return CubeToAxial(CubeRound(new Vector3(q, -q - r, r)));
     }
 
-    Vector3 CubeRound(Vector3 cube)
+    /// <summary>
+    /// Round cube coordinates to nearest integer values
+    /// </summary>
+    private Vector3 CubeRound(Vector3 cube)
     {
         float rx = Mathf.Round(cube.x);
         float ry = Mathf.Round(cube.y);
@@ -108,21 +226,22 @@ public class MapMaker : MonoBehaviour
         return new Vector3(rx, ry, rz);
     }
 
-    Vector2Int CubeToAxial(Vector3 cube)
+    /// <summary>
+    /// Convert cube coordinates to axial coordinates
+    /// </summary>
+    private Vector2Int CubeToAxial(Vector3 cube)
     {
         return new Vector2Int((int)cube.x, (int)cube.z);
     }
 
+    /// <summary>
+    /// Get all neighboring coordinates of a hex
+    /// </summary>
     public List<Vector2Int> GetNeighbors(Vector2Int hexCoord)
     {
-        List<Vector2Int> neighbors = new List<Vector2Int>();
-        Vector2Int[] directions = new Vector2Int[]
-        {
-            new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, -1),
-            new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, 1)
-        };
+        List<Vector2Int> neighbors = new List<Vector2Int>(6);
 
-        foreach (Vector2Int dir in directions)
+        foreach (Vector2Int dir in HexDirections)
         {
             Vector2Int neighbor = hexCoord + dir;
             if (IsValidHexCoord(neighbor))
@@ -134,18 +253,80 @@ public class MapMaker : MonoBehaviour
         return neighbors;
     }
 
+    /// <summary>
+    /// Get all neighboring tiles of a hex
+    /// </summary>
+    public List<HexTile> GetNeighborTiles(Vector2Int hexCoord)
+    {
+        List<HexTile> neighborTiles = new List<HexTile>(6);
+
+        foreach (Vector2Int neighborCoord in GetNeighbors(hexCoord))
+        {
+            HexTile tile = GetHexTile(neighborCoord);
+            if (tile != null)
+            {
+                neighborTiles.Add(tile);
+            }
+        }
+
+        return neighborTiles;
+    }
+
+    /// <summary>
+    /// Check if hex coordinate is within grid bounds
+    /// </summary>
     public bool IsValidHexCoord(Vector2Int hexCoord)
     {
         return hexCoord.x >= 0 && hexCoord.x < gridWidth &&
                hexCoord.y >= 0 && hexCoord.y < gridHeight;
     }
 
+    /// <summary>
+    /// Check if a tile exists at the given coordinate
+    /// </summary>
+    public bool HasTileAt(Vector2Int hexCoord)
+    {
+        return hexTiles.ContainsKey(hexCoord);
+    }
+
+    /// <summary>
+    /// Get hex tile at specified coordinates
+    /// </summary>
     public HexTile GetHexTile(Vector2Int hexCoord)
     {
         hexTiles.TryGetValue(hexCoord, out HexTile tile);
         return tile;
     }
 
+    /// <summary>
+    /// Get all tiles within a certain distance from a center coordinate
+    /// </summary>
+    public List<HexTile> GetTilesInRange(Vector2Int centerCoord, int range)
+    {
+        List<HexTile> tilesInRange = new List<HexTile>();
+
+        for (int q = -range; q <= range; q++)
+        {
+            int r1 = Mathf.Max(-range, -q - range);
+            int r2 = Mathf.Min(range, -q + range);
+
+            for (int r = r1; r <= r2; r++)
+            {
+                Vector2Int coord = centerCoord + new Vector2Int(q, r);
+                HexTile tile = GetHexTile(coord);
+                if (tile != null)
+                {
+                    tilesInRange.Add(tile);
+                }
+            }
+        }
+
+        return tilesInRange;
+    }
+
+    /// <summary>
+    /// Calculate distance between two hex coordinates
+    /// </summary>
     public int GetDistance(Vector2Int hexA, Vector2Int hexB)
     {
         return (Mathf.Abs(hexA.x - hexB.x) +
@@ -153,41 +334,53 @@ public class MapMaker : MonoBehaviour
                 Mathf.Abs(hexA.y - hexB.y)) / 2;
     }
 
-    void OnDrawGizmos()
+    /// <summary>
+    /// Get a line of coordinates between two hex positions
+    /// </summary>
+    public List<Vector2Int> GetLine(Vector2Int hexA, Vector2Int hexB)
     {
-        if (!showGridLines) return;
+        int distance = GetDistance(hexA, hexB);
+        List<Vector2Int> results = new List<Vector2Int>(distance + 1);
 
-        CalculateHexDimensions();
-        Vector3 gridCenter = CalculateGridCenter();
-
-        Gizmos.color = Color.white;
-        for (int q = 0; q < gridWidth; q++)
+        for (int i = 0; i <= distance; i++)
         {
-            for (int r = 0; r < gridHeight; r++)
-            {
-                Vector3 center = HexToWorldPosition(new Vector2Int(q, r)) - gridCenter;
-                DrawHexagonGizmo(center);
-            }
+            float t = distance == 0 ? 0f : (float)i / distance;
+            Vector3 cubeA = AxialToCube(hexA);
+            Vector3 cubeB = AxialToCube(hexB);
+            Vector3 lerpedCube = Vector3.Lerp(cubeA, cubeB, t);
+            results.Add(CubeToAxial(CubeRound(lerpedCube)));
         }
+
+        return results;
     }
 
-    void DrawHexagonGizmo(Vector3 center)
+    /// <summary>
+    /// Convert axial coordinates to cube coordinates
+    /// </summary>
+    private Vector3 AxialToCube(Vector2Int axial)
     {
-        Vector3[] corners = new Vector3[6];
-        for (int i = 0; i < 6; i++)
-        {
-            float angle_deg = 60 * i - 30; // -30 for pointed-top
-            float angle_rad = Mathf.PI / 180 * angle_deg;
-            corners[i] = center + new Vector3(
-                hexSize * Mathf.Cos(angle_rad),
-                hexSize * Mathf.Sin(angle_rad),
-                0
-            );
-        }
-
-        for (int i = 0; i < 6; i++)
-        {
-            Gizmos.DrawLine(corners[i], corners[(i + 1) % 6]);
-        }
+        float x = axial.x;
+        float z = axial.y;
+        float y = -x - z;
+        return new Vector3(x, y, z);
     }
+
+    /// <summary>
+    /// Get the closest hex tile to a world position
+    /// </summary>
+    public HexTile GetClosestTile(Vector3 worldPos)
+    {
+        Vector2Int hexCoord = WorldToHexPosition(worldPos);
+        return GetHexTile(hexCoord);
+    }
+
+    /// <summary>
+    /// Get all tiles in the grid
+    /// </summary>
+    public List<HexTile> GetAllTiles()
+    {
+        return new List<HexTile>(allTiles);
+    }
+
+   
 }

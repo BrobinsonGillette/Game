@@ -227,10 +227,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37c859c6b3176c4449250a862119bae5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothSpeed: 18
+  smoothSpeed: 25
   zoomSpeed: 3
   minZoom: 0.98
   maxZoom: 7
+  maxCamBounds: {x: 53, y: 53}
 --- !u!1 &1845803232
 GameObject:
   m_ObjectHideFlags: 0
@@ -261,12 +262,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fd83599d6a81d741adc5a3ed2380b83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridWidth: 150
-  gridHeight: 150
+  gridWidth: 120
+  gridHeight: 120
   hexSize: 1
+  centerGrid: 1
   hexTilePrefab: {fileID: 1116374855099247377, guid: 7d3c4b5a61bac6d4c804b8e796833576, type: 3}
-  showCoordinates: 1
-  showGridLines: 1
+  useObjectPooling: 0
+  tilesParent: {fileID: 0}
+  useWorldBounds: 1
+  worldBoundSize: 52
 --- !u!4 &1845803234
 Transform:
   m_ObjectHideFlags: 0

@@ -9,23 +9,35 @@ public class CamMagger : MonoBehaviour
     public static CamMagger instance { get; private set; }
     public Camera mainCamera { get; private set; }
 
-    [Header("Camera Settings")]
-    [SerializeField] private float smoothSpeed = 0.125f;
-    [SerializeField] private float zoomSpeed = 5f;
+    [Header("Movement Settings")]
+    [SerializeField] private float followSpeed = 8f;
+    [SerializeField] private float freeMovementSpeed = 15f;
+    [SerializeField] private float movementDamping = 0.9f;
+
+    [Header("Zoom Settings")]
+    [SerializeField] private float zoomSpeed = 8f;
     [SerializeField] private float minZoom = 0.98f;
     [SerializeField] private float maxZoom = 7f;
+    [SerializeField] private float zoomDamping = 0.85f;
 
-    public Vector3 WorldMousePosition => Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    public Vector3 WorldMousePosition => mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
     private Transform target; // Player transform
     private Vector3 offset = new Vector3(0, 0, -10);
-    private Vector3 smoothedPosition = Vector3.zero;
+    private Vector3 velocity = Vector3.zero;
     private float targetOrthographicSize;
+    private float zoomVelocity = 0f;
 
     // Camera bounds
+    [SerializeField] Vector2 maxCamBounds;
     private Vector2 minBounds;
     private Vector2 maxBounds;
     private bool boundsSet = false;
+
+    // Cached values to reduce calculations
+    private float camHeight;
+    private float camWidth;
+    private bool needsBoundsRecalculation = true;
 
     private void Awake()
     {
@@ -36,6 +48,7 @@ public class CamMagger : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
     }
 
@@ -44,6 +57,9 @@ public class CamMagger : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         mainCamera = Camera.main;
         targetOrthographicSize = mainCamera.orthographicSize;
+
+        // Initialize bounds
+        SetCamBounds(-maxCamBounds, maxCamBounds);
     }
 
     private void Update()
@@ -51,7 +67,7 @@ public class CamMagger : MonoBehaviour
         HandleZoom();
         HandleMovement();
         ApplyCameraBounds();
-        SetCamBounds(new Vector2(-62, -93), new Vector2(62, 93));
+
     }
 
     private void HandleZoom()
@@ -60,59 +76,89 @@ public class CamMagger : MonoBehaviour
 
         if (zoomInput != 0)
         {
-            // Calculate target zoom size
-            targetOrthographicSize -= zoomInput * zoomSpeed * Time.deltaTime;
+            // Direct zoom adjustment with velocity
+            zoomVelocity += zoomInput * zoomSpeed * Time.deltaTime;
+            targetOrthographicSize -= zoomVelocity;
             targetOrthographicSize = Mathf.Clamp(targetOrthographicSize, minZoom, maxZoom);
+
+            needsBoundsRecalculation = true;
         }
 
-        // Smoothly interpolate to target zoom
-        mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, targetOrthographicSize, Time.deltaTime * 5f);
+        // Apply damping to zoom velocity
+        zoomVelocity *= zoomDamping;
+
+        // Faster zoom interpolation
+        float zoomDifference = targetOrthographicSize - mainCamera.orthographicSize;
+        if (Mathf.Abs(zoomDifference) > 0.01f)
+        {
+            mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, targetOrthographicSize, Time.deltaTime * 12f);
+        }
+        else
+        {
+            mainCamera.orthographicSize = targetOrthographicSize;
+        }
     }
 
     private void HandleMovement()
     {
+        Vector3 targetPosition;
+
         if (target == null)
         {
-            // Free camera movement with input
+            // Free camera movement - more responsive
             Vector2 input = InputManager.instance.MovementInput;
-            Vector3 targetPosition = new Vector3(
-                transform.position.x + input.x * smoothSpeed * Time.deltaTime,
-                transform.position.y + input.y * smoothSpeed * Time.deltaTime,
-                offset.z
-            );
 
-            smoothedPosition = Vector3.Lerp(transform.position, targetPosition, smoothSpeed * Time.deltaTime);
+            // Add to velocity instead of direct position change
+            velocity.x += input.x * freeMovementSpeed * Time.deltaTime;
+            velocity.y += input.y * freeMovementSpeed * Time.deltaTime;
+
+            // Apply damping
+            velocity *= movementDamping;
+
+            targetPosition = transform.position + velocity;
+            targetPosition.z = offset.z;
         }
         else
         {
-            // Follow target
-            Vector3 desiredPosition = target.position + offset;
-            smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+            // Follow target - much more responsive
+            targetPosition = target.position + offset;
+
+            // Use SmoothDamp for better following behavior
+            transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 1f / followSpeed);
+            return; // Exit early to avoid the lerp below
         }
 
-        transform.position = smoothedPosition;
+        // Apply movement
+        transform.position = targetPosition;
     }
 
     private void ApplyCameraBounds()
     {
         if (!boundsSet) return;
 
-        // Calculate camera bounds based on orthographic size and aspect ratio
-        float camHeight = mainCamera.orthographicSize;
-        float camWidth = camHeight * mainCamera.aspect;
+        // Only recalculate camera dimensions when zoom changes
+        if (needsBoundsRecalculation)
+        {
+            camHeight = mainCamera.orthographicSize;
+            camWidth = camHeight * mainCamera.aspect;
+            needsBoundsRecalculation = false;
+        }
 
-        // Adjust bounds to account for camera size
+        // Calculate bounds
         float minX = minBounds.x + camWidth;
         float maxX = maxBounds.x - camWidth;
         float minY = minBounds.y + camHeight;
         float maxY = maxBounds.y - camHeight;
 
-        // Clamp camera position
-        Vector3 clampedPosition = transform.position;
-        clampedPosition.x = Mathf.Clamp(clampedPosition.x, minX, maxX);
-        clampedPosition.y = Mathf.Clamp(clampedPosition.y, minY, maxY);
+        // Ensure bounds are valid
+        if (minX > maxX) minX = maxX = (minBounds.x + maxBounds.x) * 0.5f;
+        if (minY > maxY) minY = maxY = (minBounds.y + maxBounds.y) * 0.5f;
 
-        transform.position = clampedPosition;
+        // Clamp camera position
+        Vector3 pos = transform.position;
+        pos.x = Mathf.Clamp(pos.x, minX, maxX);
+        pos.y = Mathf.Clamp(pos.y, minY, maxY);
+        transform.position = pos;
     }
 
     public void SetCamBounds(Vector2 min, Vector2 max)
@@ -120,12 +166,17 @@ public class CamMagger : MonoBehaviour
         minBounds = min;
         maxBounds = max;
         boundsSet = true;
+        needsBoundsRecalculation = true;
     }
 
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
+
+        // Reset velocity when switching targets to prevent jarring movement
+        velocity = Vector3.zero;
+        zoomVelocity = 0f;
     }
 
-
+  
 }

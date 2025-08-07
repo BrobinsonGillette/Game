@@ -84,7 +84,7 @@ public class HexTile : MonoBehaviour
         {
             // Show neighbors or perform other selection logic
             var neighbors = gridManager.GetNeighbors(coordinates);
-            Debug.Log($"Selected hex {coordinates} has {neighbors.Count} neighbors");
+            //Debug.Log($"Selected hex {coordinates} has {neighbors.Count} neighbors");
         }
     }
     // Pathfinding helper methods
