@@ -21,19 +21,17 @@ public class HexTile : MonoBehaviour
     public Color playerPositionColor = Color.blue;
     public Color movementTargetColor = Color.cyan;
 
-    private MapMaker gridManager;
-    public bool isSelected = false;
+    public bool isSelected { get; private set; }
     private bool isHovered = false;
-    private bool hasPlayer = false;
+    public bool hasPlayer { get; private set; }
     private bool isMovementTarget = false;
 
-    // Reference to the player
-   public ChartorMove playerCharacter;
+    public Char CurrentPlayer { get; private set; }
 
     public void Initialize(Vector2Int coords, MapMaker manager)
     {
         coordinates = coords;
-        gridManager = manager;
+ 
 
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -49,12 +47,12 @@ public class HexTile : MonoBehaviour
 
         if (!isWalkable)
             targetColor = blockedColor;
+        else if (isSelected)
+            targetColor = selectedColor;
         else if (hasPlayer)
             targetColor = playerPositionColor;
         else if (isMovementTarget)
             targetColor = movementTargetColor;
-        else if (isSelected)
-            targetColor = selectedColor;
         else if (isHovered)
             targetColor = hoverColor;
 
@@ -79,97 +77,37 @@ public class HexTile : MonoBehaviour
     {
         if (!isWalkable) return;
 
-        // If the player is on this tile, activate movement mode
-        if (hasPlayer && playerCharacter != null)
-        {
-            ActivateCharacterMovement();
-        }
-        // If this tile is a movement target, try to move the player here
-        else if (isMovementTarget && playerCharacter != null)
-        {
-            TryMovePlayerHere();
-        }
-        else
-        {
-            // Regular tile selection for other tiles
-            ToggleSelection();
-        }
-    }
-
-    /// <summary>
-    /// Activate the character's movement mode when clicking on their current tile
-    /// </summary>
-    private void ActivateCharacterMovement()
-    {
-        if (playerCharacter == null)
-        {
-            return;
-        }
-
-        if (playerCharacter.IsMoving())
-        {
-            return;
-        }
-
-        // Activate movement mode
-        playerCharacter.ActivateMovementMode();
-    }
-
-    /// <summary>
-    /// Try to move the player to this tile (only works if this is a movement target)
-    /// </summary>
-    private void TryMovePlayerHere()
-    {
-        if (playerCharacter == null || !isMovementTarget)
-        {
-            return;
-        }
-
-        // Attempt to move the player here
-        playerCharacter.TryMoveToTile(coordinates);
-    }
-
-    /// <summary>
-    /// Set this tile as a movement target
-    /// </summary>
-    public void SetAsMovementTarget(bool isTarget)
-    {
-        isMovementTarget = isTarget;
+ 
+        isSelected = true;
         UpdateVisual();
     }
-
-    public void ToggleSelection()
-    {
-        isSelected = !isSelected;
-        UpdateVisual();
-
-        if (isSelected)
-        {
-            // Show neighbors or perform other selection logic
-            var neighbors = gridManager.GetNeighbors(coordinates);
-        }
-    }
-
     public void DeSelect()
     {
+        if (!isWalkable) return;
+
+
         isSelected = false;
         UpdateVisual();
     }
-
-    /// <summary>
-    /// Set whether the player is currently on this tile
-    /// </summary>
-    public void SetPlayerPresence(bool hasPlayerOnTile)
+    public void SetCurrentPlayer(Char player)
     {
-        hasPlayer = hasPlayerOnTile;
-        UpdateVisual();
-    }
+        if (player == null)
+        {
+            CurrentPlayer = null;
+            hasPlayer = false;
+            UpdateVisual();
+            return;
+        }
 
-    /// <summary>
-    /// Check if the player is currently on this tile
-    /// </summary>
-    public bool HasPlayer()
-    {
-        return hasPlayer;
+        if (CurrentPlayer == null || CurrentPlayer == player)
+        {
+             player.transform.position = transform.position;
+            hasPlayer = true;
+            CurrentPlayer = player;
+            UpdateVisual();
+            return;
+        }
+   
     }
+ 
 }

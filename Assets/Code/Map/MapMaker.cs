@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,7 +38,7 @@ public class MapMaker : MonoBehaviour
     };
 
     // Data structures
-    private Dictionary<Vector2Int, HexTile> hexTiles = new Dictionary<Vector2Int, HexTile>();
+    public Dictionary<Vector2Int, HexTile> hexTiles = new Dictionary<Vector2Int, HexTile>();
     private List<HexTile> allTiles = new List<HexTile>();
     private Vector3 gridCenter;
 
@@ -122,7 +123,6 @@ public class MapMaker : MonoBehaviour
         }
 
         OnGridGenerated?.Invoke();
-        Debug.Log($"MapMaker: Generated {allTiles.Count} hex tiles");
     }
 
     /// <summary>
@@ -299,5 +299,5 @@ public class MapMaker : MonoBehaviour
         return new List<HexTile>(allTiles);
     }
 
-   
+ 
 }

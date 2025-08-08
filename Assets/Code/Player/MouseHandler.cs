@@ -7,14 +7,14 @@ public class MouseHandler : MonoBehaviour
 {
     private MapMaker mapMaker;
     private HexTile currentHoveredTile = null;
-    private HexTile clickedTile = null;
-
+    private HexTile ClickedTile = null;
+    private Char SectedPlayer;
     void Start()
     {
         mapMaker = MapMaker.instance;
         if (mapMaker == null)
         {
-            Debug.LogError("MapMaker not found! HexMouseHandler needs MapMaker to work.");
+            Debug.Log("MapMaker not found! HexMouseHandler needs MapMaker to work.");
         }
     }
 
@@ -69,19 +69,49 @@ public class MouseHandler : MonoBehaviour
     }
     void HandleClick(HexTile clickedTile)
     {
-        if(clickedTile != this.clickedTile)
+
+        if(clickedTile != ClickedTile)
         {
-            if(this.clickedTile != null)
+            if(ClickedTile != null)
             {
-                this.clickedTile.DeSelect();
+                ClickedTile.DeSelect();
             }
 
-            this.clickedTile = clickedTile;
-
-            if (this.clickedTile != null)
+            ClickedTile = clickedTile;
+            if (ClickedTile.hasPlayer && SectedPlayer == null)
             {
-                this.clickedTile.Interact();
+                handleClickOnChar(clickedTile);
             }
+            else
+            {
+                if (ClickedTile != null && SectedPlayer == null)
+                {
+                    ClickedTile.Interact();
+                }
+                else
+                {
+                    SectedPlayer.MovePlayerToTile(clickedTile);
+                    ClickedTile.DeSelect();
+                    SectedPlayer = null;
+                }
+            }
+        }
+    }
+    void handleClickOnChar(HexTile clickedTile)
+    {
+        if (clickedTile == null) return;
+        // If we already have a selected player, deselect them
+        if (SectedPlayer != null)
+        {
+            ClickedTile.DeSelect();
+            SectedPlayer = null;
+        }
+        // Select the clicked player
+        Char clickedChar = clickedTile.CurrentPlayer;
+        if (clickedChar != null)
+        {
+            SectedPlayer = clickedChar;
+            ClickedTile.Interact();
         }
     }
 

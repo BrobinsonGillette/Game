@@ -253,7 +253,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &398376043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,10 +268,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 2
   moveCurve:
-    serializedVersion: 2
     m_Curve:
-    - serializedVersion: 3
-      time: 0
+    - time: 0
       value: 0
       inSlope: 0
       outSlope: 0
@@ -279,8 +277,7 @@ MonoBehaviour:
       weightedMode: 0
       inWeight: 0
       outWeight: 0
-    - serializedVersion: 3
-      time: 1
+    - time: 1
       value: 1
       inSlope: 0
       outSlope: 0
@@ -292,6 +289,11 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   currentHexPosition: {x: 0, y: 0}
+  mapMaker: {fileID: 0}
+  isMoving: 0
+  isInMovementMode: 0
+  highlightedTiles: []
+  currentTile: {fileID: 0}
 --- !u!50 &398376044
 Rigidbody2D:
   serializedVersion: 4
@@ -626,6 +628,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCharacter: {fileID: 0}
   startingHexPosition: {x: 0, y: 0}
+  mapMaker: {fileID: 0}
+  currentPlayerTile: {fileID: 0}
 --- !u!1 &1845803232
 GameObject:
   m_ObjectHideFlags: 0
@@ -805,35 +809,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1954903869}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f150da32b6180754d9b4c41036717301, type: 3}
+  m_Script: {fileID: 11500000, guid: f548237fb00396645bf341383ac01203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2
-  moveCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  currentHexPosition: {x: 0, y: 0}
+  currentHex: {fileID: 0}
 --- !u!1 &2108734101
 GameObject:
   m_ObjectHideFlags: 0
