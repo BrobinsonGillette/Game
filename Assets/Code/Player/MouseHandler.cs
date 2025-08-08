@@ -203,6 +203,15 @@ public class MouseHandler : MonoBehaviour
             if (tile != null && tile.isWalkable && !tile.hasPlayer)
             {
                 tile.SetInMovementRange(true);
+                List<Vector2Int> neighbors =  mapMaker.GetNeighbors(ClickedTile.coordinates);
+                foreach (Vector2Int neighbor in neighbors)
+                {
+                     HexTile neighborTile = mapMaker.GetHexTile(neighbor);
+                    if (neighborTile != null && neighborTile.isWalkable && !neighborTile.hasPlayer)
+                    {
+                        neighborTile.SetMovementRange(true);
+                    }
+                }
             }
         }
 
@@ -225,6 +234,15 @@ public class MouseHandler : MonoBehaviour
             if (tile != null)
             {
                 tile.SetInMovementRange(false);
+                List<Vector2Int> neighbors = mapMaker.GetNeighbors(ClickedTile.coordinates);
+                foreach (Vector2Int neighbor in neighbors)
+                {
+                    HexTile neighborTile = mapMaker.GetHexTile(neighbor);
+                    if (neighborTile != null && neighborTile.isWalkable && !neighborTile.hasPlayer)
+                    {
+                        neighborTile.SetMovementRange(false);
+                    }
+                }
             }
         }
         currentMovementRange.Clear();

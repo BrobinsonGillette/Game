@@ -161,60 +161,7 @@ public class Char : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// Move along a path of tiles
-    /// </summary>
-    public bool MoveAlongPath(List<HexTile> path)
-    {
-        if (isMoving || path == null || path.Count == 0)
-            return false;
-
-        // Calculate total movement cost
-        int totalCost = 0;
-        for (int i = 0; i < path.Count; i++)
-        {
-            if (path[i] == null || !path[i].isWalkable || (path[i].hasPlayer && path[i] != currentHex))
-                return false;
-
-            totalCost += path[i].movementCost;
-        }
-
-        if (totalCost > remainingMoves)
-        {
-            Debug.Log($"{characterName} cannot move: Path requires {totalCost} moves, only {remainingMoves} available");
-            return false;
-        }
-
-        // Validate path connectivity
-        HexTile previousTile = currentHex;
-        foreach (HexTile tile in path)
-        {
-            if (!IsAdjacent(previousTile, tile))
-            {
-                Debug.Log($"{characterName} cannot move: Path is not connected");
-                return false;
-            }
-            previousTile = tile;
-        }
-
-        // Queue up the movement
-        movementQueue.Clear();
-        foreach (HexTile tile in path)
-        {
-            movementQueue.Enqueue(tile);
-        }
-
-        remainingMoves -= totalCost;
-
-        // Start movement
-        if (currentMovement != null)
-            StopCoroutine(currentMovement);
-
-        currentMovement = StartCoroutine(ProcessMovementQueue());
-
-        return true;
-    }
-
+   
     /// <summary>
     /// Check if two tiles are adjacent
     /// </summary>
@@ -270,53 +217,7 @@ public class Char : MonoBehaviour
         OnMovementComplete?.Invoke(this);
     }
 
-    /// <summary>
-    /// Process queued movements
-    /// </summary>
-    private IEnumerator ProcessMovementQueue()
-    {
-        isMoving = true;
-
-        while (movementQueue.Count > 0)
-        {
-            HexTile nextTile = movementQueue.Dequeue();
-
-            // Update tile occupancy
-            if (currentHex != null)
-                currentHex.SetCurrentPlayer(null);
-
-            Vector3 startPos = transform.position;
-            Vector3 endPos = nextTile.transform.position;
-            float journeyTime = 1f / movementAnimationSpeed;
-            float elapsedTime = 0;
-
-            while (elapsedTime < journeyTime)
-            {
-                elapsedTime += Time.deltaTime;
-                float fractionOfJourney = elapsedTime / journeyTime;
-
-                // Smooth movement curve
-                fractionOfJourney = Mathf.SmoothStep(0, 1, fractionOfJourney);
-
-                // Add slight vertical bounce
-                Vector3 currentPos = Vector3.Lerp(startPos, endPos, fractionOfJourney);
-                currentPos.y += Mathf.Sin(fractionOfJourney * Mathf.PI) * 0.15f;
-
-                transform.position = currentPos;
-                yield return null;
-            }
-
-            // Update current position
-            transform.position = endPos;
-            currentHex = nextTile;
-            currentHex.SetCurrentPlayer(this);
-        }
-
-        isMoving = false;
-        currentMovement = null;
-        OnMovementComplete?.Invoke(this);
-    }
-
+ 
     /// <summary>
     /// Get tiles within movement range
     /// </summary>

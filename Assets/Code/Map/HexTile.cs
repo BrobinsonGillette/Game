@@ -18,10 +18,10 @@ public class HexTile : MonoBehaviour
     public Color normalColor = Color.white;
     public Color hoverColor = Color.yellow;
     public Color selectedColor = Color.green;
-    public Color blockedColor = Color.black;
     public Color playerPositionColor = Color.blue;
     public Color movementRangeColor = new Color(0.5f, 0.8f, 1f, 0.6f); // Light blue with transparency
-    public Color pathColor = new Color(1f, 0.8f, 0.2f, 0.8f); // Golden path color
+    public Color MovementDestinationColor = Color.gray;
+
 
     [Header("Animation")]
     public float pulseSpeed = 2f;
@@ -30,8 +30,8 @@ public class HexTile : MonoBehaviour
     public bool isSelected { get; private set; }
     private bool isHovered = false;
     public bool hasPlayer { get; private set; }
+    private bool inMovementRange = false;
     private bool isInMovementRange = false;
-    private bool isOnPath = false;
     private Coroutine pulseCoroutine;
 
     public Char CurrentPlayer { get; private set; }
@@ -70,11 +70,7 @@ public class HexTile : MonoBehaviour
         Color targetColor = normalColor;
         Color highlightColor = Color.clear;
 
-        if (!isWalkable)
-        {
-            targetColor = blockedColor;
-        }
-        else if (hasPlayer)
+        if (hasPlayer)
         {
             targetColor = playerPositionColor;
         }
@@ -82,17 +78,16 @@ public class HexTile : MonoBehaviour
         {
             targetColor = selectedColor;
             StartPulseEffect();
-        }
-        else if (isOnPath)
-        {
-            targetColor = pathColor;
-            highlightColor = pathColor;
-            highlightColor.a = 0.3f;
-        }
-        else if (isInMovementRange)
+        }else if (inMovementRange)
         {
             targetColor = movementRangeColor;
             highlightColor = movementRangeColor;
+            highlightColor.a = 0.4f;
+        }
+        else if (isInMovementRange)
+        {
+            targetColor = MovementDestinationColor;
+            highlightColor = MovementDestinationColor;
             highlightColor.a = 0.4f;
         }
         else if (isHovered)
@@ -146,11 +141,19 @@ public class HexTile : MonoBehaviour
         if (!isWalkable) return;
 
         isSelected = false;
-        isOnPath = false;
         StopPulseEffect();
         UpdateVisual();
     }
+    public void SetMovementRange(bool inRange)
+    {
+        inMovementRange = inRange;
+        UpdateVisual();
 
+        if (inRange)
+        {
+            StartCoroutine(AppearAnimation());
+        }
+    }
     public void SetInMovementRange(bool inRange)
     {
         isInMovementRange = inRange;
@@ -164,7 +167,6 @@ public class HexTile : MonoBehaviour
 
     public void SetOnPath(bool onPath)
     {
-        isOnPath = onPath;
         UpdateVisual();
     }
 
@@ -276,7 +278,6 @@ public class HexTile : MonoBehaviour
     public void ClearMovementIndicators()
     {
         isInMovementRange = false;
-        isOnPath = false;
         UpdateVisual();
     }
 
