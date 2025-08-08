@@ -19,6 +19,7 @@ public class HexTile : MonoBehaviour
     public Color hoverColor = Color.yellow;
     public Color selectedColor = Color.green;
     public Color playerPositionColor = Color.blue;
+    public Color EnemyPositionColor = Color.red;
     public Color movementRangeColor = new Color(0.5f, 0.8f, 1f, 0.6f); // Light blue with transparency
     public Color MovementDestinationColor = Color.gray;
 
@@ -29,7 +30,7 @@ public class HexTile : MonoBehaviour
 
     public bool isSelected { get; private set; }
     private bool isHovered = false;
-    public bool hasPlayer { get; private set; }
+    public bool hasChar { get; private set; }
     private bool inMovementRange = false;
     private bool isInMovementRange = false;
     private Coroutine pulseCoroutine;
@@ -69,10 +70,23 @@ public class HexTile : MonoBehaviour
 
         Color targetColor = normalColor;
         Color highlightColor = Color.clear;
-
-        if (hasPlayer)
+        if (isHovered)
         {
-            targetColor = playerPositionColor;
+            targetColor = hoverColor;
+            highlightColor = hoverColor;
+            highlightColor.a = 0.2f;
+        }
+        else if (hasChar)
+        {
+            if(CurrentPlayer.team == Team.enemy)
+            {
+                targetColor = EnemyPositionColor;
+            }
+            if(CurrentPlayer.team == Team.player)
+            {
+                targetColor = playerPositionColor;
+            }
+
         }
         else if (isSelected)
         {
@@ -90,13 +104,7 @@ public class HexTile : MonoBehaviour
             highlightColor = MovementDestinationColor;
             highlightColor.a = 0.4f;
         }
-        else if (isHovered)
-        {
-            targetColor = hoverColor;
-            highlightColor = hoverColor;
-            highlightColor.a = 0.2f;
-        }
-
+        
         spriteRenderer.color = targetColor;
 
         if (highlightRenderer != null)
@@ -134,6 +142,7 @@ public class HexTile : MonoBehaviour
 
         // Play click animation
         StartCoroutine(ClickAnimation());
+        StartCoroutine(ClearAnimation());
     }
 
     public void DeSelect()
@@ -152,6 +161,7 @@ public class HexTile : MonoBehaviour
         if (inRange)
         {
             StartCoroutine(AppearAnimation());
+            StartCoroutine(ClearAnimation());
         }
     }
     public void SetInMovementRange(bool inRange)
@@ -162,6 +172,7 @@ public class HexTile : MonoBehaviour
         if (inRange)
         {
             StartCoroutine(AppearAnimation());
+            StartCoroutine(ClearAnimation());
         }
     }
 
@@ -175,7 +186,7 @@ public class HexTile : MonoBehaviour
         if (player == null)
         {
             CurrentPlayer = null;
-            hasPlayer = false;
+            hasChar = false;
             UpdateVisual();
             return;
         }
@@ -183,7 +194,7 @@ public class HexTile : MonoBehaviour
         if (CurrentPlayer == null || CurrentPlayer == player)
         {
             player.transform.position = transform.position;
-            hasPlayer = true;
+            hasChar = true;
             CurrentPlayer = player;
             UpdateVisual();
             return;
@@ -196,6 +207,7 @@ public class HexTile : MonoBehaviour
             StopCoroutine(pulseCoroutine);
 
         pulseCoroutine = StartCoroutine(PulseEffect());
+        StartCoroutine(ClearAnimation());
     }
 
     private void StopPulseEffect()
@@ -275,10 +287,29 @@ public class HexTile : MonoBehaviour
         }
     }
 
-    public void ClearMovementIndicators()
+    public IEnumerator ClearAnimation()
     {
-        isInMovementRange = false;
-        UpdateVisual();
+        if (highlightRenderer == null) yield break;
+
+        float duration = 0.3f;
+        float elapsed = 0;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+
+            // Fade out and scale down
+            Color col = highlightRenderer.color;
+            col.a = Mathf.Lerp(0.4f, 0, t);
+            highlightRenderer.color = col;
+
+            float scale = Mathf.Lerp(1.1f, 0.8f, Mathf.SmoothStep(0, 1, t));
+            highlightRenderer.transform.localScale = Vector3.one * scale;
+
+            yield return null;
+        }
     }
+
 
 }

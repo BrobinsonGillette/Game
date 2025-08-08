@@ -6,15 +6,42 @@ using UnityEngine;
 public class MouseHandler : MonoBehaviour
 {
     public static MouseHandler instance;
+
+    [Header("Settings")]
+    [SerializeField] private float doubleClickTime = 0.3f;
+    [SerializeField] private bool enablePathPreview = true;
+    [SerializeField] private bool enableRightClickToCancel = true;
+
+    // Core references
     private MapMaker mapMaker;
+    private Camera mainCamera;
+
+    // Current state tracking
     private HexTile currentHoveredTile = null;
-    private HexTile ClickedTile = null;
-    private Char SelectedPlayer;
+    private HexTile clickedTile = null;
+    private Char selectedPlayer = null;
 
     // Movement visualization
-    private List<HexTile> currentMovementRange = new List<HexTile>();
+    private HashSet<HexTile> currentMovementRange = new HashSet<HexTile>();
     private List<HexTile> currentPath = new List<HexTile>();
+    private HashSet<HexTile> highlightedNeighbors = new HashSet<HexTile>();
+
+    // Input timing
+    private float lastClickTime = 0f;
+    private HexTile lastClickedTile = null;
+
+    // Events
+    public System.Action<Char> OnPlayerSelected;
+    public System.Action OnSelectionCancelled;
+    public System.Action<Char, HexTile> OnPlayerMoved;
+
     private void Awake()
+    {
+        InitializeSingleton();
+        InitializeReferences();
+    }
+
+    private void InitializeSingleton()
     {
         if (instance == null)
         {
@@ -22,263 +49,380 @@ public class MouseHandler : MonoBehaviour
         }
         else
         {
+            Debug.LogWarning("Multiple MouseHandler instances found! Destroying duplicate.");
             Destroy(gameObject);
         }
     }
-        void Start()
+
+    private void InitializeReferences()
+    {
+        mainCamera = Camera.main;
+        if (mainCamera == null)
+        {
+            mainCamera = FindObjectOfType<Camera>();
+        }
+
+        if (mainCamera == null)
+        {
+            Debug.LogError("MouseHandler: No camera found!");
+        }
+    }
+
+    private void Start()
     {
         mapMaker = MapMaker.instance;
         if (mapMaker == null)
         {
-            Debug.Log("MapMaker not found! HexMouseHandler needs MapMaker to work.");
+            Debug.LogError("MouseHandler: MapMaker instance not found!");
+            enabled = false;
+            return;
+        }
+
+        // Subscribe to map generation events if needed
+        if (mapMaker.OnGridGenerated != null)
+        {
+            mapMaker.OnGridGenerated += OnMapGenerated;
         }
     }
 
-    void Update()
+    private void OnMapGenerated()
     {
+        // Reset state when map is regenerated
+        CancelSelection();
+    }
+
+    private void Update()
+    {
+        if (!IsInitialized()) return;
+
         HandleMouseInput();
     }
 
-    void HandleMouseInput()
+    private bool IsInitialized()
     {
-        if (mapMaker == null || CamMagger.instance == null) return;
+        return mapMaker != null && mainCamera != null;
+    }
 
-        // Get world mouse position from CamMagger
-        Vector3 worldMousePos = CamMagger.instance.WorldMousePosition;
+    private void HandleMouseInput()
+    {
+        Vector3 worldMousePos = GetWorldMousePosition();
+        HexTile hoveredTile = GetHexTileAtPosition(worldMousePos);
 
-        // Convert world position to hex coordinates
-        Vector2Int hexCoord = mapMaker.WorldToHexPosition(worldMousePos);
-
-        // Get the hex tile at those coordinates
-        HexTile hoveredTile = mapMaker.GetHexTile(hexCoord);
-
-        // Handle hover logic
         HandleHover(hoveredTile);
-
-        // Handle click interactions
-        if (Input.GetMouseButtonDown(0)) // Left mouse button
-        {
-            HandleClick(hoveredTile);
-        }
-
-        // Right click to cancel selection
-        if (Input.GetMouseButtonDown(1))
-        {
-            CancelSelection();
-        }
+        HandleMouseClicks(hoveredTile);
     }
 
-    void HandleHover(HexTile newHoveredTile)
+    private Vector3 GetWorldMousePosition()
     {
-        // If we're hovering over a different tile
-        if (newHoveredTile != currentHoveredTile)
+        // Use CamMagger if available, otherwise fallback to camera conversion
+        if (CamMagger.instance != null)
         {
-            // Call MouseExit on the previously hovered tile
-            if (currentHoveredTile != null)
+            return CamMagger.instance.WorldMousePosition;
+        }
+
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = -mainCamera.transform.position.z; // Adjust for 2D
+        return mainCamera.ScreenToWorldPoint(mousePos);
+    }
+
+    private HexTile GetHexTileAtPosition(Vector3 worldPos)
+    {
+        Vector2Int hexCoord = mapMaker.WorldToHexPosition(worldPos);
+        return mapMaker.GetHexTile(hexCoord);
+    }
+
+    private void HandleHover(HexTile newHoveredTile)
+    {
+        if (newHoveredTile == currentHoveredTile) return;
+
+        // Handle mouse exit on previous tile
+        if (currentHoveredTile != null)
+        {
+            currentHoveredTile.MouseExit();
+        }
+
+        // Update current hovered tile
+        currentHoveredTile = newHoveredTile;
+
+        // Handle mouse enter on new tile
+        if (currentHoveredTile != null)
+        {
+            currentHoveredTile.MousedOver();
+
+            // Update path preview if we have a selected player
+            if (selectedPlayer != null && enablePathPreview)
             {
-                currentHoveredTile.MouseExit();
-            }
-
-            // Update current hovered tile
-            currentHoveredTile = newHoveredTile;
-
-            // Call MousedOver on the new tile
-            if (currentHoveredTile != null)
-            {
-                currentHoveredTile.MousedOver();
-
-                // If we have a selected player, show path preview
-                if (SelectedPlayer != null && currentHoveredTile != null)
-                {
-                    UpdatePathPreview(currentHoveredTile);
-                }
+                UpdatePathPreview(currentHoveredTile);
             }
         }
     }
 
-    void HandleClick(HexTile clickedTile)
+    private void HandleMouseClicks(HexTile hoveredTile)
+    {
+        if (Input.GetMouseButtonDown(0)) // Left click
+        {
+            HandleLeftClick(hoveredTile);
+        }
+
+        if (Input.GetMouseButtonDown(1) && enableRightClickToCancel) // Right click
+        {
+            HandleRightClick();
+        }
+
+        // Handle middle mouse or other inputs here if needed
+    }
+
+    private void HandleLeftClick(HexTile clickedTile)
     {
         if (clickedTile == null) return;
 
-        // If clicking on a tile with a player
-        if (clickedTile.hasPlayer)
-        {
-            // If we already have a different selected player, deselect them first
-            if (SelectedPlayer != null && SelectedPlayer != clickedTile.CurrentPlayer)
-            {
-                CancelSelection();
-            }
+        // Check for double click
+        bool isDoubleClick = CheckForDoubleClick(clickedTile);
 
-            // Select the clicked player
-            HandleClickOnChar(clickedTile);
-        }
-        // If we have a selected player and clicking on an empty tile
-        else if (SelectedPlayer != null)
+        if (clickedTile.hasChar)
         {
-            // Try to move the selected player
-            if (IsInMovementRange(clickedTile))
-            {
-                bool moved = SelectedPlayer.MovePlayerToTile(clickedTile);
-                if (moved)
-                {
-                    // Update movement range display after move
-                    UpdateMovementRangeDisplay();
-
-                    // If no moves left, deselect
-                    if (!SelectedPlayer.CanMove())
-                    {
-                        CancelSelection();
-                    }
-                }
-            }
-            else
-            {
-                Debug.Log("Target tile is out of movement range!");
-                // Optional: Play error sound or show feedback
-            }
+            HandleClickOnPlayer(clickedTile, isDoubleClick);
         }
-        // Clicking on an empty tile with no player selected
+        else if (selectedPlayer != null)
+        {
+            HandleClickOnEmptyTile(clickedTile, isDoubleClick);
+        }
         else
         {
-            if (ClickedTile != null)
-            {
-                ClickedTile.DeSelect();
-            }
-
-            ClickedTile = clickedTile;
-            ClickedTile.Interact();
+            HandleClickOnTile(clickedTile, isDoubleClick);
         }
     }
 
-    void HandleClickOnChar(HexTile clickedTile)
+    private bool CheckForDoubleClick(HexTile clickedTile)
     {
-        if (clickedTile == null) return;
+        float currentTime = Time.time;
+        bool isDoubleClick = (currentTime - lastClickTime) < doubleClickTime &&
+                            lastClickedTile == clickedTile;
 
+        lastClickTime = currentTime;
+        lastClickedTile = clickedTile;
+
+        return isDoubleClick;
+    }
+
+    private void HandleClickOnPlayer(HexTile clickedTile, bool isDoubleClick)
+    {
         Char clickedChar = clickedTile.CurrentPlayer;
         if (clickedChar == null) return;
 
-        // If clicking the same character, toggle selection
-        if (SelectedPlayer == clickedChar)
+        // Double click to center camera on player
+        if (isDoubleClick && CamMagger.instance != null)
+        {
+            CamMagger.instance.SetTarget(clickedChar.transform);
+            return;
+        }
+
+        // Toggle selection if clicking the same character
+        if (selectedPlayer == clickedChar)
         {
             CancelSelection();
             return;
         }
 
         // Select the new character
-        SelectedPlayer = clickedChar;
-
-        if (ClickedTile != null && ClickedTile != clickedTile)
-        {
-            ClickedTile.DeSelect();
-        }
-
-        ClickedTile = clickedTile;
-        ClickedTile.Interact();
-
-        // Show movement range
-        ShowMovementRange();
-
-        // Camera follow
-        if (CamMagger.instance != null)
-        {
-            CamMagger.instance.SetTarget(clickedChar.transform);
-        }
-
-        Debug.Log($"Selected {clickedChar.characterName} - Moves: {clickedChar.remainingMoves}/{clickedChar.moveSpeed}");
+        SelectPlayer(clickedChar, clickedTile);
     }
 
-    void ShowMovementRange()
+    private void HandleClickOnEmptyTile(HexTile clickedTile, bool isDoubleClick)
     {
-        if (SelectedPlayer == null) return;
-
-        // Clear previous range display
-        ClearMovementRange();
-
-        // Get tiles in movement range
-        currentMovementRange = SelectedPlayer.GetMovementRange();
-
-        // Highlight tiles in range
-        foreach (HexTile tile in currentMovementRange)
+        if (!IsValidMoveTarget(clickedTile))
         {
-            if (tile != null && tile.isWalkable && !tile.hasPlayer)
+            // Invalid move target - could show feedback here
+            Debug.Log("Invalid move target!");
+            return;
+        }
+
+        // Attempt to move the selected player
+        bool moveSuccessful = AttemptPlayerMove(clickedTile);
+
+        if (moveSuccessful)
+        {
+            OnPlayerMoved?.Invoke(selectedPlayer, clickedTile);
+
+            // Update movement display
+            UpdateMovementRangeDisplay();
+
+            // Auto-deselect if no moves remaining
+            if (selectedPlayer != null && !selectedPlayer.CanMove())
             {
-                tile.SetInMovementRange(true);
-                List<Vector2Int> neighbors =  mapMaker.GetNeighbors(ClickedTile.coordinates);
-                foreach (Vector2Int neighbor in neighbors)
-                {
-                     HexTile neighborTile = mapMaker.GetHexTile(neighbor);
-                    if (neighborTile != null && neighborTile.isWalkable && !neighborTile.hasPlayer)
-                    {
-                        neighborTile.SetMovementRange(true);
-                    }
-                }
+                CancelSelection();
             }
         }
+    }
+
+    private void HandleClickOnTile(HexTile clickedTile, bool isDoubleClick)
+    {
+        // Deselect previous tile
+        if (this.clickedTile != null && this.clickedTile != clickedTile)
+        {
+            this.clickedTile.DeSelect();
+        }
+
+        // Select new tile
+        this.clickedTile = clickedTile;
+        this.clickedTile.Interact();
+    }
+
+    private void HandleRightClick()
+    {
+        CancelSelection();
+    }
+
+    private void SelectPlayer(Char player, HexTile playerTile)
+    {
+        if(player.team != Team.player) return;
+        // Deselect previous tile if different
+        if (clickedTile != null && clickedTile != playerTile)
+        {
+            clickedTile.DeSelect();
+        }
+
+        // Update selection state
+        selectedPlayer = player;
+        clickedTile = playerTile;
+        clickedTile.Interact();
+
+       if(selectedPlayer.remainingMoves > 0)
+            ShowMovementRange();
+
+        // Set camera target
+        if (CamMagger.instance != null)
+        {
+            CamMagger.instance.SetTarget(player.transform);
+        }
+
+        // Fire event
+        OnPlayerSelected?.Invoke(player);
+
+        Debug.Log($"Selected {player.characterName} - Moves: {player.remainingMoves}/{player.moveSpeed}");
+    }
+
+    private bool IsValidMoveTarget(HexTile tile)
+    {
+        return tile != null &&
+               tile.isWalkable &&
+               !tile.hasChar &&
+               IsInMovementRange(tile);
+    }
+
+    private bool AttemptPlayerMove(HexTile targetTile)
+    {
+        if (selectedPlayer == null || targetTile == null) return false;
+
+        return selectedPlayer.MovePlayerToTile(targetTile);
+    }
+
+    private void ShowMovementRange()
+    {
+        if (selectedPlayer == null) return;
+
+        ClearMovementRange();
+
+        // Get movement range from the character
+        List<HexTile> movementTiles = selectedPlayer.GetMovementRange();
+
+        // Convert to HashSet for faster lookups
+        currentMovementRange = new HashSet<HexTile>(movementTiles);
+
+        // Highlight movement range tiles
+        foreach (HexTile tile in currentMovementRange)
+        {
+            if (tile != null && tile.isWalkable && !tile.hasChar)
+            {
+                tile.SetInMovementRange(true);
+            }
+        }
+
+        // Highlight immediate neighbors differently
+        HighlightNeighbors();
 
         Debug.Log($"Showing {currentMovementRange.Count} tiles in movement range");
     }
 
-    void UpdateMovementRangeDisplay()
+    private void HighlightNeighbors()
     {
-        if (SelectedPlayer == null) return;
+        if (clickedTile == null ) return;
 
-        // Clear and refresh the movement range
-        ClearMovementRange();
-        ShowMovementRange();
+        List<Vector2Int> neighborCoords = mapMaker.GetNeighbors(clickedTile.coordinates);
+
+        foreach (Vector2Int neighborCoord in neighborCoords)
+        {
+            HexTile neighborTile = mapMaker.GetHexTile(neighborCoord);
+            if (neighborTile != null && neighborTile.isWalkable && !neighborTile.hasChar)
+            {
+                neighborTile.SetMovementRange(true);
+                highlightedNeighbors.Add(neighborTile);
+            }
+        }
     }
 
-    void ClearMovementRange()
+    private void UpdateMovementRangeDisplay()
     {
+        if (selectedPlayer == null) return;
+
+        ClearMovementRange();
+        if(selectedPlayer.remainingMoves > 0)
+            ShowMovementRange();
+    }
+
+    private void ClearMovementRange()
+    {
+        // Clear movement range highlighting
         foreach (HexTile tile in currentMovementRange)
         {
             if (tile != null)
             {
                 tile.SetInMovementRange(false);
-                List<Vector2Int> neighbors = mapMaker.GetNeighbors(ClickedTile.coordinates);
-                foreach (Vector2Int neighbor in neighbors)
-                {
-                    HexTile neighborTile = mapMaker.GetHexTile(neighbor);
-                    if (neighborTile != null && neighborTile.isWalkable && !neighborTile.hasPlayer)
-                    {
-                        neighborTile.SetMovementRange(false);
-                    }
-                }
             }
         }
         currentMovementRange.Clear();
 
+        // Clear neighbor highlighting
+        foreach (HexTile tile in highlightedNeighbors)
+        {
+            if (tile != null)
+            {
+                tile.SetMovementRange(false);
+            }
+        }
+        highlightedNeighbors.Clear();
+
         ClearPathPreview();
     }
 
-    void UpdatePathPreview(HexTile targetTile)
+    private void UpdatePathPreview(HexTile targetTile)
     {
-        if (SelectedPlayer == null || targetTile == null) return;
+        if (selectedPlayer == null || targetTile == null || !enablePathPreview) return;
 
-        // Clear previous path
         ClearPathPreview();
 
-        // Don't show path to current position or blocked tiles
-        if (targetTile == SelectedPlayer.currentHex || !targetTile.isWalkable || targetTile.hasPlayer)
+        // Don't show path for invalid targets
+        if (targetTile == selectedPlayer.currentHex ||
+            !targetTile.isWalkable ||
+            targetTile.hasChar ||
+            !IsInMovementRange(targetTile))
+        {
             return;
+        }
 
-        // Only show path if target is in movement range
-        if (!IsInMovementRange(targetTile))
-            return;
+        // Calculate and display path
+        currentPath = CalculatePath(selectedPlayer.currentHex, targetTile);
 
-        // Calculate path (simplified - just showing direct path for now)
-        currentPath = CalculateSimplePath(SelectedPlayer.currentHex, targetTile);
-
-        // Highlight path tiles
         foreach (HexTile tile in currentPath)
         {
-            if (tile != null && tile != SelectedPlayer.currentHex)
+            if (tile != null && tile != selectedPlayer.currentHex)
             {
                 tile.SetOnPath(true);
             }
         }
     }
 
-    void ClearPathPreview()
+    private void ClearPathPreview()
     {
         foreach (HexTile tile in currentPath)
         {
@@ -290,36 +434,46 @@ public class MouseHandler : MonoBehaviour
         currentPath.Clear();
     }
 
-    List<HexTile> CalculateSimplePath(HexTile start, HexTile end)
+    private List<HexTile> CalculatePath(HexTile start, HexTile end)
     {
+        // Simple path calculation - you can implement A* here for more complex pathfinding
         List<HexTile> path = new List<HexTile>();
 
-        // For now, just return the end tile as a simple path
-        // You can implement A* pathfinding here for proper path calculation
-        path.Add(end);
+        if (IsAdjacent(start, end))
+        {
+            path.Add(end);
+        }
 
         return path;
     }
 
-    bool IsInMovementRange(HexTile tile)
+    private bool IsAdjacent(HexTile from, HexTile to)
+    {
+        if (from == null || to == null) return false;
+
+        List<Vector2Int> neighbors = mapMaker.GetNeighbors(from.coordinates);
+        return neighbors.Contains(to.coordinates);
+    }
+
+    private bool IsInMovementRange(HexTile tile)
     {
         return currentMovementRange.Contains(tile);
     }
 
-    void CancelSelection()
+    public void CancelSelection()
     {
-        // Clear movement range display
+        // Clear visual indicators
         ClearMovementRange();
 
         // Deselect tiles
-        if (ClickedTile != null)
+        if (clickedTile != null)
         {
-            ClickedTile.DeSelect();
-            ClickedTile = null;
+            clickedTile.DeSelect();
+            clickedTile = null;
         }
 
         // Clear selected player
-        SelectedPlayer = null;
+        selectedPlayer = null;
 
         // Reset camera
         if (CamMagger.instance != null)
@@ -327,14 +481,30 @@ public class MouseHandler : MonoBehaviour
             CamMagger.instance.SetTarget(null);
         }
 
+        // Fire event
+        OnSelectionCancelled?.Invoke();
+
         Debug.Log("Selection cancelled");
     }
 
-    void OnDisable()
+    // Public getters for other systems
+    public Char SelectedPlayer => selectedPlayer;
+    public HexTile ClickedTile => clickedTile;
+    public bool HasSelection => selectedPlayer != null;
+
+    private void OnDisable()
     {
         CancelSelection();
     }
 
+    private void OnDestroy()
+    {
+        if (mapMaker != null && mapMaker.OnGridGenerated != null)
+        {
+            mapMaker.OnGridGenerated -= OnMapGenerated;
+        }
+    }
 }
+
 
 

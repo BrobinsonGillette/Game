@@ -27,8 +27,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.7, y: 1.7, z: 1.7}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6029471002778164982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -134,14 +134,13 @@ MonoBehaviour:
   isWalkable: 1
   movementCost: 1
   spriteRenderer: {fileID: 8177553099259343874}
-  highlightRenderer: {fileID: 0}
+  highlightRenderer: {fileID: 7783192483392229144}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 0.5019608}
   selectedColor: {r: 0, g: 1, b: 0, a: 1}
-  blockedColor: {r: 1, g: 0, b: 0, a: 1}
-  playerPositionColor: {r: 0, g: 0, b: 1, a: 1}
-  movementRangeColor: {r: 0.5, g: 0.8, b: 1, a: 0.6}
-  pathColor: {r: 1, g: 0.8, b: 0.2, a: 0.8}
+  playerPositionColor: {r: 0, g: 0, b: 1, a: 0.5019608}
+  movementRangeColor: {r: 0.5, g: 0.8, b: 1, a: 0.5019608}
+  MovementDestinationColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5019608}
   pulseSpeed: 2
   pulseIntensity: 0.3
 --- !u!1 &7488329900052259918

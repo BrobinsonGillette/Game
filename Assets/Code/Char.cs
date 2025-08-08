@@ -3,24 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Team { none, player, enemy , neutral , other };
 public class Char : MonoBehaviour
 {
     [Header("Character Properties")]
     public string characterName = "Player";
+    public Team team = Team.none;
     public int moveSpeed = 3; // Number of tiles this character can move per turn
-    public float movementAnimationSpeed = 2f; // Speed of visual movement between tiles
+    private float movementAnimationSpeed = 2f; // Speed of visual movement between tiles
 
-    [Header("Current State")]
-    public HexTile currentHex;
-    public bool isMoving = false;
-    public int remainingMoves = 0; // Moves left this turn
+
+    public HexTile currentHex { get; private set; }
+    public bool isMoving { get; private set; }
+    public int remainingMoves { get; private set; }
 
     [Header("Visual")]
     public SpriteRenderer characterRenderer;
-    public Color characterColor = Color.white;
 
-    [Header("UI")]
-    public GameObject moveIndicatorPrefab; // Optional: UI element showing remaining moves
+
     private TMPro.TextMeshPro moveCounterText;
 
     // Events
@@ -28,9 +28,7 @@ public class Char : MonoBehaviour
     public System.Action<Char> OnTurnStart;
     public System.Action<Char> OnTurnEnd;
 
-    // Movement queue for smooth animation
-    private Queue<HexTile> movementQueue = new Queue<HexTile>();
-    private Coroutine currentMovement;
+
 
     private void Start()
     {
@@ -38,8 +36,6 @@ public class Char : MonoBehaviour
         if (characterRenderer == null)
             characterRenderer = GetComponent<SpriteRenderer>();
 
-        if (characterRenderer != null)
-            characterRenderer.color = characterColor;
 
         remainingMoves = moveSpeed;
 
@@ -132,7 +128,7 @@ public class Char : MonoBehaviour
             return false;
         }
 
-        if (targetTile == null || !targetTile.isWalkable || targetTile.hasPlayer)
+        if (targetTile == null || !targetTile.isWalkable || targetTile.hasChar)
         {
             Debug.Log($"{characterName} cannot move to target tile: Invalid destination");
             return false;
@@ -252,7 +248,7 @@ public class Char : MonoBehaviour
             {
                 if (mapMaker.hexTiles.TryGetValue(neighborCoord, out HexTile neighbor))
                 {
-                    if (!neighbor.isWalkable || neighbor.hasPlayer) continue;
+                    if (!neighbor.isWalkable || neighbor.hasChar) continue;
 
                     int newCost = costSoFar[current] + neighbor.movementCost;
 
