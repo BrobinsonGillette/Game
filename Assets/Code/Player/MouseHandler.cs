@@ -111,7 +111,33 @@ public class MouseHandler : MonoBehaviour
         HandleHover(hoveredTile);
         HandleMouseClicks(hoveredTile);
     }
+    private void HandleLeftClickUpdated(HexTile clickedTile)
+    {
+        if (clickedTile == null) return;
 
+        // Check for double click
+        bool isDoubleClick = CheckForDoubleClick(clickedTile);
+
+        // Check if we're in targeting mode for actions
+        if (ActionUI.instance != null && ActionUI.instance.IsTargeting)
+        {
+            ActionUI.instance.OnTileClicked(clickedTile);
+            return;
+        }
+
+        if (clickedTile.hasChar)
+        {
+            HandleClickOnPlayer(clickedTile, isDoubleClick);
+        }
+        else if (selectedPlayer != null)
+        {
+            HandleClickOnEmptyTile(clickedTile, isDoubleClick);
+        }
+        else
+        {
+            HandleClickOnTile(clickedTile, isDoubleClick);
+        }
+    }
     private Vector3 GetWorldMousePosition()
     {
         // Use CamMagger if available, otherwise fallback to camera conversion

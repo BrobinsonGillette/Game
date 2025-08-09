@@ -501,6 +501,13 @@ MonoBehaviour:
   team: 2
   moveSpeed: 3
   characterRenderer: {fileID: 1445071747}
+  availableActions: []
+  maxActionPoints: 2
+  currentActionPoints: 0
+  maxHealth: 100
+  currentHealth: 0
+  maxMana: 50
+  currentMana: 0
 --- !u!50 &1640849097
 Rigidbody2D:
   serializedVersion: 4
@@ -778,6 +785,13 @@ MonoBehaviour:
   team: 1
   moveSpeed: 3
   characterRenderer: {fileID: 2108734102}
+  availableActions: []
+  maxActionPoints: 2
+  currentActionPoints: 0
+  maxHealth: 100
+  currentHealth: 0
+  maxMana: 50
+  currentMana: 0
 --- !u!1 &2108734101
 GameObject:
   m_ObjectHideFlags: 0
