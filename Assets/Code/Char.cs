@@ -360,8 +360,11 @@ public class Char : MonoBehaviour
     {
         isMoving = true;
 
+        // Clear current hex
         if (currentHex != null)
+        {
             currentHex.SetCurrentPlayer(null);
+        }
 
         Vector3 startPos = transform.position;
         Vector3 endPos = targetTile.transform.position;

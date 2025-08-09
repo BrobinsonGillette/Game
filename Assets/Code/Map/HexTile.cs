@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class HexTile : MonoBehaviour
 {
+
     [Header("Tile Properties")]
     public Vector2Int coordinates;
     public bool isWalkable = true;
@@ -23,11 +26,11 @@ public class HexTile : MonoBehaviour
     public Color movementRangeColor = new Color(0.5f, 0.8f, 1f, 0.6f); // Light blue with transparency
     public Color MovementDestinationColor = Color.gray;
 
-
     [Header("Animation")]
     public float pulseSpeed = 2f;
     public float pulseIntensity = 0.3f;
 
+    // State properties
     public bool isSelected { get; private set; }
     private bool isHovered = false;
     public bool hasChar { get; private set; }
@@ -36,6 +39,11 @@ public class HexTile : MonoBehaviour
     private Coroutine pulseCoroutine;
 
     public Char CurrentPlayer { get; private set; }
+
+    // Events - these should be invoked when something happens, not subscribed to repeatedly
+    public Action OnInteract;
+    public Action OnHover;
+    public Action OnDeselect;
 
     private void Awake()
     {
@@ -70,6 +78,7 @@ public class HexTile : MonoBehaviour
 
         Color targetColor = normalColor;
         Color highlightColor = Color.clear;
+
         if (isHovered)
         {
             targetColor = hoverColor;
@@ -78,21 +87,21 @@ public class HexTile : MonoBehaviour
         }
         else if (hasChar)
         {
-            if(CurrentPlayer.team == Team.enemy)
+            if (CurrentPlayer.team == Team.enemy)
             {
                 targetColor = EnemyPositionColor;
             }
-            if(CurrentPlayer.team == Team.player)
+            if (CurrentPlayer.team == Team.player)
             {
                 targetColor = playerPositionColor;
             }
-
         }
         else if (isSelected)
         {
             targetColor = selectedColor;
             StartPulseEffect();
-        }else if (inMovementRange)
+        }
+        else if (inMovementRange)
         {
             targetColor = movementRangeColor;
             highlightColor = movementRangeColor;
@@ -104,7 +113,7 @@ public class HexTile : MonoBehaviour
             highlightColor = MovementDestinationColor;
             highlightColor.a = 0.4f;
         }
-        
+
         spriteRenderer.color = targetColor;
 
         if (highlightRenderer != null)
@@ -119,6 +128,7 @@ public class HexTile : MonoBehaviour
 
         isHovered = true;
         UpdateVisual();
+        OnHover?.Invoke();
 
         // Scale up slightly for hover effect
         transform.localScale = Vector3.one * 1.05f;
@@ -137,68 +147,78 @@ public class HexTile : MonoBehaviour
     {
         if (!isWalkable) return;
 
-        isSelected = true;
         UpdateVisual();
+        OnInteract?.Invoke();
 
         // Play click animation
         StartCoroutine(ClickAnimation());
-        StartCoroutine(ClearAnimation());
     }
 
-    public void DeSelect()
+    // Clean state management methods
+    public void SetSelected(bool selected)
     {
-        if (!isWalkable) return;
+        if (isSelected == selected) return;
 
-        isSelected = false;
-        StopPulseEffect();
+        isSelected = selected;
+
+        if (!selected)
+        {
+            StopPulseEffect();
+        }
+
         UpdateVisual();
+
+        if (!selected)
+        {
+            OnDeselect?.Invoke();
+        }
     }
+
     public void SetMovementRange(bool inRange)
     {
+        if (inMovementRange == inRange) return;
+
         inMovementRange = inRange;
         UpdateVisual();
-
-        if (inRange)
-        {
-            StartCoroutine(AppearAnimation());
-            StartCoroutine(ClearAnimation());
-        }
     }
+
     public void SetInMovementRange(bool inRange)
     {
+        if (isInMovementRange == inRange) return;
+
         isInMovementRange = inRange;
-        UpdateVisual();
-
-        if (inRange)
-        {
-            StartCoroutine(AppearAnimation());
-            StartCoroutine(ClearAnimation());
-        }
-    }
-
-    public void SetOnPath(bool onPath)
-    {
         UpdateVisual();
     }
 
     public void SetCurrentPlayer(Char player)
     {
-        if (player == null)
+        // Clear previous player
+        if (CurrentPlayer != null && player != CurrentPlayer)
         {
-            CurrentPlayer = null;
             hasChar = false;
-            UpdateVisual();
-            return;
+            CurrentPlayer = null;
         }
 
-        if (CurrentPlayer == null || CurrentPlayer == player)
+        // Set new player
+        if (player != null)
         {
             player.transform.position = transform.position;
             hasChar = true;
             CurrentPlayer = player;
-            UpdateVisual();
-            return;
         }
+        else
+        {
+            hasChar = false;
+            CurrentPlayer = null;
+        }
+
+        UpdateVisual();
+    }
+
+    // Convenience method for deselecting (for backward compatibility)
+    public void Deselect()
+    {
+        SetSelected(false);
     }
 
     private void StartPulseEffect()
@@ -207,7 +227,6 @@ public class HexTile : MonoBehaviour
             StopCoroutine(pulseCoroutine);
 
         pulseCoroutine = StartCoroutine(PulseEffect());
-        StartCoroutine(ClearAnimation());
     }
 
     private void StopPulseEffect()
@@ -263,53 +282,13 @@ public class HexTile : MonoBehaviour
         transform.localScale = originalScale;
     }
 
-    private IEnumerator AppearAnimation()
+    // Clear all visual states
+    public void ClearAllStates()
     {
-        if (highlightRenderer == null) yield break;
-
-        float duration = 0.3f;
-        float elapsed = 0;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / duration;
-
-            // Fade in and scale up
-            Color col = highlightRenderer.color;
-            col.a = Mathf.Lerp(0, 0.4f, t);
-            highlightRenderer.color = col;
-
-            float scale = Mathf.Lerp(0.8f, 1.1f, Mathf.SmoothStep(0, 1, t));
-            highlightRenderer.transform.localScale = Vector3.one * scale;
-
-            yield return null;
-        }
+        SetSelected(false);
+        SetMovementRange(false);
+        SetInMovementRange(false);
+        isHovered = false;
+        UpdateVisual();
     }
-
-    public IEnumerator ClearAnimation()
-    {
-        if (highlightRenderer == null) yield break;
-
-        float duration = 0.3f;
-        float elapsed = 0;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / duration;
-
-            // Fade out and scale down
-            Color col = highlightRenderer.color;
-            col.a = Mathf.Lerp(0.4f, 0, t);
-            highlightRenderer.color = col;
-
-            float scale = Mathf.Lerp(1.1f, 0.8f, Mathf.SmoothStep(0, 1, t));
-            highlightRenderer.transform.localScale = Vector3.one * scale;
-
-            yield return null;
-        }
-    }
-
-
 }

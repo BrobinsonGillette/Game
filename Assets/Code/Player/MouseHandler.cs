@@ -174,12 +174,6 @@ public class MouseHandler : MonoBehaviour
         if (currentHoveredTile != null)
         {
             currentHoveredTile.MousedOver();
-
-            // Update path preview if we have a selected player
-            if (selectedPlayer != null && enablePathPreview)
-            {
-                UpdatePathPreview(currentHoveredTile);
-            }
         }
     }
 
@@ -286,7 +280,7 @@ public class MouseHandler : MonoBehaviour
         // Deselect previous tile
         if (this.clickedTile != null && this.clickedTile != clickedTile)
         {
-            this.clickedTile.DeSelect();
+            this.clickedTile.Deselect();
         }
 
         // Select new tile
@@ -301,19 +295,21 @@ public class MouseHandler : MonoBehaviour
 
     private void SelectPlayer(Char player, HexTile playerTile)
     {
-        if(player.team != Team.player) return;
+
+        if (player.team != Team.player) return;
+
         // Deselect previous tile if different
         if (clickedTile != null && clickedTile != playerTile)
         {
-            clickedTile.DeSelect();
+            clickedTile.SetSelected(false);
         }
 
         // Update selection state
         selectedPlayer = player;
         clickedTile = playerTile;
-        clickedTile.Interact();
+        clickedTile.SetSelected(true);
 
-       if(selectedPlayer.remainingMoves > 0)
+        if (selectedPlayer.remainingMoves > 0)
             ShowMovementRange();
 
         // Set camera target
@@ -372,7 +368,7 @@ public class MouseHandler : MonoBehaviour
 
     private void HighlightNeighbors()
     {
-        if (clickedTile == null ) return;
+        if (clickedTile == null) return;
 
         List<Vector2Int> neighborCoords = mapMaker.GetNeighbors(clickedTile.coordinates);
 
@@ -417,69 +413,9 @@ public class MouseHandler : MonoBehaviour
             }
         }
         highlightedNeighbors.Clear();
-
-        ClearPathPreview();
     }
 
-    private void UpdatePathPreview(HexTile targetTile)
-    {
-        if (selectedPlayer == null || targetTile == null || !enablePathPreview) return;
-
-        ClearPathPreview();
-
-        // Don't show path for invalid targets
-        if (targetTile == selectedPlayer.currentHex ||
-            !targetTile.isWalkable ||
-            targetTile.hasChar ||
-            !IsInMovementRange(targetTile))
-        {
-            return;
-        }
-
-        // Calculate and display path
-        currentPath = CalculatePath(selectedPlayer.currentHex, targetTile);
-
-        foreach (HexTile tile in currentPath)
-        {
-            if (tile != null && tile != selectedPlayer.currentHex)
-            {
-                tile.SetOnPath(true);
-            }
-        }
-    }
-
-    private void ClearPathPreview()
-    {
-        foreach (HexTile tile in currentPath)
-        {
-            if (tile != null)
-            {
-                tile.SetOnPath(false);
-            }
-        }
-        currentPath.Clear();
-    }
-
-    private List<HexTile> CalculatePath(HexTile start, HexTile end)
-    {
-        // Simple path calculation - you can implement A* here for more complex pathfinding
-        List<HexTile> path = new List<HexTile>();
-
-        if (IsAdjacent(start, end))
-        {
-            path.Add(end);
-        }
-
-        return path;
-    }
-
-    private bool IsAdjacent(HexTile from, HexTile to)
-    {
-        if (from == null || to == null) return false;
-
-        List<Vector2Int> neighbors = mapMaker.GetNeighbors(from.coordinates);
-        return neighbors.Contains(to.coordinates);
-    }
+  
 
     private bool IsInMovementRange(HexTile tile)
     {
@@ -494,7 +430,7 @@ public class MouseHandler : MonoBehaviour
         // Deselect tiles
         if (clickedTile != null)
         {
-            clickedTile.DeSelect();
+            clickedTile.SetSelected(false);
             clickedTile = null;
         }
 
