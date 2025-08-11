@@ -175,21 +175,23 @@ public class HexTile : MonoBehaviour
         }
     }
 
-    public void SetMovementRange(bool inRange)
+    public void SetMovementRange(bool inRange, bool inMovementrange)
     {
-        if (inMovementRange == inRange) return;
+        if (isInMovementRange != inMovementrange)
+        {
 
-        inMovementRange = inRange;
+            isInMovementRange = inMovementrange;
+        }
+
+        if (inMovementRange != inRange)
+        {
+
+            inMovementRange = inRange;
+        }
         UpdateVisual();
     }
 
-    public void SetInMovementRange(bool inRange)
-    {
-        if (isInMovementRange == inRange) return;
-
-        isInMovementRange = inRange;
-        UpdateVisual();
-    }
+   
 
     public void SetCurrentPlayer(Char player)
     {
@@ -216,7 +218,6 @@ public class HexTile : MonoBehaviour
         UpdateVisual();
     }
 
-    // Convenience method for deselecting (for backward compatibility)
     public void Deselect()
     {
         SetSelected(false);
@@ -283,13 +284,5 @@ public class HexTile : MonoBehaviour
         transform.localScale = originalScale;
     }
 
-    // Clear all visual states
-    public void ClearAllStates()
-    {
-        SetSelected(false);
-        SetMovementRange(false);
-        SetInMovementRange(false);
-        isHovered = false;
-        UpdateVisual();
-    }
+ 
 }

@@ -16,7 +16,6 @@ public class MouseHandler : MonoBehaviour
     public static MouseHandler instance;
 
     [Header("Settings")]
-    [SerializeField] private float doubleClickTime = 0.3f;
     [SerializeField] private bool enablePathPreview = true;
     [SerializeField] private bool enableRightClickToCancel = true;
 
@@ -33,10 +32,6 @@ public class MouseHandler : MonoBehaviour
     // Movement visualization
     private HashSet<HexTile> currentMovementRange = new HashSet<HexTile>();
     private HashSet<HexTile> highlightedNeighbors = new HashSet<HexTile>();
-
-    // Input timing
-    private float lastClickTime = 0f;
-    private HexTile lastClickedTile = null;
 
     // Events
     public System.Action<Char> OnPlayerSelected;
@@ -179,41 +174,30 @@ public class MouseHandler : MonoBehaviour
         if (clickedTile == null) return;
 
         // Check for double click
-        bool isDoubleClick = CheckForDoubleClick(clickedTile);
+
 
         if (clickedTile.hasChar)
         {
-            HandleClickOnPlayer(clickedTile, isDoubleClick);
+            HandleClickOnPlayer(clickedTile);
         }
         else if (selectedPlayer != null)
         {
-            HandleClickOnEmptyTile(clickedTile, isDoubleClick);
+            HandleClickOnEmptyTile(clickedTile);
         }
         else
         {
-            HandleClickOnTile(clickedTile, isDoubleClick);
+            HandleClickOnTile(clickedTile);
         }
     }
 
-    private bool CheckForDoubleClick(HexTile clickedTile)
-    {
-        float currentTime = Time.time;
-        bool isDoubleClick = (currentTime - lastClickTime) < doubleClickTime &&
-                            lastClickedTile == clickedTile;
 
-        lastClickTime = currentTime;
-        lastClickedTile = clickedTile;
-
-        return isDoubleClick;
-    }
-
-    private void HandleClickOnPlayer(HexTile clickedTile, bool isDoubleClick)
+    private void HandleClickOnPlayer(HexTile clickedTile)
     {
         Char clickedChar = clickedTile.CurrentPlayer;
         if (clickedChar == null) return;
 
         // Double click to center camera on player
-        if (isDoubleClick && CamMagger.instance != null)
+        if (CamMagger.instance != null)
         {
             CamMagger.instance.SetTarget(clickedChar.transform);
             return;
@@ -245,7 +229,7 @@ public class MouseHandler : MonoBehaviour
         }
     }
 
-    private void HandleClickOnEmptyTile(HexTile clickedTile, bool isDoubleClick)
+    private void HandleClickOnEmptyTile(HexTile clickedTile)
     {
         if (!IsValidMoveTarget(clickedTile))
         {
@@ -272,7 +256,7 @@ public class MouseHandler : MonoBehaviour
         }
     }
 
-    private void HandleClickOnTile(HexTile clickedTile, bool isDoubleClick)
+    private void HandleClickOnTile(HexTile clickedTile)
     {
         // Deselect previous tile
         if (this.clickedTile != null && this.clickedTile != clickedTile)
@@ -284,12 +268,10 @@ public class MouseHandler : MonoBehaviour
         this.clickedTile = clickedTile;
         this.clickedTile.Interact();
     }
-
     private void HandleRightClick()
     {
         CancelSelection();
     }
-
     private void HandleClickOnPlayerInMoveMode(Char player, HexTile playerTile)
     {
 
@@ -326,14 +308,12 @@ public class MouseHandler : MonoBehaviour
                !tile.hasChar &&
                IsInMovementRange(tile);
     }
-
     private bool AttemptPlayerMove(HexTile targetTile)
     {
         if (selectedPlayer == null || targetTile == null) return false;
 
         return selectedPlayer.MovePlayerToTile(targetTile);
     }
-
     private void ShowMovementRange()
     {
         if (selectedPlayer == null) return;
@@ -351,7 +331,7 @@ public class MouseHandler : MonoBehaviour
         {
             if (tile != null && tile.isWalkable && !tile.hasChar)
             {
-                tile.SetInMovementRange(true);
+                tile.SetMovementRange(false,true);
             }
         }
 
@@ -372,12 +352,11 @@ public class MouseHandler : MonoBehaviour
             HexTile neighborTile = mapMaker.GetHexTile(neighborCoord);
             if (neighborTile != null && neighborTile.isWalkable && !neighborTile.hasChar)
             {
-                neighborTile.SetMovementRange(true);
+                neighborTile.SetMovementRange(true, false);
                 highlightedNeighbors.Add(neighborTile);
             }
         }
     }
-
     private void UpdateMovementRangeDisplay()
     {
         if (selectedPlayer == null) return;
@@ -385,7 +364,6 @@ public class MouseHandler : MonoBehaviour
         if(selectedPlayer.charClass.remainingMoves > 0)
             ShowMovementRange();
     }
-
     private void ClearMovementRange()
     {
         // Clear movement range highlighting
@@ -393,7 +371,7 @@ public class MouseHandler : MonoBehaviour
         {
             if (tile != null)
             {
-                tile.SetInMovementRange(false);
+                tile.SetMovementRange(false, false);
             }
         }
         currentMovementRange.Clear();
@@ -403,19 +381,16 @@ public class MouseHandler : MonoBehaviour
         {
             if (tile != null)
             {
-                tile.SetMovementRange(false);
+                tile.SetMovementRange(false, false);
             }
         }
         highlightedNeighbors.Clear();
     }
 
-  
-
     private bool IsInMovementRange(HexTile tile)
     {
         return currentMovementRange.Contains(tile);
     }
-
     public void CancelSelection()
     {
         // Clear visual indicators
@@ -443,10 +418,6 @@ public class MouseHandler : MonoBehaviour
         Debug.Log("Selection cancelled");
     }
 
-    // Public getters for other systems
-    public Char SelectedPlayer => selectedPlayer;
-    public HexTile ClickedTile => clickedTile;
-    public bool HasSelection => selectedPlayer != null;
 
     private void OnDisable()
     {

@@ -141,7 +141,7 @@ public class ActionUI : MonoBehaviour
         {
             if (tile != null)
             {
-                tile.OnInteract += () => tile.SetInMovementRange(true);
+                tile.OnInteract += () => tile.SetMovementRange(false,true);
                 tile.Interact();
             }
         }
@@ -158,7 +158,7 @@ public class ActionUI : MonoBehaviour
         {
             if (tile != null)
             {
-                tile.OnInteract += () => tile.SetInMovementRange(false);
+                tile.OnInteract += () => tile.SetMovementRange(false, false);
                 tile.Interact();
             }
         }
