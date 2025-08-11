@@ -43,7 +43,6 @@ public class AttackAction : BaseAction
             }
 
             damageTarget.TakeDamage(finalDamage);
-            Debug.Log($"{performer.characterName} attacks {target.characterName} for {finalDamage} damage!");
         }
     }
 

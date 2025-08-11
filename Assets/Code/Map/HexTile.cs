@@ -44,6 +44,7 @@ public class HexTile : MonoBehaviour
     public Action OnInteract;
     public Action OnHover;
     public Action OnDeselect;
+    public bool isWater;
 
     private void Awake()
     {

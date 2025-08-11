@@ -9,6 +9,7 @@ public class ActionUI : MonoBehaviour
     public static ActionUI instance;
 
     [Header("UI References")]
+    [SerializeField]private GameObject actionPanelPrefab;
     [SerializeField] private GameObject actionPanel;
     [SerializeField] private Transform actionButtonParent;
     [SerializeField] private GameObject actionButtonPrefab;
@@ -73,13 +74,13 @@ public class ActionUI : MonoBehaviour
     {
         if (characterNameText != null && currentCharacter != null)
         {
-            characterNameText.text = currentCharacter.characterName;
+            characterNameText.text = currentCharacter.charClass.characterName;
         }
 
         if (actionPointsText != null && currentCharacter != null)
         {
             // You'll need to add action points to the Char class
-            actionPointsText.text = $"AP: {currentCharacter.remainingMoves}"; // Temporary using moves
+            actionPointsText.text = $"AP: {currentCharacter.charClass.remainingMoves}"; // Temporary using moves
         }
     }
 
@@ -87,9 +88,9 @@ public class ActionUI : MonoBehaviour
     {
         ClearActionButtons();
 
-        if (currentCharacter == null || currentCharacter.availableActions == null) return;
+        if (currentCharacter == null || currentCharacter.charClass.availableActions == null) return;
 
-        foreach (BaseAction action in currentCharacter.availableActions)
+        foreach (BaseAction action in currentCharacter.charClass.availableActions)
         {
             if (action == null) continue;
 

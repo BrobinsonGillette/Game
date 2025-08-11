@@ -56,8 +56,6 @@ public class SpellAction : BaseAction
         {
             ApplySpellEffect(tile, performer);
         }
-
-        Debug.Log($"{performer.characterName} casts {actionName}!");
     }
 
     public override List<HexTile> GetValidTargets(Char performer)

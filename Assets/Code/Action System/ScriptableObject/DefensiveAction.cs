@@ -27,7 +27,6 @@ public class DefensiveAction : BaseAction
         }
 
         buff.ApplyDefensiveBuff(damageReduction, duration, increasesEvasion, evasionBonus);
-        Debug.Log($"{performer.characterName} uses {actionName}!");
     }
 
     public override List<HexTile> GetValidTargets(Char performer)
