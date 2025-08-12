@@ -394,6 +394,7 @@ GameObject:
   - component: {fileID: 1810357200}
   - component: {fileID: 1810357199}
   - component: {fileID: 1810357198}
+  - component: {fileID: 1810357204}
   - component: {fileID: 1810357202}
   - component: {fileID: 1810357203}
   m_Layer: 6
@@ -417,7 +418,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 1
   movementSpeed: 5
-  MaxHp: 0
+  MaxHp: 5
 --- !u!50 &1810357199
 Rigidbody2D:
   serializedVersion: 4
@@ -578,6 +579,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1810357204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1810357196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d26709603289cc944a10c7ae4c8233bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxActionPoints: 2
+  currentActionPoints: 2
+  availableActions:
+  - {fileID: 11400000, guid: f761cc81bdb77564fb81e1289e2c3f85, type: 2}
+  inventory: []
 --- !u!1 &1845803232
 GameObject:
   m_ObjectHideFlags: 0
