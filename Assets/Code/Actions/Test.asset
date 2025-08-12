@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 702dab9a538c93c4d937ff8a4cc00726, type: 3}
   m_Name: Test
   m_EditorClassIdentifier: 
-  actionName: 
+  actionName: test
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: -1069109540, guid: 99525d5f904322c43a09894be9d19c73, type: 3}
   actionType: 0
   targetType: 0
   animation: 7
   range: 1
-  areaOfEffect: 0
+  areaOfEffect: 1
   actionPointCost: 1
   manaCost: 0
   damage: 25

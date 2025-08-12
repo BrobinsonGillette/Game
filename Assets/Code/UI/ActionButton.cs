@@ -6,9 +6,9 @@ public class ActionButton : MonoBehaviour
 {
     [Header("References")]
     public Button button;
-    public TextMeshProUGUI nameText;
-    public TextMeshProUGUI costText;
-    public Image icon;
+    [SerializeField] TextMeshProUGUI nameText;
+    [SerializeField] TextMeshProUGUI costText;
+
 
     private ItemData itemData;
     private System.Action<ItemData> onItemSelected;
@@ -24,8 +24,7 @@ public class ActionButton : MonoBehaviour
         if (costText != null)
             costText.text = $"AP: {item.actionEffect.actionPointCost}";
 
-        if (icon != null && item.icon != null)
-            icon.sprite = item.icon;
+
 
         if (button != null)
             button.onClick.AddListener(OnButtonClicked);

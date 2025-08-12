@@ -28,7 +28,6 @@ public class ActionData : ScriptableObject
     [Header("Basic Info")]
     public string actionName;
     public string description;
-    public Sprite icon;
     public ActionType actionType;
     public TargetType targetType;
     public Animations animation;

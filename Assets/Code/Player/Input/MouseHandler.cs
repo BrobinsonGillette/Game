@@ -14,6 +14,7 @@ public enum ActionModes
 public class MouseHandler : MonoBehaviour
 {
 
+
     public static MouseHandler instance;
 
     [Header("Settings")]
@@ -27,11 +28,11 @@ public class MouseHandler : MonoBehaviour
     // Current state tracking
     private HexTile currentHoveredTile = null;
     private HexTile selectedTile = null;
-    private Char selectedPlayer = null;
+    [SerializeField] private Char selectedPlayer = null;
     public ActionModes currentActionType = ActionModes.Move;
 
     // Action system state
-    private ActionData selectedAction = null;
+    [SerializeField] private ActionData selectedAction = null;
     private ItemData selectedItem = null;
     private CharacterActions selectedPlayerActions = null;
 
@@ -298,18 +299,49 @@ public class MouseHandler : MonoBehaviour
 
     private void HandleClickOnCharacter(HexTile clickedTile, Char character)
     {
-        // Only allow selection of player team characters in move mode
-        if (character.team != Team.player) return;
-
-        // Toggle selection if clicking the same character
-        if (selectedPlayer == character)
+        // In move mode, only allow selection of player team characters
+        if (currentActionType == ActionModes.Move)
         {
-            CancelSelection();
-            return;
-        }
+            if (character.team != Team.player) return;
 
-        // Select the new character
-        SelectCharacter(character, clickedTile);
+            // Toggle selection if clicking the same character
+            if (selectedPlayer == character)
+            {
+                CancelSelection();
+                return;
+            }
+
+            // Select the new character
+            SelectCharacter(character, clickedTile);
+        }
+        // In action/item modes, clicking on characters can be targeting them
+        else if (currentActionType == ActionModes.Actions || currentActionType == ActionModes.Item)
+        {
+            // If we have a selected player and action/item, try to target this character
+            if (selectedPlayer != null && (selectedAction != null || selectedItem != null))
+            {
+                if (currentActionType == ActionModes.Actions)
+                {
+                    HandleActionMode(clickedTile);
+                }
+                else if (currentActionType == ActionModes.Item)
+                {
+                    HandleItemMode(clickedTile);
+                }
+                return;
+            }
+
+            // Otherwise, if it's a player character, select them
+            if (character.team == Team.player)
+            {
+                if (selectedPlayer == character)
+                {
+                    CancelSelection();
+                    return;
+                }
+                SelectCharacter(character, clickedTile);
+            }
+        }
     }
 
     private void SelectCharacter(Char character, HexTile tile)
@@ -327,8 +359,8 @@ public class MouseHandler : MonoBehaviour
         selectedPlayerActions = character.GetComponent<CharacterActions>();
         tile.SetSelected(true);
 
-        // Show appropriate range based on current mode
-        UpdateRangeDisplays();
+        // Auto-select basic attack and show attack range
+        AutoSelectBasicAttack();
 
         // Set camera target
         if (CamMagger.instance != null)
@@ -456,7 +488,26 @@ public class MouseHandler : MonoBehaviour
         {
             if (tile != null)
             {
-                tile.SetMovementDestination(true); // Reuse this visual for action targets
+                // Use different colors for different target types
+                Char characterOnTile = GetCharacterOnTile(tile);
+                if (characterOnTile != null)
+                {
+                    if (characterOnTile.team != selectedPlayer.team)
+                    {
+                        // Enemy target - use attack color (red-ish)
+                        tile.SetAttackTarget(true);
+                    }
+                    else
+                    {
+                        // Ally target - use support color (blue-ish) 
+                        tile.SetSupportTarget(true);
+                    }
+                }
+                else
+                {
+                    // Empty tile in range
+                    tile.SetMovementDestination(true);
+                }
             }
         }
     }
@@ -563,6 +614,8 @@ public class MouseHandler : MonoBehaviour
             if (tile != null)
             {
                 tile.SetMovementDestination(false);
+                tile.SetAttackTarget(false);
+                tile.SetSupportTarget(false);
             }
         }
         currentActionRange.Clear();
@@ -624,6 +677,25 @@ public class MouseHandler : MonoBehaviour
         }
     }
 
+    // Auto-select basic attack when character is selected
+    public void AutoSelectBasicAttack()
+    {
+        if (selectedPlayer == null || selectedPlayerActions == null) return;
+
+        // Find the first attack action
+        foreach (ActionData action in selectedPlayerActions.availableActions)
+        {
+            if (action.actionType == ActionType.Attack)
+            {
+                selectedAction = action;
+                SetActionMode(ActionModes.Actions);
+                ShowActionRange();
+                Debug.Log($"Auto-selected attack: {action.actionName}");
+                return;
+            }
+        }
+    }
+
     // Getter methods for UI
     public ActionData GetSelectedAction() => selectedAction;
     public ItemData GetSelectedItem() => selectedItem;
@@ -634,6 +706,7 @@ public class MouseHandler : MonoBehaviour
     {
         CancelSelection();
     }
+
 
     private void OnDestroy()
     {
