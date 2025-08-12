@@ -15,46 +15,49 @@ public class HexTile : MonoBehaviour
 
     [Header("Visual")]
     public SpriteRenderer spriteRenderer;
-    public SpriteRenderer highlightRenderer; // Additional renderer for highlights
+    public SpriteRenderer highlightRenderer;
 
     [Header("Colors")]
     public Color normalColor = Color.white;
     public Color hoverColor = Color.yellow;
     public Color selectedColor = Color.green;
     public Color playerPositionColor = Color.blue;
-    public Color EnemyPositionColor = Color.red;
-    public Color movementRangeColor = new Color(0.5f, 0.8f, 1f, 0.6f); // Light blue with transparency
-    public Color MovementDestinationColor = Color.gray;
+    public Color enemyPositionColor = Color.red;
+    public Color movementRangeColor = new Color(0.5f, 0.8f, 1f, 0.6f);
+    public Color movementDestinationColor = Color.gray;
 
     [Header("Animation")]
     public float pulseSpeed = 2f;
     public float pulseIntensity = 0.3f;
 
-    // State properties
-    public bool isSelected { get; private set; }
+    // Visual state only - no game logic
+    private bool isSelected = false;
     private bool isHovered = false;
-    public bool hasChar { get; private set; }
+    private bool hasCharacter = false;
     private bool inMovementRange = false;
-    private bool isInMovementRange = false;
+    private bool isMovementDestination = false;
+    private Team currentCharacterTeam = Team.none;
+
     private Coroutine pulseCoroutine;
 
-    public Char CurrentPlayer { get; private set; }
-
-    // Events - these should be invoked when something happens, not subscribed to repeatedly
+    // Events for input handling only
     public Action OnInteract;
     public Action OnHover;
     public Action OnDeselect;
-    public bool isWater;
 
     private void Awake()
     {
-        // Create highlight renderer if it doesn't exist
+        SetupHighlightRenderer();
+    }
+
+    private void SetupHighlightRenderer()
+    {
         if (highlightRenderer == null)
         {
             GameObject highlightObj = new GameObject("Highlight");
             highlightObj.transform.SetParent(transform);
             highlightObj.transform.localPosition = Vector3.zero;
-            highlightObj.transform.localScale = Vector3.one * 1.1f; // Slightly larger
+            highlightObj.transform.localScale = Vector3.one * 1.1f;
 
             highlightRenderer = highlightObj.AddComponent<SpriteRenderer>();
             highlightRenderer.sprite = spriteRenderer.sprite;
@@ -73,47 +76,72 @@ public class HexTile : MonoBehaviour
         UpdateVisual();
     }
 
-    void UpdateVisual()
+    #region Visual Display Methods
+
+    public void SetHovered(bool hovered)
+    {
+        if (isHovered == hovered) return;
+
+        isHovered = hovered;
+        UpdateVisual();
+
+        // Scale effect for hover
+        transform.localScale = hovered ? Vector3.one * 1.05f : Vector3.one;
+
+        if (hovered)
+            OnHover?.Invoke();
+    }
+
+    public void SetSelected(bool selected)
+    {
+        if (isSelected == selected) return;
+
+        isSelected = selected;
+
+        if (selected)
+            StartPulseEffect();
+        else
+            StopPulseEffect();
+
+        UpdateVisual();
+
+        if (!selected)
+            OnDeselect?.Invoke();
+    }
+
+    public void SetCharacterPresent(bool present, Team team = Team.none)
+    {
+        hasCharacter = present;
+        currentCharacterTeam = team;
+        UpdateVisual();
+    }
+
+    public void SetMovementRange(bool inRange)
+    {
+        inMovementRange = inRange;
+        UpdateVisual();
+    }
+
+    public void SetMovementDestination(bool isDestination)
+    {
+        isMovementDestination = isDestination;
+        UpdateVisual();
+    }
+
+    public void ClearAllHighlights()
+    {
+        SetSelected(false);
+        SetHovered(false);
+        SetMovementRange(false);
+        SetMovementDestination(false);
+    }
+
+    private void UpdateVisual()
     {
         if (spriteRenderer == null) return;
 
-        Color targetColor = normalColor;
-        Color highlightColor = Color.clear;
-
-        if (isHovered)
-        {
-            targetColor = hoverColor;
-            highlightColor = hoverColor;
-            highlightColor.a = 0.2f;
-        }
-        else if (hasChar)
-        {
-            if (CurrentPlayer.team == Team.enemy)
-            {
-                targetColor = EnemyPositionColor;
-            }
-            if (CurrentPlayer.team == Team.player)
-            {
-                targetColor = playerPositionColor;
-            }
-        }
-        else if (isSelected)
-        {
-            targetColor = selectedColor;
-            StartPulseEffect();
-        }
-        else if (inMovementRange)
-        {
-            targetColor = movementRangeColor;
-            highlightColor = movementRangeColor;
-            highlightColor.a = 0.4f;
-        }
-        else if (isInMovementRange)
-        {
-            targetColor = MovementDestinationColor;
-            highlightColor = MovementDestinationColor;
-            highlightColor.a = 0.4f;
-        }
+        Color targetColor = GetCurrentColor();
+        Color highlightColor = GetHighlightColor();
 
         spriteRenderer.color = targetColor;
 
@@ -123,111 +151,87 @@ public class HexTile : MonoBehaviour
         }
     }
 
+    private Color GetCurrentColor()
+    {
+        // Priority order for color display
+        if (isHovered)
+            return hoverColor;
+
+        if (hasCharacter)
+        {
+            return currentCharacterTeam switch
+            {
+                Team.player => playerPositionColor,
+                Team.enemy => enemyPositionColor,
+                _ => normalColor
+            };
+        }
+
+        if (isSelected)
+            return selectedColor;
+
+        if (isMovementDestination)
+            return movementDestinationColor;
+
+        if (inMovementRange)
+            return movementRangeColor;
+
+        return normalColor;
+    }
+
+    private Color GetHighlightColor()
+    {
+        Color highlight = Color.clear;
+
+        if (isHovered)
+        {
+            highlight = hoverColor;
+            highlight.a = 0.2f;
+        }
+        else if (inMovementRange)
+        {
+            highlight = movementRangeColor;
+            highlight.a = 0.4f;
+        }
+        else if (isMovementDestination)
+        {
+            highlight = movementDestinationColor;
+            highlight.a = 0.4f;
+        }
+
+        return highlight;
+    }
+
+    #endregion
+
+    #region Input Handling (Mouse Events)
+
     public void MousedOver()
     {
         if (!isWalkable) return;
-
-        isHovered = true;
-        UpdateVisual();
-        OnHover?.Invoke();
-
-        // Scale up slightly for hover effect
-        transform.localScale = Vector3.one * 1.05f;
+        SetHovered(true);
     }
 
     public void MouseExit()
     {
-        isHovered = false;
-        UpdateVisual();
-
-        // Reset scale
-        transform.localScale = Vector3.one;
+        SetHovered(false);
     }
 
     public void Interact()
     {
         if (!isWalkable) return;
 
-        UpdateVisual();
         OnInteract?.Invoke();
-
-        // Play click animation
         StartCoroutine(ClickAnimation());
     }
 
-    // Clean state management methods
-    public void SetSelected(bool selected)
-    {
-        if (isSelected == selected) return;
+    #endregion
 
-        isSelected = selected;
-
-        if (!selected)
-        {
-            StopPulseEffect();
-        }
-
-        UpdateVisual();
-
-        if (!selected)
-        {
-            OnDeselect?.Invoke();
-        }
-    }
-
-    public void SetMovementRange(bool inRange, bool inMovementrange)
-    {
-        if (isInMovementRange != inMovementrange)
-        {
-
-            isInMovementRange = inMovementrange;
-        }
-
-        if (inMovementRange != inRange)
-        {
-
-            inMovementRange = inRange;
-        }
-        UpdateVisual();
-    }
-
-   
-
-    public void SetCurrentPlayer(Char player)
-    {
-        // Clear previous player
-        if (CurrentPlayer != null && player != CurrentPlayer)
-        {
-            hasChar = false;
-            CurrentPlayer = null;
-        }
-
-        // Set new player
-        if (player != null)
-        {
-            player.transform.position = transform.position;
-            hasChar = true;
-            CurrentPlayer = player;
-        }
-        else
-        {
-            hasChar = false;
-            CurrentPlayer = null;
-        }
-
-        UpdateVisual();
-    }
-
-    public void Deselect()
-    {
-        SetSelected(false);
-    }
+    #region Animation Effects
 
     private void StartPulseEffect()
     {
-        if (pulseCoroutine != null)
-            StopCoroutine(pulseCoroutine);
-
+        StopPulseEffect();
         pulseCoroutine = StartCoroutine(PulseEffect());
     }
 
@@ -254,7 +258,6 @@ public class HexTile : MonoBehaviour
             {
                 highlightRenderer.transform.localScale = Vector3.one * scale;
 
-                // Also pulse the highlight alpha
                 Color col = highlightRenderer.color;
                 col.a = 0.3f + Mathf.Sin(Time.time * pulseSpeed) * 0.2f;
                 highlightRenderer.color = col;
@@ -274,7 +277,6 @@ public class HexTile : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
 
-            // Quick scale bounce
             float scale = 1f + Mathf.Sin(t * Mathf.PI) * 0.2f;
             transform.localScale = originalScale * scale;
 
@@ -284,5 +286,15 @@ public class HexTile : MonoBehaviour
         transform.localScale = originalScale;
     }
 
- 
+    #endregion
+
+    #region Public Properties for Game Logic
+
+    public bool HasCharacter => hasCharacter;
+    public bool IsWalkable => isWalkable;
+    public int MovementCost => movementCost;
+    public Vector2Int Coordinates => coordinates;
+
+    #endregion
+
 }

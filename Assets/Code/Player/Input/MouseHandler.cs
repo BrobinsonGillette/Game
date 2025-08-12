@@ -25,9 +25,9 @@ public class MouseHandler : MonoBehaviour
 
     // Current state tracking
     private HexTile currentHoveredTile = null;
-    private HexTile clickedTile = null;
+    private HexTile selectedTile = null;
     private Char selectedPlayer = null;
-    public ActionModes currentActionType = ActionModes.None;
+    public ActionModes currentActionType = ActionModes.Move; // Default to move mode
 
     // Movement visualization
     private HashSet<HexTile> currentMovementRange = new HashSet<HexTile>();
@@ -64,11 +64,6 @@ public class MouseHandler : MonoBehaviour
         {
             mainCamera = FindObjectOfType<Camera>();
         }
-
-        if (mainCamera == null)
-        {
-            Debug.LogError("MouseHandler: No camera found!");
-        }
     }
 
     private void Start()
@@ -76,12 +71,10 @@ public class MouseHandler : MonoBehaviour
         mapMaker = MapMaker.instance;
         if (mapMaker == null)
         {
-            Debug.LogError("MouseHandler: MapMaker instance not found!");
             enabled = false;
             return;
         }
 
-        // Subscribe to map generation events if needed
         if (mapMaker.OnGridGenerated != null)
         {
             mapMaker.OnGridGenerated += OnMapGenerated;
@@ -90,14 +83,12 @@ public class MouseHandler : MonoBehaviour
 
     private void OnMapGenerated()
     {
-        // Reset state when map is regenerated
         CancelSelection();
     }
 
     private void Update()
     {
         if (!IsInitialized()) return;
-
         HandleMouseInput();
     }
 
@@ -117,14 +108,13 @@ public class MouseHandler : MonoBehaviour
 
     private Vector3 GetWorldMousePosition()
     {
-        // Use CamMagger if available, otherwise fallback to camera conversion
         if (CamMagger.instance != null)
         {
             return CamMagger.instance.WorldMousePosition;
         }
 
         Vector3 mousePos = Input.mousePosition;
-        mousePos.z = -mainCamera.transform.position.z; // Adjust for 2D
+        mousePos.z = -mainCamera.transform.position.z;
         return mainCamera.ScreenToWorldPoint(mousePos);
     }
 
@@ -138,16 +128,15 @@ public class MouseHandler : MonoBehaviour
     {
         if (newHoveredTile == currentHoveredTile) return;
 
-        // Handle mouse exit on previous tile
+        // Clear previous hover
         if (currentHoveredTile != null)
         {
             currentHoveredTile.MouseExit();
         }
 
-        // Update current hovered tile
+        // Set new hover
         currentHoveredTile = newHoveredTile;
 
-        // Handle mouse enter on new tile
         if (currentHoveredTile != null)
         {
             currentHoveredTile.MousedOver();
@@ -165,87 +154,106 @@ public class MouseHandler : MonoBehaviour
         {
             HandleRightClick();
         }
-
-        // Handle middle mouse or other inputs here if needed
     }
 
     private void HandleLeftClick(HexTile clickedTile)
     {
         if (clickedTile == null) return;
 
-        // Check for double click
+        clickedTile.Interact();
 
+        // Get character on this tile (if any)
+        Char characterOnTile = GetCharacterOnTile(clickedTile);
 
-        if (clickedTile.hasChar)
+        if (characterOnTile != null)
         {
-            HandleClickOnPlayer(clickedTile);
+            HandleClickOnCharacter(clickedTile, characterOnTile);
         }
         else if (selectedPlayer != null)
         {
             HandleClickOnEmptyTile(clickedTile);
         }
-        else
-        {
-            HandleClickOnTile(clickedTile);
-        }
+
     }
 
-
-    private void HandleClickOnPlayer(HexTile clickedTile)
+    private Char GetCharacterOnTile(HexTile tile)
     {
-        Char clickedChar = clickedTile.CurrentPlayer;
-        if (clickedChar == null) return;
-
-        // Double click to center camera on player
-        if (CamMagger.instance != null)
+        // Find any character whose current hex matches this tile
+        Char[] allCharacters = FindObjectsOfType<Char>();
+        foreach (Char character in allCharacters)
         {
-            CamMagger.instance.SetTarget(clickedChar.transform);
-            return;
+            if (character.currentHex == tile)
+            {
+                return character;
+            }
         }
+        return null;
+    }
+
+    private void HandleClickOnCharacter(HexTile clickedTile, Char character)
+    {
+        if (currentActionType != ActionModes.Move) return;
+
+        // Only allow selection of player team characters
+        if (character.team != Team.player) return;
 
         // Toggle selection if clicking the same character
-        if (selectedPlayer == clickedChar)
+        if (selectedPlayer == character)
         {
             CancelSelection();
             return;
         }
 
-        switch(currentActionType)
+        // Select the new character
+        SelectCharacter(character, clickedTile);
+    }
+
+    private void SelectCharacter(Char character, HexTile tile)
+    {
+        // Clear previous selection
+        ClearMovementRange();
+        if (selectedTile != null)
         {
-            case ActionModes.Move:
-                // If in move mode, select the player
-                HandleClickOnPlayerInMoveMode(clickedChar, clickedTile);
-                break;
-            case ActionModes.Actions:
-                // Handle actions if needed
-                break;
-            case ActionModes.Item:
-                // Handle item interactions if needed
-                break;
-            case ActionModes.Special:
-                // Handle special actions if needed
-                break;
-     
+            selectedTile.SetSelected(false);
         }
+
+        // Set new selection
+        selectedPlayer = character;
+        selectedTile = tile;
+        tile.SetSelected(true);
+
+        // Show movement range if character can move
+        if (character.movementSpeed > 0)
+        {
+            ShowMovementRange();
+        }
+
+        // Set camera target
+        if (CamMagger.instance != null)
+        {
+            CamMagger.instance.SetTarget(character.transform);
+        }
+
+        // Fire event
+        OnPlayerSelected?.Invoke(character);
     }
 
     private void HandleClickOnEmptyTile(HexTile clickedTile)
     {
         if (!IsValidMoveTarget(clickedTile))
         {
-            // Invalid move target - could show feedback here
-            Debug.Log("Invalid move target!");
             return;
         }
 
         // Attempt to move the selected player
-        bool moveSuccessful = AttemptPlayerMove(clickedTile);
+        bool moveSuccessful = selectedPlayer.MovePlayerToTile(clickedTile);
 
         if (moveSuccessful)
         {
             OnPlayerMoved?.Invoke(selectedPlayer, clickedTile);
 
-            // Update movement display
+            // Update visual displays
+            UpdateCharacterPositionDisplays();
             UpdateMovementRangeDisplay();
 
             // Auto-deselect if no moves remaining
@@ -256,64 +264,20 @@ public class MouseHandler : MonoBehaviour
         }
     }
 
-    private void HandleClickOnTile(HexTile clickedTile)
-    {
-        // Deselect previous tile
-        if (this.clickedTile != null && this.clickedTile != clickedTile)
-        {
-            this.clickedTile.Deselect();
-        }
 
-        // Select new tile
-        this.clickedTile = clickedTile;
-        this.clickedTile.Interact();
-    }
     private void HandleRightClick()
     {
         CancelSelection();
-    }
-    private void HandleClickOnPlayerInMoveMode(Char player, HexTile playerTile)
-    {
-
-        if (player.team != Team.player) return;
-
-        // Deselect previous tile if different
-        if (clickedTile != null && clickedTile != playerTile)
-        {
-            clickedTile.SetSelected(false);
-        }
-
-        // Update selection state
-        selectedPlayer = player;
-        clickedTile = playerTile;
-        clickedTile.SetSelected(true);
-
-        if (selectedPlayer.charClass.remainingMoves > 0)
-            ShowMovementRange();
-
-        // Set camera target
-        if (CamMagger.instance != null)
-        {
-            CamMagger.instance.SetTarget(player.transform);
-        }
-
-        // Fire event
-        OnPlayerSelected?.Invoke(player);
     }
 
     private bool IsValidMoveTarget(HexTile tile)
     {
         return tile != null &&
-               tile.isWalkable &&
-               !tile.hasChar &&
+               tile.IsWalkable &&
+               !tile.HasCharacter &&
                IsInMovementRange(tile);
     }
-    private bool AttemptPlayerMove(HexTile targetTile)
-    {
-        if (selectedPlayer == null || targetTile == null) return false;
 
-        return selectedPlayer.MovePlayerToTile(targetTile);
-    }
     private void ShowMovementRange()
     {
         if (selectedPlayer == null) return;
@@ -322,48 +286,69 @@ public class MouseHandler : MonoBehaviour
 
         // Get movement range from the character
         List<HexTile> movementTiles = selectedPlayer.GetMovementRange();
-
-        // Convert to HashSet for faster lookups
         currentMovementRange = new HashSet<HexTile>(movementTiles);
 
-        // Highlight movement range tiles
+        // Update visual display for movement range
         foreach (HexTile tile in currentMovementRange)
         {
-            if (tile != null && tile.isWalkable && !tile.hasChar)
+            if (tile != null && tile.IsWalkable && !tile.HasCharacter)
             {
-                tile.SetMovementRange(false,true);
+                bool isNeighbor = IsNeighborOfSelected(tile);
+
+                if (isNeighbor)
+                {
+                    tile.SetMovementDestination(true);
+                    highlightedNeighbors.Add(tile);
+                }
+                else
+                {
+                    tile.SetMovementRange(true);
+                }
             }
         }
-
-        // Highlight immediate neighbors differently
-        HighlightNeighbors();
-
-        Debug.Log($"Showing {currentMovementRange.Count} tiles in movement range");
     }
 
-    private void HighlightNeighbors()
+    private bool IsNeighborOfSelected(HexTile tile)
     {
-        if (clickedTile == null) return;
+        if (selectedTile == null) return false;
 
-        List<Vector2Int> neighborCoords = mapMaker.GetNeighbors(clickedTile.coordinates);
-
-        foreach (Vector2Int neighborCoord in neighborCoords)
-        {
-            HexTile neighborTile = mapMaker.GetHexTile(neighborCoord);
-            if (neighborTile != null && neighborTile.isWalkable && !neighborTile.hasChar)
-            {
-                neighborTile.SetMovementRange(true, false);
-                highlightedNeighbors.Add(neighborTile);
-            }
-        }
+        List<Vector2Int> neighborCoords = mapMaker.GetNeighbors(selectedTile.Coordinates);
+        return neighborCoords.Contains(tile.Coordinates);
     }
+
     private void UpdateMovementRangeDisplay()
     {
         if (selectedPlayer == null) return;
+
         ClearMovementRange();
-        if(selectedPlayer.charClass.remainingMoves > 0)
+
+        if (selectedPlayer.movementSpeed > 0)
+        {
             ShowMovementRange();
+        }
     }
+
+    public void UpdateCharacterPositionDisplays()
+    {
+        // Update all tile displays to show current character positions
+        Char[] allCharacters = FindObjectsOfType<Char>();
+
+        // First clear all character displays
+        foreach (var tile in mapMaker.GetAllTiles())
+        {
+            tile.SetCharacterPresent(false);
+        }
+
+        // Then set displays for tiles with characters
+        foreach (Char character in allCharacters)
+        {
+            if (character.currentHex != null)
+            {
+                character.currentHex.SetCharacterPresent(true, character.team);
+            }
+        }
+    }
+
     private void ClearMovementRange()
     {
         // Clear movement range highlighting
@@ -371,7 +356,7 @@ public class MouseHandler : MonoBehaviour
         {
             if (tile != null)
             {
-                tile.SetMovementRange(false, false);
+                tile.SetMovementRange(false);
             }
         }
         currentMovementRange.Clear();
@@ -381,7 +366,7 @@ public class MouseHandler : MonoBehaviour
         {
             if (tile != null)
             {
-                tile.SetMovementRange(false, false);
+                tile.SetMovementDestination(false);
             }
         }
         highlightedNeighbors.Clear();
@@ -391,16 +376,17 @@ public class MouseHandler : MonoBehaviour
     {
         return currentMovementRange.Contains(tile);
     }
+
     public void CancelSelection()
     {
         // Clear visual indicators
         ClearMovementRange();
 
         // Deselect tiles
-        if (clickedTile != null)
+        if (selectedTile != null)
         {
-            clickedTile.SetSelected(false);
-            clickedTile = null;
+            selectedTile.SetSelected(false);
+            selectedTile = null;
         }
 
         // Clear selected player
@@ -414,10 +400,18 @@ public class MouseHandler : MonoBehaviour
 
         // Fire event
         OnSelectionCancelled?.Invoke();
-
-        Debug.Log("Selection cancelled");
     }
 
+    public void SetActionMode(ActionModes mode)
+    {
+        currentActionType = mode;
+
+        // Clear selection when changing modes
+        if (mode != ActionModes.Move)
+        {
+            CancelSelection();
+        }
+    }
 
     private void OnDisable()
     {

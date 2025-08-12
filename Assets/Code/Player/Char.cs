@@ -8,6 +8,7 @@ public class Char : MonoBehaviour
 {
     [Header("Character Properties")]
     public Team team = Team.none;
+    public int movementSpeed;
     private float movementAnimationSpeed = 2f;
 
     public SpriteRenderer characterRenderer;
@@ -15,32 +16,13 @@ public class Char : MonoBehaviour
     public bool isMoving { get; private set; }
 
 
-    [Header("Visual")]
-    public CharClasses charClass;
-
-
-    // Events
-    public System.Action<Char> OnMovement;
-    public System.Action<Char> TurnStart;
-    public System.Action<Char> OnTurnEnd;
-    public System.Action<Char> OnHealthChanged;
-    public System.Action<Char> OnManaChanged;
-    private void Start()
-    {
-
-        // Create move counter UI
-        charClass.InitializeCharacter(characterRenderer,this.transform);
-    }
-
 
     private void Update()
     {
         getTileOnGround();
-        charClass.UpdateMoveCounter();
-        charClass.UpdateHealthDisplay();
     }
 
-   
+
 
 
 
@@ -55,110 +37,23 @@ public class Char : MonoBehaviour
             if (mapMaker.hexTiles.TryGetValue(hexCoords, out HexTile tile))
             {
                 currentHex = tile;
-                currentHex.SetCurrentPlayer(this);
+                currentHex.SetCharacterPresent(true, team);
             }
         }
     }
 
 
 
-    public void StartTurn()
-    {
-        charClass.remainingMoves = charClass.stats.moveSpeed;
-        charClass.currentActionPoints = charClass.stats.maxActionPoints;
-
-        // Regenerate some mana each turn
-        charClass.currentMana = Mathf.Min(charClass.stats.maxMana, charClass.currentMana + 5f);
-
-        TurnStart?.Invoke(this);
-        StartCoroutine(TurnStartAnimation());
-    }
-
-    public void EndTurn()
-    {
-        charClass.remainingMoves = 0;
-        charClass.currentActionPoints = 0;
-
-        // Process any end-of-turn effects (like defensive buff countdown)
-        DefensiveBuff buff = GetComponent<DefensiveBuff>();
-        if (buff != null)
-        {
-            buff.DecrementTurn();
-        }
-
-        OnTurnEnd?.Invoke(this);
-    }
-
-    public bool CanUseAction(BaseAction action)
-    {
-        if (action == null) return false;
-
-        // Check action points
-        if (charClass.currentActionPoints < action.actionPointCost) return false;
-
-        // Check mana for spells
-        if (action is SpellAction spell && charClass.currentMana < spell.manaCost) return false;
-
-        return action.CanExecute(this);
-    }
-
-    public void SpendActionPoints(int cost)
-    {
-        charClass.currentActionPoints = Mathf.Max(0, charClass.currentActionPoints - cost);
-    }
-
-    public void SpendMana(float cost)
-    {
-        charClass.currentMana = Mathf.Max(0, charClass.currentMana - cost);
-        OnManaChanged?.Invoke(this);
-    }
-
-    public void TakeDamage(float damage)
-    {
-        // Apply defensive buffs
-        DefensiveBuff buff = GetComponent<DefensiveBuff>();
-        if (buff != null)
-        {
-            float reduction = buff.GetDamageReduction();
-            damage *= (1f - reduction);
-        }
-
-        charClass.currentHealth = Mathf.Max(0, charClass.currentHealth - damage);
-        OnHealthChanged?.Invoke(this);
-
-        if (charClass.currentHealth <= 0)
-        {
-            Die();
-        }
-
-        // Visual damage effect
-        StartCoroutine(DamageFlashEffect());
-    }
-
-    public void Heal(float amount)
-    {
-        charClass.currentHealth = Mathf.Min(charClass.stats.maxHealth, charClass.currentHealth + amount);
-        OnHealthChanged?.Invoke(this);
-    }
-
-    private void Die()
-    {
-        // Handle death logic here
-        // Maybe remove from current hex, play death animation, etc.
-        if (currentHex != null)
-        {
-            currentHex.SetCurrentPlayer(null);
-        }
-    }
+ 
 
     public bool MovePlayerToTile(HexTile targetTile)
     {
-        if (isMoving ||charClass.remainingMoves <= 0)
+        if (isMoving || movementSpeed <= 0)
         {
             return false;
         }
 
-        if (targetTile == null || !targetTile.isWalkable || targetTile.hasChar)
+        if (targetTile == null || !targetTile.isWalkable || targetTile.HasCharacter)
         {
             return false;
         }
@@ -168,12 +63,12 @@ public class Char : MonoBehaviour
             return false;
         }
 
-        if (targetTile.movementCost > charClass.remainingMoves)
+        if (targetTile.movementCost > movementSpeed)
         {
             return false;
         }
 
-        charClass.remainingMoves -= targetTile.movementCost;
+        movementSpeed -= targetTile.movementCost;
         StartCoroutine(AnimateMovement(targetTile));
         return true;
     }
@@ -189,14 +84,16 @@ public class Char : MonoBehaviour
         return neighbors.Contains(to.coordinates);
     }
 
+
     private IEnumerator AnimateMovement(HexTile targetTile)
     {
         isMoving = true;
 
-        // Clear current hex
+        // Clear current hex - both logically and visually
         if (currentHex != null)
         {
-            currentHex.SetCurrentPlayer(null);
+            currentHex.SetCharacterPresent(false); // Clear visual
+                                                   // Note: We don't clear the currentHex reference until we arrive
         }
 
         Vector3 startPos = transform.position;
@@ -217,17 +114,27 @@ public class Char : MonoBehaviour
             yield return null;
         }
 
+        // Finalize movement
         transform.position = endPos;
         currentHex = targetTile;
-        currentHex.SetCurrentPlayer(this);
+
+        // Update visual display
+        targetTile.SetCharacterPresent(true, team);
 
         isMoving = false;
-        OnMovement?.Invoke(this);
+      
+
+        // Update MouseHandler's character position displays
+        if (MouseHandler.instance != null)
+        {
+            // This will refresh all character position displays
+            MouseHandler.instance.UpdateCharacterPositionDisplays();
+        }
     }
 
     public List<HexTile> GetMovementRange()
     {
-        return GetTilesInRange(currentHex, charClass.remainingMoves);
+        return GetTilesInRange(currentHex, movementSpeed);
     }
 
     private List<HexTile> GetTilesInRange(HexTile center, int range)
@@ -253,7 +160,7 @@ public class Char : MonoBehaviour
             {
                 if (mapMaker.hexTiles.TryGetValue(neighborCoord, out HexTile neighbor))
                 {
-                    if (!neighbor.isWalkable || neighbor.hasChar) continue;
+                    if (!neighbor.isWalkable || neighbor.HasCharacter) continue;
 
                     int newCost = costSoFar[current] + neighbor.movementCost;
 
@@ -276,55 +183,7 @@ public class Char : MonoBehaviour
 
     public bool CanMove()
     {
-        return !isMoving && (charClass.remainingMoves > 0 || charClass.currentActionPoints > 0);
+        return !isMoving && (movementSpeed > 0);
     }
 
-    private IEnumerator TurnStartAnimation()
-    {
-
-        float duration = 0.5f;
-        float elapsed = 0;
-        Color originalColor =characterRenderer.color;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / duration;
-
-            float flash = Mathf.Sin(t * Mathf.PI * 2) * 0.5f + 0.5f;
-           characterRenderer.color = Color.Lerp(originalColor, Color.white, flash * 0.5f);
-
-            float scale = 1f + Mathf.Sin(t * Mathf.PI) * 0.2f;
-            transform.localScale = Vector3.one * scale;
-
-            yield return null;
-        }
-
-        characterRenderer.color = originalColor;
-        transform.localScale = Vector3.one;
-    }
-
-    private IEnumerator DamageFlashEffect()
-    {
-        if (characterRenderer == null) yield break;
-
-        Color originalColor = characterRenderer.color;
-        characterRenderer.color = Color.red;
-
-        yield return new WaitForSeconds(0.1f);
-
-        characterRenderer.color = originalColor;
-    }
-  
-
-
-
-
-   
-
-
- 
-
-
- 
 }

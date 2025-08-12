@@ -170,6 +170,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5039395516211310692, guid: dbc3e9723f34bd54698e951a4bb4aae9, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1934007569, guid: d0ee4b06f1a28ee44940008b93cb242e, type: 3}
+    - target: {fileID: 5039395516211310692, guid: dbc3e9723f34bd54698e951a4bb4aae9, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6376917762627998705, guid: dbc3e9723f34bd54698e951a4bb4aae9, type: 3}
+      propertyPath: team
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6376917762627998705, guid: dbc3e9723f34bd54698e951a4bb4aae9, type: 3}
+      propertyPath: moveSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6376917762627998705, guid: dbc3e9723f34bd54698e951a4bb4aae9, type: 3}
+      propertyPath: movementSpeed
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 7771520682674560736, guid: dbc3e9723f34bd54698e951a4bb4aae9, type: 3}
       propertyPath: m_Name
       value: Player
@@ -364,7 +384,7 @@ MonoBehaviour:
       m_Name: Interact
       m_Type: 0
       m_ExpectedControlType: 
-      m_Id: e5691c8c-1043-4b3e-bfc6-3639cc815137
+      m_Id: 2cf09a53-4411-4ac9-b3ff-a275aca9c50e
       m_Processors: 
       m_Interactions: 
       m_SingletonActionBindings: []
@@ -504,7 +524,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enablePathPreview: 1
   enableRightClickToCancel: 1
-  currentActionType: 0
+  currentActionType: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
