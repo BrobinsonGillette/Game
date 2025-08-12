@@ -2,29 +2,41 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public enum Team { none, player, enemy , neutral , other };
-public class Char : MonoBehaviour
+public class Char : AnimatorBrain, IDamable
 {
     [Header("Character Properties")]
     public Team team = Team.none;
     public int movementSpeed;
-    private float movementAnimationSpeed = 2f;
-
-    public SpriteRenderer characterRenderer;
+    private float movementAnimationSpeed = 1f;
     public HexTile currentHex { get; private set; }
     public bool isMoving { get; private set; }
-
-
-
+    public float MaxHp;
+    public float Health { get ; set  ; }
+    private bool movingLeft;
+    private Vector2 CurrentPosition;
+    SpriteRenderer spriteRenderer;
+    private void Awake()
+    {
+        spriteRenderer= GetComponent<SpriteRenderer>();
+        CurrentPosition = transform.position;
+        Initialize(GetComponent<Animator>().layerCount, Animations.Idle, GetComponent<Animator>(), DefaultAnimation);
+    }
     private void Update()
     {
         getTileOnGround();
+        if(movingLeft)
+        {
+            spriteRenderer.flipX = false;
+        }
+        else
+        {
+            spriteRenderer.flipX = true;
+        }
     }
-
-
-
-
 
     void getTileOnGround()
     {
@@ -41,10 +53,6 @@ public class Char : MonoBehaviour
             }
         }
     }
-
-
-
- 
 
     public bool MovePlayerToTile(HexTile targetTile)
     {
@@ -69,6 +77,14 @@ public class Char : MonoBehaviour
         }
 
         movementSpeed -= targetTile.movementCost;
+        if(CurrentPosition.x <= targetTile.transform.position.x)
+        {
+            movingLeft = true;
+        }
+        else
+        {
+            movingLeft = false;
+        }
         StartCoroutine(AnimateMovement(targetTile));
         return true;
     }
@@ -84,11 +100,10 @@ public class Char : MonoBehaviour
         return neighbors.Contains(to.coordinates);
     }
 
-
     private IEnumerator AnimateMovement(HexTile targetTile)
     {
         isMoving = true;
-
+        Play(Animations.Walk, 0, false, false);
         // Clear current hex - both logically and visually
         if (currentHex != null)
         {
@@ -108,7 +123,7 @@ public class Char : MonoBehaviour
             fractionOfJourney = Mathf.SmoothStep(0, 1, fractionOfJourney);
 
             Vector3 currentPos = Vector3.Lerp(startPos, endPos, fractionOfJourney);
-            currentPos.y += Mathf.Sin(fractionOfJourney * Mathf.PI) * 0.2f;
+            //currentPos.y += Mathf.Sin(fractionOfJourney * Mathf.PI) * 0.2f;
 
             transform.position = currentPos;
             yield return null;
@@ -120,10 +135,9 @@ public class Char : MonoBehaviour
 
         // Update visual display
         targetTile.SetCharacterPresent(true, team);
-
+        Play(Animations.Idle, 0, false, false);
+        CurrentPosition = transform.position;
         isMoving = false;
-      
-
         // Update MouseHandler's character position displays
         if (MouseHandler.instance != null)
         {
@@ -131,7 +145,6 @@ public class Char : MonoBehaviour
             MouseHandler.instance.UpdateCharacterPositionDisplays();
         }
     }
-
     public List<HexTile> GetMovementRange()
     {
         return GetTilesInRange(currentHex, movementSpeed);
@@ -185,5 +198,30 @@ public class Char : MonoBehaviour
     {
         return !isMoving && (movementSpeed > 0);
     }
+    void DefaultAnimation(int layer) 
+    {
+        if (isMoving)
+        {
+            Play(Animations.Walk, layer, false, false);
+        }
+        else
+        {
+            Play(Animations.Idle, layer, false, false);
+        }
+    }
 
+    public void TakeDamage(float damage)
+    {
+        Health -= damage;
+        Play(Animations.Hurt, 0, true, true);
+        if (Health <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Play(Animations.Death, 0, true, true);
+    }
 }
