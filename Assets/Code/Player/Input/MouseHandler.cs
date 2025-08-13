@@ -27,7 +27,7 @@ public class MouseHandler : MonoBehaviour
     private HexTile currentHoveredTile = null;
     private HexTile selectedTile = null;
     [SerializeField] private Char selectedPlayer = null;
-    public ActionModes currentActionType = ActionModes.Move;
+    public ActionModes currentActionType = ActionModes.None; // Changed from Move to None
 
     // Action system state
     [SerializeField] private ActionData selectedAction = null;
@@ -181,6 +181,9 @@ public class MouseHandler : MonoBehaviour
 
         switch (currentActionType)
         {
+            case ActionModes.None:
+                HandleNoneMode(clickedTile);
+                break;
             case ActionModes.Move:
                 HandleMoveMode(clickedTile);
                 break;
@@ -193,6 +196,19 @@ public class MouseHandler : MonoBehaviour
             case ActionModes.Special:
                 HandleSpecialMode(clickedTile);
                 break;
+        }
+    }
+
+    // New method to handle clicks when no mode is selected
+    private void HandleNoneMode(HexTile clickedTile)
+    {
+        Char characterOnTile = GetCharacterOnTile(clickedTile);
+
+        // Only allow selection of player team characters
+        if (characterOnTile != null && characterOnTile.team == Team.player)
+        {
+            SelectCharacter(characterOnTile, clickedTile);
+            // Don't auto-set any mode - wait for user to choose
         }
     }
 
@@ -214,39 +230,64 @@ public class MouseHandler : MonoBehaviour
     {
         if (selectedPlayer == null)
         {
-            selectedPlayer = GetCharacterOnTile(clickedTile);
+            Char characterOnTile = GetCharacterOnTile(clickedTile);
+            if (characterOnTile == null || characterOnTile.team != Team.player) return;
+            selectedPlayer = characterOnTile;
         }
+
         if (selectedPlayerActions == null)
         {
             SelectCharacter(selectedPlayer, clickedTile);
         }
+
         if (selectedAction == null)
         {
-            AutoSelectBasicAttack();
+            Debug.Log("No action selected! Please select an action first.");
+            return;
         }
 
-      
-            Char targetCharacter = GetCharacterOnTile(clickedTile);
+        // Check if the clicked tile is in the valid action range
+        if (!IsValidActionTarget(clickedTile))
+        {
+            Debug.Log("Invalid target for this action!");
+            return;
+        }
 
-            // For area attacks or attacks without specific targets, pass the tile position
-            if (selectedAction.targetType == TargetType.Area || targetCharacter == null)
-            {
-                selectedPlayerActions.UseAction(selectedAction, clickedTile, null);
-            }
-            else
-            {
-                selectedPlayerActions.UseAction(selectedAction, clickedTile, targetCharacter);
-            }
+        Char targetCharacter = GetCharacterOnTile(clickedTile);
 
-            OnActionUsed?.Invoke(selectedPlayer, selectedAction, clickedTile);
+        // For area attacks or attacks without specific targets, pass the tile position
+        if (selectedAction.targetType == TargetType.Area || targetCharacter == null)
+        {
+            selectedPlayerActions.UseAction(selectedAction, clickedTile, null);
+        }
+        else if (targetCharacter != selectedPlayer)
+        {
+            selectedPlayerActions.UseAction(selectedAction, clickedTile, targetCharacter);
+        }
 
-            // Clear action selection after use
-            selectedAction = null;
-            UpdateActionRangeDisplay();
+        OnActionUsed?.Invoke(selectedPlayer, selectedAction, clickedTile);
 
-            Debug.Log($"{selectedPlayer.name} used action on {clickedTile.coordinates}");
-        
-       
+        // Clear action selection after use
+        selectedAction = null;
+        UpdateActionRangeDisplay();
+
+        Debug.Log($"{selectedPlayer.name} used action on {clickedTile.coordinates}");
+    }
+
+    private bool IsValidActionTarget(HexTile tile)
+    {
+        if (selectedAction == null || selectedPlayerActions == null || tile == null) return false;
+
+        try
+        {
+            List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedAction);
+            return validTargets != null && validTargets.Contains(tile);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error checking valid action targets: {e.Message}");
+            return false;
+        }
     }
 
     private void HandleItemMode(HexTile clickedTile)
@@ -260,7 +301,8 @@ public class MouseHandler : MonoBehaviour
         if (IsValidItemTarget(clickedTile))
         {
             Char targetCharacter = GetCharacterOnTile(clickedTile);
-            selectedPlayerActions.UseItem(selectedItem, clickedTile, targetCharacter);
+            //todo
+            // selectedPlayerActions.UseItem(selectedItem, clickedTile, targetCharacter);
             OnItemUsed?.Invoke(selectedPlayer, selectedItem, clickedTile);
 
             // Clear item selection after use
@@ -274,6 +316,7 @@ public class MouseHandler : MonoBehaviour
             Debug.Log("Invalid target for this item!");
         }
     }
+
     private void HandleSpecialMode(HexTile clickedTile)
     {
         if (selectedPlayer == null || selectedPlayerActions == null)
@@ -284,6 +327,7 @@ public class MouseHandler : MonoBehaviour
 
         Debug.Log($"Special action at {clickedTile.coordinates} - implement your special logic here!");
     }
+
     private bool IsValidItemTarget(HexTile tile)
     {
         if (selectedItem == null || selectedPlayerActions == null) return false;
@@ -325,7 +369,6 @@ public class MouseHandler : MonoBehaviour
 
     private void HandleClickOnCharacter(HexTile clickedTile, Char character)
     {
-
         // In move mode, only allow selection of player team characters
         if (currentActionType == ActionModes.Move)
         {
@@ -358,6 +401,11 @@ public class MouseHandler : MonoBehaviour
                 return;
             }
         }
+        else if (currentActionType == ActionModes.None)
+        {
+            // In None mode, just select the character
+            SelectCharacter(character, clickedTile);
+        }
     }
 
     private void SelectCharacter(Char character, HexTile tile)
@@ -379,23 +427,23 @@ public class MouseHandler : MonoBehaviour
             selectedPlayerActions = character.GetComponent<CharacterActions>();
             tile.SetSelected(true);
 
-            // Auto-select based on current mode
+            // Only auto-select based on current mode if we're not in None mode
             switch (currentActionType)
             {
                 case ActionModes.Move:
-                    AutoActionModeToMove();
+                    ShowMovementRange();
                     break;
                 case ActionModes.Actions:
-                    AutoSelectBasicAttack();
+                    // Don't auto-select action anymore
                     break;
                 case ActionModes.Item:
-                    AutoSelectItem();
+                    // Don't auto-select item anymore
                     break;
                 case ActionModes.Special:
-                    AutoSelectSpecialAttack();
+                    // Don't auto-select special anymore
                     break;
                 case ActionModes.None:
-                    AutoSelectBasicAttack();
+                    // Don't show any ranges in None mode
                     break;
             }
 
@@ -501,8 +549,38 @@ public class MouseHandler : MonoBehaviour
 
         selectedAction = action;
         selectedItem = null; // Clear item selection
+
+        // Spawn hitbox immediately at player's position when action is selected
+        SpawnActionHitbox(action);
+
         UpdateActionRangeDisplay();
         Debug.Log($"Selected action: {action.actionName}");
+    }
+
+    private void SpawnActionHitbox(ActionData action)
+    {
+        if (selectedPlayer == null || action.hitboxPrefab == null) return;
+
+        try
+        {
+            // Always spawn at player's position when action is selected
+            Vector3 spawnPosition = selectedPlayer.transform.position;
+
+            GameObject hitboxObj = Instantiate(action.hitboxPrefab, spawnPosition, Quaternion.identity);
+            AttackHitbox hitbox = hitboxObj.GetComponentInChildren<AttackHitbox>();
+
+            if (hitbox != null)
+            {
+                // Initialize hitbox but don't activate damage yet
+                hitbox.InitializeForPreview(action.damage, selectedPlayer.team, action.hitboxLifetime);
+            }
+
+            Debug.Log($"Spawned action hitbox for {action.actionName} at player position!");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error spawning action hitbox: {e.Message}");
+        }
     }
 
     public void SelectItem(ItemData item)
@@ -787,6 +865,7 @@ public class MouseHandler : MonoBehaviour
             selectedPlayerActions = null;
             selectedAction = null;
             selectedItem = null;
+            currentActionType = ActionModes.None; // Reset to None
 
             if (CamMagger.instance != null)
             {
@@ -837,31 +916,8 @@ public class MouseHandler : MonoBehaviour
 
     public void AutoSelectItem()
     {
-        if (selectedPlayer == null || selectedPlayerActions == null) return;
-
-        try
-        {
-            // Find the first usable item
-            if (selectedPlayerActions.inventory != null && selectedPlayerActions.inventory.Count > 0)
-            {
-                foreach (ItemData item in selectedPlayerActions.inventory)
-                {
-                    if (item != null && selectedPlayerActions.CanUseItem(item))
-                    {
-                        selectedItem = item;
-                        SetActionMode(ActionModes.Item);
-                        ShowItemRange();
-                        Debug.Log($"Auto-selected item: {item.itemName}");
-                        return;
-                    }
-                }
-            }
-            Debug.Log("No usable items found");
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error auto-selecting item: {e.Message}");
-        }
+        // Removed auto-selection logic - items will only be selected when clicked
+        Debug.Log("Please select an item from the UI");
     }
 
     public void AutoActionModeToMove()
@@ -885,31 +941,8 @@ public class MouseHandler : MonoBehaviour
 
     public void AutoSelectBasicAttack()
     {
-        if (selectedPlayer == null || selectedPlayerActions == null) return;
-
-        try
-        {
-            // Find the first attack action
-            if (selectedPlayerActions.availableActions != null)
-            {
-                foreach (ActionData action in selectedPlayerActions.availableActions)
-                {
-                    if (action != null && action.actionType == ActionType.Attack)
-                    {
-                        selectedAction = action;
-                        SetActionMode(ActionModes.Actions);
-                        ShowActionRange();
-                        Debug.Log($"Auto-selected attack: {action.actionName}");
-                        return;
-                    }
-                }
-            }
-            Debug.Log("No attack actions found");
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error auto-selecting basic attack: {e.Message}");
-        }
+        // Removed auto-selection logic - actions will only be selected when clicked
+        Debug.Log("Please select an action from the UI");
     }
 
     // Getter methods for UI

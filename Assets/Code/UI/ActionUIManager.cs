@@ -33,7 +33,6 @@ public class ActionUIManager : MonoBehaviour
 
     private void Start()
     {
-        // Initialize with safe null checking
         try
         {
             mouseHandler = MouseHandler.instance;
@@ -50,6 +49,7 @@ public class ActionUIManager : MonoBehaviour
 
             SetupModeButtons();
             HideAllPanels();
+            HideModeButtons(); // Hide mode buttons initially
         }
         catch (System.Exception e)
         {
@@ -91,7 +91,6 @@ public class ActionUIManager : MonoBehaviour
             else
             {
                 Debug.LogWarning("MouseHandler is null when trying to set action mode");
-                // Try to find MouseHandler again
                 mouseHandler = MouseHandler.instance;
                 if (mouseHandler != null)
                 {
@@ -119,6 +118,7 @@ public class ActionUIManager : MonoBehaviour
             UpdateCharacterInfo(selectedCharacter);
             UpdateActionButtons(selectedCharacter);
             UpdateItemButtons(selectedCharacter);
+            ShowModeButtons(); // Show mode buttons when a player is selected
             UpdateUI();
         }
         catch (System.Exception e)
@@ -132,11 +132,50 @@ public class ActionUIManager : MonoBehaviour
         try
         {
             HideAllPanels();
+            HideModeButtons(); // Hide mode buttons when selection is cancelled
             ClearCharacterInfo();
         }
         catch (System.Exception e)
         {
             Debug.LogError($"Error handling selection cancellation: {e.Message}");
+        }
+    }
+
+    private void ShowModeButtons()
+    {
+        try
+        {
+            if (moveButton != null)
+                moveButton.gameObject.SetActive(true);
+            if (actionsButton != null)
+                actionsButton.gameObject.SetActive(true);
+            if (itemsButton != null)
+                itemsButton.gameObject.SetActive(true);
+            if (specialButton != null)
+                specialButton.gameObject.SetActive(true);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error showing mode buttons: {e.Message}");
+        }
+    }
+
+    private void HideModeButtons()
+    {
+        try
+        {
+            if (moveButton != null)
+                moveButton.gameObject.SetActive(false);
+            if (actionsButton != null)
+                actionsButton.gameObject.SetActive(false);
+            if (itemsButton != null)
+                itemsButton.gameObject.SetActive(false);
+            if (specialButton != null)
+                specialButton.gameObject.SetActive(false);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error hiding mode buttons: {e.Message}");
         }
     }
 
@@ -433,18 +472,22 @@ public class ActionUIManager : MonoBehaviour
             // Hide all panels first
             HideAllPanels();
 
-            // Show appropriate panel based on current mode
-            switch (mouseHandler.currentActionType)
+            // Only show panels if we're not in None mode and have a selected player
+            if (mouseHandler.GetSelectedPlayer() != null && mouseHandler.currentActionType != ActionModes.None)
             {
-                case ActionModes.Actions:
-                    if (actionPanel != null)
-                        actionPanel.SetActive(true);
-                    break;
+                // Show appropriate panel based on current mode
+                switch (mouseHandler.currentActionType)
+                {
+                    case ActionModes.Actions:
+                        if (actionPanel != null)
+                            actionPanel.SetActive(true);
+                        break;
 
-                case ActionModes.Item:
-                    if (itemPanel != null)
-                        itemPanel.SetActive(true);
-                    break;
+                    case ActionModes.Item:
+                        if (itemPanel != null)
+                            itemPanel.SetActive(true);
+                        break;
+                }
             }
 
             // Update button states

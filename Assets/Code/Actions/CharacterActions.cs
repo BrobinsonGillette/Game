@@ -41,19 +41,19 @@ public class CharacterActions : MonoBehaviour
         currentActionPoints -= action.actionPointCost;
         ExecuteAction(action, targetTile, targetCharacter);
     }
+    //todo fix
+    //public void UseItem(ItemData item, HexTile targetTile, Char targetCharacter = null)
+    //{
+    //    if (!CanUseItem(item)) return;
 
-    public void UseItem(ItemData item, HexTile targetTile, Char targetCharacter = null)
-    {
-        if (!CanUseItem(item)) return;
+    //    currentActionPoints -= item.actionEffect.actionPointCost;
+    //    ExecuteAction(item.actionEffect, targetTile, targetCharacter);
 
-        currentActionPoints -= item.actionEffect.actionPointCost;
-        ExecuteAction(item.actionEffect, targetTile, targetCharacter);
-
-        if (item.isConsumable)
-        {
-            inventory.Remove(item);
-        }
-    }
+    //    if (item.isConsumable)
+    //    {
+    //        inventory.Remove(item);
+    //    }
+    //}
 
     private void ExecuteAction(ActionData action, HexTile targetTile, Char targetCharacter)
     {
@@ -88,42 +88,14 @@ public class CharacterActions : MonoBehaviour
 
     private void ExecuteAttack(ActionData action, HexTile targetTile, Char targetCharacter)
     {
-        // Spawn hitbox if prefab is assigned
+        // For the new workflow, we don't spawn hitbox here anymore
+        // The hitbox is already spawned when action is selected
+        // Instead, we activate existing hitboxes or trigger damage directly
+
         if (action.hitboxPrefab != null)
         {
-            Vector3 spawnPosition;
-
-            // Determine spawn position based on action settings and target
-            if (action.spawnHitboxOnTarget)
-            {
-                if (targetCharacter != null)
-                {
-                    spawnPosition = targetCharacter.transform.position;
-                }
-                else if (targetTile != null)
-                {
-                    spawnPosition = targetTile.transform.position;
-                }
-                else
-                {
-                    spawnPosition = character.transform.position;
-                }
-            }
-            else
-            {
-                // Spawn at character's position (like a projectile origin)
-                spawnPosition = character.transform.position;
-            }
-
-            GameObject hitboxObj = Instantiate(action.hitboxPrefab, spawnPosition, Quaternion.identity);
-            AttackHitbox hitbox = hitboxObj.GetComponentInChildren<AttackHitbox>();
-
-            if (hitbox != null)
-            {
-                hitbox.Initialize(action.damage, character.team, action.hitboxLifetime);
-            }
-
-            Debug.Log($"{character.name} spawned attack hitbox at {spawnPosition}!");
+            // Find existing hitboxes spawned by this character and activate them
+            ActivateExistingHitboxes(action, targetTile, targetCharacter);
         }
         else
         {
@@ -133,6 +105,31 @@ public class CharacterActions : MonoBehaviour
                 targetCharacter.GetComponent<IDamable>().TakeDamage(action.damage);
                 Debug.Log($"{character.name} attacks {targetCharacter.name} for {action.damage} damage!");
             }
+        }
+    }
+
+    private void ActivateExistingHitboxes(ActionData action, HexTile targetTile, Char targetCharacter)
+    {
+        try
+        {
+            // Find all AttackHitbox components in the scene
+            AttackHitbox[] allHitboxes = FindObjectsOfType<AttackHitbox>();
+
+            foreach (AttackHitbox hitbox in allHitboxes)
+            {
+                // Check if this hitbox belongs to our character and matches the action
+                if (hitbox != null && hitbox.OwnerTeam == character.team && !hitbox.IsActivated)
+                {
+                    // Activate the hitbox for actual damage
+                    hitbox.ActivateForDamage();
+                    Debug.Log($"{character.name} activated attack hitbox!");
+                    break; // Only activate one hitbox per action
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error activating existing hitboxes: {e.Message}");
         }
     }
 
