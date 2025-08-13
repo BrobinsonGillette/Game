@@ -9,87 +9,77 @@ public class AttackHitbox : MonoBehaviour
     private Team ownerTeam = Team.player;
     private float lifetime = 2f;
     private bool isActivated = false;
-    private int Range = 1;
-    private bool hasHit = false;
+    private AttackHitMainbox parentMainbox;
+
     [Header("Visual Settings")]
     public Color previewColor = Color.yellow;
     public Color activeColor = Color.red;
     public float previewAlpha = 0.5f;
     public float activeAlpha = 1f;
-    private AttackHitMainbox parent;
-    [SerializeField] Transform groundCheck;
+
     [SerializeField] private Renderer hitboxRenderer;
     private Collider hitboxCollider;
     private HashSet<Char> hitTargets = new HashSet<Char>();
-
-
+    private HexTile currentTile;
+    private MapMaker mapMaker;
 
     private void Awake()
     {
         hitboxCollider = GetComponent<Collider>();
-
-        // Disable collider initially
         if (hitboxCollider != null)
         {
             hitboxCollider.enabled = false;
         }
 
+        mapMaker = MapMaker.instance;
     }
 
-    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime, int range, GameObject hitboxPrefab, AttackHitMainbox Parent, Vector3 direction, int segmentIndex = 1)
+    // Simplified initialization - no recursive spawning
+    public void InitializeSimple(float hitboxDamage, Team team, float hitboxLifetime, AttackHitMainbox parent)
     {
         damage = hitboxDamage;
         ownerTeam = team;
         lifetime = hitboxLifetime;
-        isActivated = false; // Start in preview mode
-        Range = range;
+        parentMainbox = parent;
+        isActivated = false;
+
         SetupVisual(previewColor, previewAlpha);
-        hasHit = false;
-        parent = Parent;
 
         if (hitboxCollider != null)
         {
-            hitboxCollider.enabled = false; // No collision in preview mode
+            hitboxCollider.enabled = false;
         }
 
-        if (Range > 1 && segmentIndex + 1 < Range)
-        {
-            // Calculate next position in the direction
-            Vector3 nextPosition = transform.position + direction.normalized;
-
-            GameObject SpawnAttack = Instantiate(hitboxPrefab, nextPosition, Quaternion.identity);
-            AttackHitbox hitbox = SpawnAttack.GetComponentInChildren<AttackHitbox>();
-            SpawnAttack.transform.parent = transform;
-
-            if (hitbox != null)
-            {
-                // Initialize next hitbox with same direction and incremented segment index
-                hitbox.InitializeForPreview(damage, team, hitboxLifetime, Range, hitboxPrefab, Parent, direction, segmentIndex + 1);
-            }
-            Parent.hitboxes.Add(hitbox);
-        }
+        // Snap to nearest tile
+        SnapToNearestTile();
     }
 
     private void Update()
     {
-        getTileOnGround();
+        // Keep snapped to tile
+        if (currentTile != null)
+        {
+            transform.position = currentTile.transform.position;
+        }
     }
 
-    void getTileOnGround()
+    private void SnapToNearestTile()
     {
-        MapMaker mapMaker = MapMaker.instance;
         if (mapMaker == null) return;
-        Vector3 position = groundCheck.position;
-        Vector2Int hexCoords = mapMaker.WorldToHexPosition(position);
-        if (mapMaker.hexTiles.TryGetValue(hexCoords, out HexTile tile))
+
+        Vector2Int hexCoords = mapMaker.WorldToHexPosition(transform.position);
+        HexTile tile = mapMaker.GetHexTile(hexCoords);
+
+        if (tile != null)
         {
+            currentTile = tile;
             transform.position = tile.transform.position;
         }
     }
 
     public void ActivateForDamage()
     {
-        if (isActivated) return; // Already activated
+        if (isActivated) return;
 
         isActivated = true;
         SetupVisual(activeColor, activeAlpha);
@@ -100,7 +90,6 @@ public class AttackHitbox : MonoBehaviour
         }
 
         StartCoroutine(DestroyAfterTime());
-        Debug.Log($"Attack hitbox activated for damage!");
     }
 
     private void SetupVisual(Color color, float alpha)
@@ -112,10 +101,9 @@ public class AttackHitbox : MonoBehaviour
             newColor.a = alpha;
             material.color = newColor;
 
-            // If using standard shader, set rendering mode to transparent
             if (alpha < 1f)
             {
-                material.SetFloat("_Mode", 3); // Transparent
+                material.SetFloat("_Mode", 3);
                 material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
                 material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
                 material.SetInt("_ZWrite", 0);
@@ -129,18 +117,24 @@ public class AttackHitbox : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (!isActivated) return; // Don't damage in preview mode
+        if (!isActivated) return;
 
         Char character = other.GetComponent<Char>();
         if (character != null && character.team != ownerTeam && !hitTargets.Contains(character))
         {
             IDamage damageable = character.GetComponent<IDamage>();
-            if (damageable != null || hasHit || parent.fistTargetHit)
+
+            // Check if parent already hit something (for single-target attacks)
+            if (damageable != null && (parentMainbox == null || !parentMainbox.fistTargetHit))
             {
                 damageable.TakeDamage(damage);
                 hitTargets.Add(character);
-                hasHit = true;
-                parent.fistTargetHit = true;
+
+                if (parentMainbox != null)
+                {
+                    parentMainbox.fistTargetHit = true;
+                }
+
                 Debug.Log($"Hitbox hit {character.name} for {damage} damage!");
             }
         }
@@ -152,12 +146,19 @@ public class AttackHitbox : MonoBehaviour
 
         if (gameObject != null)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 
     private void OnDestroy()
     {
         hitTargets.Clear();
+        currentTile = null;
+    }
+
+    // Helper method to get the tile this hitbox is on
+    public HexTile GetCurrentTile()
+    {
+        return currentTile;
     }
 }
