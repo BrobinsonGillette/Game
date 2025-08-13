@@ -189,12 +189,12 @@ public class ActionUIManager : MonoBehaviour
                 characterNameText.text = character.name ?? "Unknown";
 
             if (healthText != null)
-                healthText.text = $"HP: {character.Health:F0}/{character.MaxHp:F0}";
+                healthText.text = $"HP: {character.charClass.Health:F0}/{character.charClass.MaxHp:F0}";
 
             CharacterActions characterActions = character.GetComponent<CharacterActions>();
             if (characterActions != null && actionPointsText != null)
             {
-                actionPointsText.text = $"AP: {characterActions.currentActionPoints}/{characterActions.maxActionPoints}";
+                actionPointsText.text = $"AP: {characterActions.character.charClass.currentActionPoints}/{characterActions.character.charClass.maxActionPoints}";
             }
             else if (actionPointsText != null)
             {
@@ -235,9 +235,9 @@ public class ActionUIManager : MonoBehaviour
             if (character == null) return;
 
             CharacterActions characterActions = character.GetComponent<CharacterActions>();
-            if (characterActions == null || characterActions.availableActions == null) return;
+            if (characterActions == null || characterActions.character.charClass.availableActions == null) return;
 
-            foreach (ActionData action in characterActions.availableActions)
+            foreach (ActionData action in characterActions.character.charClass.availableActions)
             {
                 if (action != null)
                 {
@@ -320,9 +320,9 @@ public class ActionUIManager : MonoBehaviour
             if (character == null) return;
 
             CharacterActions characterActions = character.GetComponent<CharacterActions>();
-            if (characterActions == null || characterActions.inventory == null) return;
+            if (characterActions == null || characterActions.character.charClass.inventory == null) return;
 
-            foreach (ItemData item in characterActions.inventory)
+            foreach (ItemData item in characterActions.character.charClass.inventory)
             {
                 if (item != null)
                 {

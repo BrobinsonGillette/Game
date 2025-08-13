@@ -38,23 +38,6 @@ public class AttackHitbox : MonoBehaviour
         mouseHandler = MouseHandler.instance;
     }
 
-    public void Initialize(int hitboxDamage, Team team, float hitboxLifetime)
-    {
-        damage = hitboxDamage;
-        ownerTeam = team;
-        lifetime = hitboxLifetime;
-        isActivated = true; // Old method - immediately active
-
-        SetupVisual(activeColor, activeAlpha);
-
-        if (hitboxCollider != null)
-        {
-            hitboxCollider.enabled = true;
-        }
-
-        StartCoroutine(DestroyAfterTime());
-    }
-
     public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime)
     {
         damage = hitboxDamage;

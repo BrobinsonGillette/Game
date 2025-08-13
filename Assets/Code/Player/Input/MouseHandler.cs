@@ -28,6 +28,7 @@ public class MouseHandler : MonoBehaviour
     private HexTile selectedTile = null;
     private Char selectedPlayer = null;
     public ActionModes currentActionType = ActionModes.None; // Changed from Move to None
+    public GameObject SpawnAttack;
 
     // Action system state
     private ActionData selectedAction = null;
@@ -263,7 +264,7 @@ public class MouseHandler : MonoBehaviour
 
         // Clear action selection after use
         selectedAction = null;
-        UpdateActionRangeDisplay();
+   
 
         Debug.Log($"{selectedPlayer.name} used action on {clickedTile.coordinates}");
     }
@@ -285,7 +286,6 @@ public class MouseHandler : MonoBehaviour
 
             // Clear item selection after use
             selectedItem = null;
-            UpdateActionRangeDisplay();
 
             Debug.Log($"{selectedPlayer.name} used item on {clickedTile.coordinates}");
         }
@@ -449,15 +449,9 @@ public class MouseHandler : MonoBehaviour
             switch (currentActionType)
             {
                 case ActionModes.Move:
-                    if (selectedPlayer.movementSpeed > 0)
+                    if (selectedPlayer.charClass.movementSpeed > 0)
                     {
                         ShowMovementRange();
-                    }
-                    break;
-                case ActionModes.Actions:
-                    if (selectedAction != null)
-                    {
-                        ShowActionRange();
                     }
                     break;
                 case ActionModes.Item:
@@ -531,7 +525,6 @@ public class MouseHandler : MonoBehaviour
         // Spawn hitbox immediately at player's position when action is selected
         SpawnActionHitbox(action);
 
-        UpdateActionRangeDisplay();
         Debug.Log($"Selected action: {action.actionName}");
     }
 
@@ -544,8 +537,8 @@ public class MouseHandler : MonoBehaviour
             // Always spawn at player's position when action is selected
             Vector3 spawnPosition = selectedPlayer.transform.position;
 
-            GameObject hitboxObj = Instantiate(action.hitboxPrefab, spawnPosition, Quaternion.identity);
-            AttackHitbox hitbox = hitboxObj.GetComponentInChildren<AttackHitbox>();
+            SpawnAttack = Instantiate(action.hitboxPrefab, spawnPosition, Quaternion.identity);
+            AttackHitbox hitbox = SpawnAttack.GetComponentInChildren<AttackHitbox>();
 
             if (hitbox != null)
             {
@@ -571,7 +564,6 @@ public class MouseHandler : MonoBehaviour
 
         selectedItem = item;
         selectedAction = null; // Clear action selection
-        UpdateActionRangeDisplay();
         Debug.Log($"Selected item: {item.itemName}");
     }
 
@@ -612,54 +604,6 @@ public class MouseHandler : MonoBehaviour
             Debug.LogError($"Error showing movement range: {e.Message}");
         }
     }
-
-    private void ShowActionRange()
-    {
-        if (selectedPlayer == null || selectedAction == null || selectedPlayerActions == null) return;
-
-        try
-        {
-            ClearActionRange();
-            List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedAction);
-
-            if (validTargets != null)
-            {
-                currentActionRange = new HashSet<HexTile>(validTargets);
-
-                foreach (HexTile tile in currentActionRange)
-                {
-                    if (tile != null)
-                    {
-                        // Use different colors for different target types
-                        Char characterOnTile = GetCharacterOnTile(tile);
-                        if (characterOnTile != null)
-                        {
-                            if (characterOnTile.team != selectedPlayer.team)
-                            {
-                                // Enemy target - use attack color (red-ish)
-                                tile.SetAttackTarget(true);
-                            }
-                            else
-                            {
-                                // Ally target - use support color (blue-ish) 
-                                tile.SetSupportTarget(true);
-                            }
-                        }
-                        else
-                        {
-                            // Empty tile in range
-                            tile.SetMovementDestination(true);
-                        }
-                    }
-                }
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error showing action range: {e.Message}");
-        }
-    }
-
     private void ShowItemRange()
     {
         if (selectedPlayer == null || selectedItem == null || selectedPlayerActions == null) return;
@@ -709,30 +653,9 @@ public class MouseHandler : MonoBehaviour
         if (selectedPlayer == null) return;
 
         ClearMovementRange();
-        if (selectedPlayer.movementSpeed > 0)
+        if (selectedPlayer.charClass.movementSpeed > 0)
         {
             ShowMovementRange();
-        }
-    }
-
-    private void UpdateActionRangeDisplay()
-    {
-        ClearActionRange();
-
-        switch (currentActionType)
-        {
-            case ActionModes.Actions:
-                if (selectedAction != null)
-                {
-                    ShowActionRange();
-                }
-                break;
-            case ActionModes.Item:
-                if (selectedItem != null)
-                {
-                    ShowItemRange();
-                }
-                break;
         }
     }
 
@@ -804,8 +727,6 @@ public class MouseHandler : MonoBehaviour
                 if (tile != null)
                 {
                     tile.SetMovementDestination(false);
-                    tile.SetAttackTarget(false);
-                    tile.SetSupportTarget(false);
                 }
             }
             currentActionRange.Clear();
@@ -844,7 +765,8 @@ public class MouseHandler : MonoBehaviour
             selectedAction = null;
             selectedItem = null;
             currentActionType = ActionModes.None; // Reset to None
-
+            if(SpawnAttack != null)
+                Destroy(SpawnAttack);
             if (CamMagger.instance != null)
             {
                 CamMagger.instance.SetTarget(null);
@@ -887,47 +809,9 @@ public class MouseHandler : MonoBehaviour
         }
     }
 
-    private void AutoSelectSpecialAttack()
-    {
-        Debug.Log("Auto-selecting special attack - implement your logic here!");
-    }
 
-    public void AutoSelectItem()
-    {
-        // Removed auto-selection logic - items will only be selected when clicked
-        Debug.Log("Please select an item from the UI");
-    }
-
-    public void AutoActionModeToMove()
-    {
-        if (selectedPlayer == null) return;
-
-        try
-        {
-            SetActionMode(ActionModes.Move);
-            ClearAllRanges();
-            if (selectedPlayer != null)
-            {
-                ShowMovementRange();
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error auto-selecting move mode: {e.Message}");
-        }
-    }
-
-    public void AutoSelectBasicAttack()
-    {
-        // Removed auto-selection logic - actions will only be selected when clicked
-        Debug.Log("Please select an action from the UI");
-    }
-
-    // Getter methods for UI
-    public ActionData GetSelectedAction() => selectedAction;
-    public ItemData GetSelectedItem() => selectedItem;
     public Char GetSelectedPlayer() => selectedPlayer;
-    public CharacterActions GetSelectedPlayerActions() => selectedPlayerActions;
+
 
     private void OnDisable()
     {

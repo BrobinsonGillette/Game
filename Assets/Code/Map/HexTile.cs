@@ -25,8 +25,7 @@ public class HexTile : MonoBehaviour
     public Color enemyPositionColor = Color.red;
     public Color movementRangeColor = new Color(0.5f, 0.8f, 1f, 0.6f);
     public Color movementDestinationColor = Color.gray;
-    public Color attackTargetColor = new Color(1f, 0.3f, 0.3f, 0.8f); // Red for attack targets
-    public Color supportTargetColor = new Color(0.3f, 0.3f, 1f, 0.8f); // Blue for support targets
+
 
     [Header("Animation")]
     public float pulseSpeed = 2f;
@@ -38,8 +37,6 @@ public class HexTile : MonoBehaviour
     private bool hasCharacter = false;
     private bool inMovementRange = false;
     private bool isMovementDestination = false;
-    private bool isAttackTarget = false;
-    private bool isSupportTarget = false;
     private Team currentCharacterTeam = Team.none;
 
     private Coroutine pulseCoroutine;
@@ -131,25 +128,14 @@ public class HexTile : MonoBehaviour
         isMovementDestination = isDestination;
         UpdateVisual();
     }
-    public void SetAttackTarget(bool isTarget)
-    {
-        isAttackTarget = isTarget;
-        UpdateVisual();
-    }
 
-    public void SetSupportTarget(bool isTarget)
-    {
-        isSupportTarget = isTarget;
-        UpdateVisual();
-    }
     public void ClearAllHighlights()
     {
         SetSelected(false);
         SetHovered(false);
         SetMovementRange(false);
         SetMovementDestination(false);
-        SetAttackTarget(false);
-        SetSupportTarget(false);
+
     }
 
     private void UpdateVisual()
@@ -203,16 +189,6 @@ public class HexTile : MonoBehaviour
         {
             highlight = hoverColor;
             highlight.a = 0.2f;
-        }
-        else if (isAttackTarget)
-        {
-            highlight = attackTargetColor;
-            highlight.a = 0.5f;
-        }
-        else if (isSupportTarget)
-        {
-            highlight = supportTargetColor;
-            highlight.a = 0.5f;
         }
         else if (inMovementRange)
         {

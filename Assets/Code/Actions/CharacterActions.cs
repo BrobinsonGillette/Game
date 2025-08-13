@@ -4,33 +4,19 @@ using UnityEngine;
 
 public class CharacterActions : MonoBehaviour
 {
-    [Header("Action Points")]
-    public int maxActionPoints = 2;
-    public int currentActionPoints = 2;
+    public Char character;
 
-    [Header("Available Actions")]
-    public List<ActionData> availableActions = new List<ActionData>();
-
-    [Header("Inventory")]
-    public List<ItemData> inventory = new List<ItemData>();
-
-    private Char character;
-
-    private void Awake()
-    {
-        character = GetComponent<Char>();
-    }
 
     public bool CanUseAction(ActionData action)
     {
-        return currentActionPoints >= action.actionPointCost &&
+        return character.charClass.currentActionPoints >= action.actionPointCost &&
                !character.isMoving;
     }
 
     public bool CanUseItem(ItemData item)
     {
-        return inventory.Contains(item) &&
-               currentActionPoints >= item.actionEffect.actionPointCost &&
+        return character.charClass.inventory.Contains(item) &&
+               character.charClass.currentActionPoints >= item.actionEffect.actionPointCost &&
                !character.isMoving;
     }
 
@@ -38,7 +24,7 @@ public class CharacterActions : MonoBehaviour
     {
         if (!CanUseAction(action)) return;
 
-        currentActionPoints -= action.actionPointCost;
+        character.charClass.currentActionPoints -= action.actionPointCost;
         ExecuteAction(action, targetTile, targetCharacter);
     }
     //todo fix
@@ -137,8 +123,7 @@ public class CharacterActions : MonoBehaviour
     {
         if (target != null)
         {
-            target.Health = Mathf.Min(target.MaxHp, target.Health + action.healing);
-            Debug.Log($"{character.name} heals {target.name} for {action.healing} HP!");
+            target.charClass.Health = Mathf.Min(target.charClass.MaxHp, target.charClass.Health + action.healing);
         }
     }
 
@@ -178,7 +163,7 @@ public class CharacterActions : MonoBehaviour
 
     public void RestoreActionPoints()
     {
-        currentActionPoints = maxActionPoints;
+        character.charClass.currentActionPoints = character.charClass.maxActionPoints;
     }
 
     public List<HexTile> GetActionRange(ActionData action)

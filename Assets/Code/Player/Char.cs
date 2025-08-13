@@ -10,12 +10,10 @@ public class Char : AnimatorBrain, IDamable
 {
     [Header("Character Properties")]
     public Team team = Team.none;
-    public int movementSpeed;
     private float movementAnimationSpeed = 1f;
     public HexTile currentHex { get; private set; }
+    public CharClass charClass;
     public bool isMoving { get; private set; }
-    public float MaxHp;
-    public float Health;
     private bool movingLeft;
     private Vector2 CurrentPosition;
     SpriteRenderer spriteRenderer;
@@ -24,7 +22,7 @@ public class Char : AnimatorBrain, IDamable
         spriteRenderer= GetComponent<SpriteRenderer>();
         CurrentPosition = transform.position;
         Initialize(GetComponent<Animator>().layerCount, Animations.Idle, GetComponent<Animator>(), DefaultAnimation);
-        Health = MaxHp;
+        charClass.onStart();
     }
     private void Update()
     {
@@ -61,7 +59,7 @@ public class Char : AnimatorBrain, IDamable
 
     public bool MovePlayerToTile(HexTile targetTile)
     {
-        if (isMoving || movementSpeed <= 0)
+        if (isMoving || charClass.movementSpeed <= 0)
         {
             return false;
         }
@@ -76,12 +74,12 @@ public class Char : AnimatorBrain, IDamable
             return false;
         }
 
-        if (targetTile.movementCost > movementSpeed)
+        if (targetTile.movementCost > charClass.movementSpeed)
         {
             return false;
         }
 
-        movementSpeed -= targetTile.movementCost;
+        charClass.movementSpeed -= targetTile.movementCost;
         if(CurrentPosition.x <= targetTile.transform.position.x)
         {
             movingLeft = true;
@@ -153,7 +151,7 @@ public class Char : AnimatorBrain, IDamable
 
     public List<HexTile> GetMovementRange()
     {
-        return GetTilesInRange(currentHex, movementSpeed);
+        return GetTilesInRange(currentHex, charClass.movementSpeed);
     }
 
     public List<HexTile> GetTilesInRange(HexTile center, int range)
@@ -202,7 +200,7 @@ public class Char : AnimatorBrain, IDamable
 
     public bool CanMove()
     {
-        return !isMoving && (movementSpeed > 0);
+        return !isMoving && (charClass.movementSpeed > 0);
     }
     void DefaultAnimation(int layer) 
     {
@@ -218,9 +216,9 @@ public class Char : AnimatorBrain, IDamable
 
     public void TakeDamage(float damage)
     {
-        Health -= damage;
+        charClass.Health -= damage;
         Play(Animations.Hurt, 0, true, true);
-        if (Health <= 0)
+        if (charClass.Health <= 0)
         {
             Die();
         }
@@ -253,6 +251,6 @@ public class Char : AnimatorBrain, IDamable
     }
     public bool isAlive()
     {
-        return Health > 0;
+        return charClass.Health > 0;
     }
 }
