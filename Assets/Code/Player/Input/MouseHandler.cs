@@ -18,7 +18,7 @@ public class MouseHandler : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private bool enablePathPreview = true;
     [SerializeField] private bool enableRightClickToCancel = true;
-
+    public Vector3 worldMousePos { get; private set; }
     // Core references
     private MapMaker mapMaker;
     private Camera mainCamera;
@@ -108,7 +108,7 @@ public class MouseHandler : MonoBehaviour
 
     private void HandleMouseInput()
     {
-        Vector3 worldMousePos = GetWorldMousePosition();
+        worldMousePos = GetWorldMousePosition();
         HexTile hoveredTile = GetHexTileAtPosition(worldMousePos);
 
         HandleHover(hoveredTile);

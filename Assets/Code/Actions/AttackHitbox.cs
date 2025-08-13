@@ -5,9 +5,11 @@ using UnityEngine;
 public class AttackHitbox : MonoBehaviour
 {
     [Header("Hitbox Settings")]
+    public Transform rotationPoint;
     public float damage = 10f;
     public float lifetime = 1f;
     public bool dealDamageOnSpawn = true;
+    public bool dealDamaged = false;
     public bool destroyAfterHit = false;
 
     [Header("Visual Effects")]
@@ -17,20 +19,43 @@ public class AttackHitbox : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private List<IDamable> hitTargets = new List<IDamable>();
     private Team attackerTeam;
+    MouseHandler mouseHandler;
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-    }
 
-    private void Start()
-    {
         if (dealDamageOnSpawn)
         {
             DealDamageToTargetsInArea();
         }
+        mouseHandler = MouseHandler.instance;
+        // StartCoroutine(HandleLifetime());
+    }
 
-        StartCoroutine(HandleLifetime());
+    private void Update()
+    {
+        // Calculate Z-axis rotation based on mouse position
+        if (rotationPoint != null && mouseHandler != null)
+        {
+            RotateTowardsMouseZAxis();
+        }
+    }
+
+    private void RotateTowardsMouseZAxis()
+    {
+        // Get the direction from rotation point to mouse position
+        Vector3 direction = mouseHandler.worldMousePos - rotationPoint.position;
+
+        // Calculate the angle in degrees (atan2 returns radians, so convert to degrees)
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        // Apply only Z-axis rotation, keeping X and Y rotation unchanged
+        rotationPoint.rotation = Quaternion.Euler(0, 0, angle);
+
+        // Alternative: If you want to preserve existing X and Y rotations
+        // Vector3 currentEuler = rotationPoint.eulerAngles;
+        // rotationPoint.rotation = Quaternion.Euler(currentEuler.x, currentEuler.y, angle);
     }
 
     public void Initialize(float hitboxDamage, Team team, float duration = 1f)
@@ -91,25 +116,28 @@ public class AttackHitbox : MonoBehaviour
 
         while (elapsed < lifetime)
         {
-            elapsed += Time.deltaTime;
-            float progress = elapsed / lifetime;
-
-            // Handle fade out effect
-            if (fadeOut && spriteRenderer != null)
+            if (dealDamaged)
             {
-                Color currentColor = originalColor;
-                currentColor.a = fadeCurve.Evaluate(progress);
-                spriteRenderer.color = currentColor;
-            }
+                elapsed += Time.deltaTime;
+                float progress = elapsed / lifetime;
 
-            yield return null;
+                // Handle fade out effect
+                if (fadeOut && spriteRenderer != null)
+                {
+                    Color currentColor = originalColor;
+                    currentColor.a = fadeCurve.Evaluate(progress);
+                    spriteRenderer.color = currentColor;
+                }
+
+                yield return null;
+            }
         }
 
         Destroy(gameObject);
     }
 
     // Alternative method for continuous damage detection
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         Char character = other.GetComponent<Char>();
         if (character == null || character.team == attackerTeam) return;
@@ -117,14 +145,16 @@ public class AttackHitbox : MonoBehaviour
         IDamable damageable = character.GetComponent<IDamable>();
         if (damageable != null && !hitTargets.Contains(damageable))
         {
-            damageable.TakeDamage(damage);
-            hitTargets.Add(damageable);
-
-            Debug.Log($"Hitbox dealt {damage} damage to {character.name}");
-
-            if (destroyAfterHit)
+            if (dealDamaged)
             {
-                Destroy(gameObject);
+                damageable.TakeDamage(damage);
+                hitTargets.Add(damageable);
+                Debug.Log($"Hitbox dealt {damage} damage to {character.name}");
+                if (destroyAfterHit)
+                {
+                    Destroy(gameObject);
+                }
+                dealDamaged = false;
             }
         }
     }

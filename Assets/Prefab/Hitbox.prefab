@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 2095252463474031247}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.733, y: -0.0138, z: 0}
+  m_LocalPosition: {x: 1.733, y: 0, z: 0}
   m_LocalScale: {x: 1.7883402, y: 1.0277, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -143,11 +143,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1e263e26546368489cdd05c2f3f1b82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
-  lifetime: 1
+  rotationPoint: {fileID: 768976183494229254}
+  damage: 0
+  lifetime: 5
   dealDamageOnSpawn: 0
+  dealDamaged: 0
   destroyAfterHit: 0
-  fadeOut: 1
+  fadeOut: 0
   fadeCurve:
     serializedVersion: 2
     m_Curve:

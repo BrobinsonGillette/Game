@@ -116,7 +116,7 @@ public class CharacterActions : MonoBehaviour
             }
 
             GameObject hitboxObj = Instantiate(action.hitboxPrefab, spawnPosition, Quaternion.identity);
-            AttackHitbox hitbox = hitboxObj.GetComponent<AttackHitbox>();
+            AttackHitbox hitbox = hitboxObj.GetComponentInChildren<AttackHitbox>();
 
             if (hitbox != null)
             {
