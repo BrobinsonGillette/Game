@@ -5,7 +5,7 @@ using UnityEngine;
 public class AttackHitbox : MonoBehaviour
 {
     [Header("Hitbox Settings")]
-    public Transform rotationPoint;
+    public GameObject rotationPoint;
     public float damage = 10;
     public Team ownerTeam = Team.player;
     public float lifetime = 2f;
@@ -17,7 +17,7 @@ public class AttackHitbox : MonoBehaviour
     public float previewAlpha = 0.5f;
     public float activeAlpha = 1f;
 
-    private Renderer hitboxRenderer;
+    [SerializeField]private Renderer hitboxRenderer;
     private Collider hitboxCollider;
     private HashSet<Char> hitTargets = new HashSet<Char>();
     MouseHandler mouseHandler;
@@ -28,7 +28,6 @@ public class AttackHitbox : MonoBehaviour
 
     private void Awake()
     {
-        hitboxRenderer = GetComponent<Renderer>();
         hitboxCollider = GetComponent<Collider>();
 
         // Disable collider initially
@@ -82,13 +81,13 @@ public class AttackHitbox : MonoBehaviour
     private void RotateTowardsMouseZAxis()
     {
         // Get the direction from rotation point to mouse position
-        Vector3 direction = mouseHandler.worldMousePos - rotationPoint.position;
+        Vector3 direction = mouseHandler.worldMousePos - rotationPoint.transform.position;
 
         // Calculate the angle in degrees (atan2 returns radians, so convert to degrees)
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
         // Apply only Z-axis rotation, keeping X and Y rotation unchanged
-        rotationPoint.rotation = Quaternion.Euler(0, 0, angle);
+        rotationPoint.transform.rotation = Quaternion.Euler(0, 0, angle);
     }
     public void ActivateForDamage()
     {
@@ -130,7 +129,7 @@ public class AttackHitbox : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         if (!isActivated) return; // Don't damage in preview mode
 
@@ -153,19 +152,9 @@ public class AttackHitbox : MonoBehaviour
 
         if (gameObject != null)
         {
-            Destroy(gameObject);
+            Destroy(rotationPoint);
         }
     }
-
-    // Method to cancel/destroy the hitbox if needed
-    public void CancelHitbox()
-    {
-        if (gameObject != null)
-        {
-            Destroy(gameObject);
-        }
-    }
-
     private void OnDestroy()
     {
         // Clean up any references

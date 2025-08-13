@@ -246,13 +246,7 @@ public class MouseHandler : MonoBehaviour
             return;
         }
 
-        // Check if the clicked tile is in the valid action range
-        if (!IsValidActionTarget(clickedTile))
-        {
-            Debug.Log("Invalid target for this action!");
-            return;
-        }
-
+ 
         Char targetCharacter = GetCharacterOnTile(clickedTile);
 
         // For area attacks or attacks without specific targets, pass the tile position
@@ -272,22 +266,6 @@ public class MouseHandler : MonoBehaviour
         UpdateActionRangeDisplay();
 
         Debug.Log($"{selectedPlayer.name} used action on {clickedTile.coordinates}");
-    }
-
-    private bool IsValidActionTarget(HexTile tile)
-    {
-        if (selectedAction == null || selectedPlayerActions == null || tile == null) return false;
-
-        try
-        {
-            List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedAction);
-            return validTargets != null && validTargets.Contains(tile);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error checking valid action targets: {e.Message}");
-            return false;
-        }
     }
 
     private void HandleItemMode(HexTile clickedTile)
