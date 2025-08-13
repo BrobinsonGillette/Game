@@ -1309,6 +1309,7 @@ GameObject:
   - component: {fileID: 999129848}
   - component: {fileID: 999129847}
   - component: {fileID: 999129851}
+  - component: {fileID: 999129852}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1426,6 +1427,31 @@ MonoBehaviour:
   characterNameText: {fileID: 35044710}
   actionPointsText: {fileID: 731886377}
   healthText: {fileID: 1598264594}
+--- !u!114 &999129852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 999129845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e729572fd111c843b0a8f9bd6152864, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableUIZoneBlocking: 1
+  uiZoneBuffer: 50
+  uiZoneRects:
+  - {fileID: 1115716838}
+  - {fileID: 1083928709}
+  - {fileID: 174281022}
+  - {fileID: 585288857}
+  - {fileID: 1940995056}
+  - {fileID: 790112555}
+  - {fileID: 1277491132}
+  - {fileID: 1129964193}
+  - {fileID: 1302591376}
+  showDebugZones: 1
 --- !u!1 &1083928708
 GameObject:
   m_ObjectHideFlags: 0

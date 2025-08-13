@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionName: test
   description: 
-  icon: {fileID: -1069109540, guid: 99525d5f904322c43a09894be9d19c73, type: 3}
   actionType: 0
   targetType: 0
   animation: 7
@@ -24,7 +23,7 @@ MonoBehaviour:
   manaCost: 0
   damage: 25
   healing: 0
-  duration: 0
+  duration: 1
   requiresLineOfSight: 1
   canTargetSelf: 0
   canTargetAllies: 1

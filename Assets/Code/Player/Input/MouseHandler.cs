@@ -32,7 +32,7 @@ public class MouseHandler : MonoBehaviour
     // Action system state
     [SerializeField] private ActionData selectedAction = null;
     private ItemData selectedItem = null;
-    private CharacterActions selectedPlayerActions = null;
+    [SerializeField] private CharacterActions selectedPlayerActions = null;
 
     // Movement and action visualization
     private HashSet<HexTile> currentMovementRange = new HashSet<HexTile>();
@@ -156,6 +156,12 @@ public class MouseHandler : MonoBehaviour
 
     private void HandleMouseClicks(HexTile hoveredTile)
     {
+        // Check if mouse is over UI before processing any clicks
+        if (UIZoneHandler.instance != null && UIZoneHandler.instance.IsMouseOverUIZone())
+        {
+            return; // Don't process clicks when over UI
+        }
+
         if (Input.GetMouseButtonDown(0)) // Left click
         {
             HandleLeftClick(hoveredTile);
@@ -208,13 +214,17 @@ public class MouseHandler : MonoBehaviour
     {
         if (selectedPlayer == null)
         {
-          
+            selectedPlayer = GetCharacterOnTile(clickedTile);
         }
-        if (selectedPlayerActions == null || selectedAction == null)
+        if (selectedPlayerActions == null )
         {
-            Debug.Log("Select a character and action first!");
-            return;
+            SelectCharacter(selectedPlayer, clickedTile);
         }
+        if (selectedAction == null)
+        {
+            AutoSelectBasicAttack();
+        }
+
         if (IsValidActionTarget(clickedTile))
         {
             Char targetCharacter = GetCharacterOnTile(clickedTile);
@@ -327,7 +337,7 @@ public class MouseHandler : MonoBehaviour
 
     private void HandleClickOnCharacter(HexTile clickedTile, Char character)
     {
-    
+
         // In move mode, only allow selection of player team characters
         if (currentActionType == ActionModes.Move)
         {
@@ -354,7 +364,7 @@ public class MouseHandler : MonoBehaviour
                 }
                 return;
             }
-     
+
             if (selectedPlayer == character)
             {
                 return;

@@ -225,28 +225,46 @@ public class ActionUIManager : MonoBehaviour
             GameObject buttonObj = Instantiate(actionButtonPrefab, actionButtonParent);
             if (buttonObj == null) return;
 
-            Button button = buttonObj.GetComponent<Button>();
-            if (button == null)
+            // Try to get ActionButton component first
+            ActionButton actionButton = buttonObj.GetComponent<ActionButton>();
+            if (actionButton != null)
             {
-                Debug.LogWarning("Action button prefab doesn't have a Button component");
-                Destroy(buttonObj);
-                return;
-            }
+                // Use the ActionButton's Setup method for actions
+                actionButton.Setup(action, SafeSelectAction);
+                actionButton.SetInteractable(characterActions.CanUseAction(action));
 
-            // Setup button text
-            TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
-            if (buttonText != null)
+                Button button = actionButton.button;
+                if (button != null)
+                {
+                    actionButtons.Add(button);
+                }
+            }
+            else
             {
-                buttonText.text = $"{action.actionName ?? "Unknown"}\nAP: {action.actionPointCost}";
+                // Fallback to regular button if ActionButton component not found
+                Button button = buttonObj.GetComponent<Button>();
+                if (button == null)
+                {
+                    Debug.LogWarning("Action button prefab doesn't have a Button component");
+                    Destroy(buttonObj);
+                    return;
+                }
+
+                // Setup button text
+                TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
+                if (buttonText != null)
+                {
+                    buttonText.text = $"{action.actionName ?? "Unknown"}\nAP: {action.actionPointCost}";
+                }
+
+                // Setup button functionality
+                button.onClick.AddListener(() => SafeSelectAction(action));
+
+                // Disable button if can't use action
+                button.interactable = characterActions.CanUseAction(action);
+
+                actionButtons.Add(button);
             }
-
-            // Setup button functionality
-            button.onClick.AddListener(() => SafeSelectAction(action));
-
-            // Disable button if can't use action
-            button.interactable = characterActions.CanUseAction(action);
-
-            actionButtons.Add(button);
         }
         catch (System.Exception e)
         {
@@ -338,6 +356,9 @@ public class ActionUIManager : MonoBehaviour
                 mouseHandler.SelectAction(action);
                 mouseHandler.SetActionMode(ActionModes.Actions);
                 Debug.Log($"Selected action: {action.actionName}");
+
+                // Force update the UI to show action ranges
+                UpdateUI();
             }
             else
             {
@@ -349,6 +370,7 @@ public class ActionUIManager : MonoBehaviour
                     mouseHandler.SelectAction(action);
                     mouseHandler.SetActionMode(ActionModes.Actions);
                     Debug.Log($"Selected action: {action.actionName}");
+                    UpdateUI();
                 }
             }
         }
