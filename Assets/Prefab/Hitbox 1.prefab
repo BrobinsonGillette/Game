@@ -111,7 +111,7 @@ Transform:
   m_GameObject: {fileID: 2095252463474031247}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.733, y: 0, z: 0}
+  m_LocalPosition: {x: -1.733, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -175,12 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1e263e26546368489cdd05c2f3f1b82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationPoint: {fileID: 4421461090731367389}
-  damage: 0
-  ownerTeam: 1
-  lifetime: 5
-  isActivated: 0
-  previewColor: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 1}
+  previewColor: {r: 1, g: 0.92054325, b: 0, a: 0.5019608}
   activeColor: {r: 1, g: 0, b: 0, a: 1}
   previewAlpha: 0.5
   activeAlpha: 1
@@ -196,7 +191,7 @@ GameObject:
   m_Component:
   - component: {fileID: 768976183494229254}
   m_Layer: 0
-  m_Name: Hitbox
+  m_Name: Hitbox 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -244,7 +239,7 @@ Transform:
   m_GameObject: {fileID: 6336658163993362797}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.733, y: 0, z: 0}
+  m_LocalPosition: {x: -1.733, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -15,9 +15,9 @@ MonoBehaviour:
   actionName: test
   description: 
   actionType: 0
-  targetType: 1
+  targetType: 0
   animation: 7
-  range: 1
+  range: 3
   areaOfEffect: 1
   actionPointCost: 1
   manaCost: 0

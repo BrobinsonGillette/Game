@@ -251,7 +251,7 @@ public class MouseHandler : MonoBehaviour
         Char targetCharacter = GetCharacterOnTile(clickedTile);
 
         // For area attacks or attacks without specific targets, pass the tile position
-        if (selectedAction.targetType == TargetType.Area || targetCharacter == null)
+        if (selectedAction.targetType == TargetType.MultiTarget || targetCharacter == null)
         {
             selectedPlayerActions.UseAction(selectedAction, clickedTile, null);
         }
@@ -538,12 +538,12 @@ public class MouseHandler : MonoBehaviour
             Vector3 spawnPosition = selectedPlayer.transform.position;
 
             SpawnAttack = Instantiate(action.hitboxPrefab, spawnPosition, Quaternion.identity);
-            AttackHitbox hitbox = SpawnAttack.GetComponentInChildren<AttackHitbox>();
+            AttackHitMainbox hitbox = SpawnAttack.GetComponentInChildren<AttackHitMainbox>();
 
             if (hitbox != null)
             {
                 // Initialize hitbox but don't activate damage yet
-                hitbox.InitializeForPreview(action.damage, selectedPlayer.team, action.hitboxLifetime);
+                hitbox.InitializeForPreview(action.damage, selectedPlayer.team, action.hitboxLifetime,action.range);
             }
 
             Debug.Log($"Spawned action hitbox for {action.actionName} at player position!");

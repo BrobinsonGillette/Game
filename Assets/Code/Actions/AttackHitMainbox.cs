@@ -3,28 +3,35 @@ using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Collections;
 using UnityEngine;
 
-public class AttackHitbox : MonoBehaviour
+public class AttackHitMainbox : MonoBehaviour
 {
-
+    [Header("Hitbox Settings")]
+    [SerializeField] GameObject hitboxPrefab;
+    [SerializeField] GameObject rotationPoint;
+    private int Range = 1;
+    private int currentRange = 1;
     private float damage = 10;
     private Team ownerTeam = Team.player;
     private float lifetime = 2f;
     private bool isActivated = false;
-    private int Range = 1;
-    private int currentRange = 1;
-    private bool hasHit = false;
+    public bool fistTargetHit = false;
+
     [Header("Visual Settings")]
     public Color previewColor = Color.yellow;
     public Color activeColor = Color.red;
     public float previewAlpha = 0.5f;
     public float activeAlpha = 1f;
-    private AttackHitMainbox parent;
     [SerializeField] Transform groundCheck;
     [SerializeField] private Renderer hitboxRenderer;
+
+    private bool hasHit = false;
     private Collider hitboxCollider;
     private HashSet<Char> hitTargets = new HashSet<Char>();
-
-
+    MouseHandler mouseHandler;
+    public List<AttackHitbox> hitboxes { get; private set; } = new List<AttackHitbox>();
+    // Properties for external access
+    public Team OwnerTeam => ownerTeam;
+    public bool IsActivated => isActivated;
 
     private void Awake()
     {
@@ -35,10 +42,10 @@ public class AttackHitbox : MonoBehaviour
         {
             hitboxCollider.enabled = false;
         }
-  
+        mouseHandler = MouseHandler.instance;
     }
 
-    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime,int range, GameObject hitboxPrefab, AttackHitMainbox Parent)
+    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime,int range)
     {
         damage = hitboxDamage;
         ownerTeam = team;
@@ -47,11 +54,12 @@ public class AttackHitbox : MonoBehaviour
         Range = range;
         SetupVisual(previewColor, previewAlpha);
         hasHit = false;
+
         if (hitboxCollider != null)
         {
             hitboxCollider.enabled = false; // No collision in preview mode
         }
-        if(Range > 1)
+        if (Range > 1)
         {
             // Always spawn at player's position when action is selected
             Vector3 spawnPosition = transform.position;
@@ -63,14 +71,18 @@ public class AttackHitbox : MonoBehaviour
             if (hitbox != null)
             {
                 // Initialize hitbox but don't activate damage yet
-                hitbox.InitializeForPreview(damage, team, hitboxLifetime, currentRange, hitboxPrefab, Parent);
+                hitbox.InitializeForPreview(damage, team,hitboxLifetime, currentRange, SpawnAttack,this);
             }
-            Parent.hitboxes.Add(hitbox);
-            parent = Parent;
+            hitboxes.Add(hitbox);
         }
     }
     private void Update()
     {
+        // Calculate Z-axis rotation based on mouse position
+        if (rotationPoint != null && mouseHandler != null)
+        {
+            RotateTowardsMouseZAxis();
+        }
         getTileOnGround();
     }
     void getTileOnGround()
@@ -81,8 +93,21 @@ public class AttackHitbox : MonoBehaviour
         Vector2Int hexCoords = mapMaker.WorldToHexPosition(position);
         if (mapMaker.hexTiles.TryGetValue(hexCoords, out HexTile tile))
         {
-            transform.position = tile.transform.position;
+             transform.position = tile.transform.position;
         }
+    }
+
+    private void RotateTowardsMouseZAxis()
+    {
+        // Get the direction from rotation point to mouse position
+        Vector3 direction = mouseHandler.worldMousePos - rotationPoint.transform.position;
+
+        // Calculate the angle in degrees (atan2 returns radians, so convert to degrees)
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        // Apply only Z-axis rotation, keeping X and Y rotation unchanged
+        rotationPoint.transform.rotation = Quaternion.Euler(0, 0, angle);
+        transform.localRotation = Quaternion.Euler(0, 0, -angle);
     }
     public void ActivateForDamage()
     {
@@ -95,7 +120,11 @@ public class AttackHitbox : MonoBehaviour
         {
             hitboxCollider.enabled = true;
         }
-
+        if(hasHit || fistTargetHit) return;
+        foreach (AttackHitbox hitbox in hitboxes)
+        {
+            hitbox.ActivateForDamage();
+        }
         StartCoroutine(DestroyAfterTime());
         Debug.Log($"Attack hitbox activated for damage!");
     }
@@ -132,12 +161,11 @@ public class AttackHitbox : MonoBehaviour
         if (character != null && character.team != ownerTeam && !hitTargets.Contains(character))
         {
             IDamable damageable = character.GetComponent<IDamable>();
-            if (damageable != null || hasHit || parent.fistTargetHit)
+            if (damageable != null || hasHit)
             {
                 damageable.TakeDamage(damage);
                 hitTargets.Add(character);
-                hasHit = true;
-                parent.fistTargetHit = true;
+                hasHit=true;
                 Debug.Log($"Hitbox hit {character.name} for {damage} damage!");
             }
         }
@@ -149,7 +177,7 @@ public class AttackHitbox : MonoBehaviour
 
         if (gameObject != null)
         {
-            Destroy(this.gameObject);
+            Destroy(rotationPoint);
         }
     }
     private void OnDestroy()

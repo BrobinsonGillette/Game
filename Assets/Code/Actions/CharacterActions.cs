@@ -99,9 +99,9 @@ public class CharacterActions : MonoBehaviour
         try
         {
             // Find all AttackHitbox components in the scene
-            AttackHitbox[] allHitboxes = FindObjectsOfType<AttackHitbox>();
+            AttackHitMainbox[] allHitboxes = FindObjectsOfType<AttackHitMainbox>();
 
-            foreach (AttackHitbox hitbox in allHitboxes)
+            foreach (AttackHitMainbox hitbox in allHitboxes)
             {
                 // Check if this hitbox belongs to our character and matches the action
                 if (hitbox != null && hitbox.OwnerTeam == character.team && !hitbox.IsActivated)
@@ -193,9 +193,6 @@ public class CharacterActions : MonoBehaviour
 
         switch (action.targetType)
         {
-            case TargetType.Self:
-                return characterOnTile == character;
-
             case TargetType.SingleTarget:
                 if (characterOnTile == null) return false;
 
@@ -204,15 +201,8 @@ public class CharacterActions : MonoBehaviour
                 else
                     return action.canTargetEnemies;
 
-            case TargetType.Area:
+            case TargetType.MultiTarget:
                 return true; // Area effects can target any tile
-
-            case TargetType.AllEnemies:
-                return characterOnTile != null && characterOnTile.team != character.team;
-
-            case TargetType.AllAllies:
-                return characterOnTile != null && characterOnTile.team == character.team;
-
             default:
                 return false;
         }

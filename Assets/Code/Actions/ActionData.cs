@@ -15,11 +15,8 @@ public enum ActionType
 [System.Serializable]
 public enum TargetType
 {
-    Self,
     SingleTarget,
-    Area,
-    AllEnemies,
-    AllAllies
+    MultiTarget
 }
 
 [CreateAssetMenu(fileName = "New Action", menuName = "Game/Action Data")]
