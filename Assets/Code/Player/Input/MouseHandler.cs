@@ -13,8 +13,6 @@ public enum ActionModes
 }
 public class MouseHandler : MonoBehaviour
 {
-
-
     public static MouseHandler instance;
 
     [Header("Settings")]
@@ -81,6 +79,7 @@ public class MouseHandler : MonoBehaviour
         mapMaker = MapMaker.instance;
         if (mapMaker == null)
         {
+            Debug.LogError("MapMaker instance not found! MouseHandler will be disabled.");
             enabled = false;
             return;
         }
@@ -130,6 +129,8 @@ public class MouseHandler : MonoBehaviour
 
     private HexTile GetHexTileAtPosition(Vector3 worldPos)
     {
+        if (mapMaker == null) return null;
+
         Vector2Int hexCoord = mapMaker.WorldToHexPosition(worldPos);
         return mapMaker.GetHexTile(hexCoord);
     }
@@ -193,7 +194,7 @@ public class MouseHandler : MonoBehaviour
     {
         Char characterOnTile = GetCharacterOnTile(clickedTile);
 
-        if (characterOnTile != null)
+        if (characterOnTile != null && characterOnTile.team == Team.player)
         {
             HandleClickOnCharacter(clickedTile, characterOnTile);
         }
@@ -205,12 +206,15 @@ public class MouseHandler : MonoBehaviour
 
     private void HandleActionMode(HexTile clickedTile)
     {
-        if (selectedPlayer == null || selectedPlayerActions == null || selectedAction == null)
+        if (selectedPlayer == null)
+        {
+          
+        }
+        if (selectedPlayerActions == null || selectedAction == null)
         {
             Debug.Log("Select a character and action first!");
             return;
         }
-
         if (IsValidActionTarget(clickedTile))
         {
             Char targetCharacter = GetCharacterOnTile(clickedTile);
@@ -263,8 +267,6 @@ public class MouseHandler : MonoBehaviour
             return;
         }
 
-        // For special actions, you might want to implement a separate system
-        // This is a simplified version
         Debug.Log($"Special action at {clickedTile.coordinates} - implement your special logic here!");
     }
 
@@ -272,51 +274,73 @@ public class MouseHandler : MonoBehaviour
     {
         if (selectedAction == null || selectedPlayerActions == null) return false;
 
-        List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedAction);
-        return validTargets.Contains(tile);
+        try
+        {
+            List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedAction);
+            return validTargets != null && validTargets.Contains(tile);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error checking valid action targets: {e.Message}");
+            return false;
+        }
     }
 
     private bool IsValidItemTarget(HexTile tile)
     {
         if (selectedItem == null || selectedPlayerActions == null) return false;
 
-        List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedItem.actionEffect);
-        return validTargets.Contains(tile);
+        try
+        {
+            List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedItem.actionEffect);
+            return validTargets != null && validTargets.Contains(tile);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error checking valid item targets: {e.Message}");
+            return false;
+        }
     }
 
     private Char GetCharacterOnTile(HexTile tile)
     {
-        Char[] allCharacters = FindObjectsOfType<Char>();
-        foreach (Char character in allCharacters)
+        if (tile == null) return null;
+
+        try
         {
-            if (character.currentHex == tile)
+            Char[] allCharacters = FindObjectsOfType<Char>();
+            foreach (Char character in allCharacters)
             {
-                return character;
+                if (character != null && character.currentHex == tile)
+                {
+                    return character;
+                }
             }
         }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error finding character on tile: {e.Message}");
+        }
+
         return null;
     }
 
     private void HandleClickOnCharacter(HexTile clickedTile, Char character)
     {
+    
         // In move mode, only allow selection of player team characters
         if (currentActionType == ActionModes.Move)
         {
-            if (character.team != Team.player) return;
-
-            // Toggle selection if clicking the same character
             if (selectedPlayer == character)
             {
-                CancelSelection();
                 return;
             }
-
-            // Select the new character
             SelectCharacter(character, clickedTile);
         }
         // In action/item modes, clicking on characters can be targeting them
         else if (currentActionType == ActionModes.Actions || currentActionType == ActionModes.Item)
         {
+            SelectCharacter(character, clickedTile);
             // If we have a selected player and action/item, try to target this character
             if (selectedPlayer != null && (selectedAction != null || selectedItem != null))
             {
@@ -330,70 +354,99 @@ public class MouseHandler : MonoBehaviour
                 }
                 return;
             }
-
-            // Otherwise, if it's a player character, select them
-            if (character.team == Team.player)
+     
+            if (selectedPlayer == character)
             {
-                if (selectedPlayer == character)
-                {
-                    CancelSelection();
-                    return;
-                }
-                SelectCharacter(character, clickedTile);
+                return;
             }
         }
     }
 
     private void SelectCharacter(Char character, HexTile tile)
     {
-        // Clear previous selection
-        ClearAllRanges();
-        if (selectedTile != null)
+        if (character == null || tile == null) return;
+
+        try
         {
-            selectedTile.SetSelected(false);
+            // Clear previous selection
+            ClearAllRanges();
+            if (selectedTile != null)
+            {
+                selectedTile.SetSelected(false);
+            }
+
+            // Set new selection
+            selectedPlayer = character;
+            selectedTile = tile;
+            selectedPlayerActions = character.GetComponent<CharacterActions>();
+            tile.SetSelected(true);
+
+            // Auto-select based on current mode
+            switch (currentActionType)
+            {
+                case ActionModes.Move:
+                    AutoActionModeToMove();
+                    break;
+                case ActionModes.Actions:
+                    AutoSelectBasicAttack();
+                    break;
+                case ActionModes.Item:
+                    AutoSelectItem();
+                    break;
+                case ActionModes.Special:
+                    AutoSelectSpecialAttack();
+                    break;
+                case ActionModes.None:
+                    AutoSelectBasicAttack();
+                    break;
+            }
+
+            // Set camera target
+            if (CamMagger.instance != null)
+            {
+                CamMagger.instance.SetTarget(character.transform);
+            }
+
+            // Fire event
+            OnPlayerSelected?.Invoke(character);
         }
-
-        // Set new selection
-        selectedPlayer = character;
-        selectedTile = tile;
-        selectedPlayerActions = character.GetComponent<CharacterActions>();
-        tile.SetSelected(true);
-
-        // Auto-select basic attack and show attack range
-        AutoSelectBasicAttack();
-
-        // Set camera target
-        if (CamMagger.instance != null)
+        catch (System.Exception e)
         {
-            CamMagger.instance.SetTarget(character.transform);
+            Debug.LogError($"Error selecting character: {e.Message}");
         }
-
-        // Fire event
-        OnPlayerSelected?.Invoke(character);
     }
 
     private void UpdateRangeDisplays()
     {
-        switch (currentActionType)
+        if (selectedPlayer == null) return;
+
+        try
         {
-            case ActionModes.Move:
-                if (selectedPlayer.movementSpeed > 0)
-                {
-                    ShowMovementRange();
-                }
-                break;
-            case ActionModes.Actions:
-                if (selectedAction != null)
-                {
-                    ShowActionRange();
-                }
-                break;
-            case ActionModes.Item:
-                if (selectedItem != null)
-                {
-                    ShowItemRange();
-                }
-                break;
+            switch (currentActionType)
+            {
+                case ActionModes.Move:
+                    if (selectedPlayer.movementSpeed > 0)
+                    {
+                        ShowMovementRange();
+                    }
+                    break;
+                case ActionModes.Actions:
+                    if (selectedAction != null)
+                    {
+                        ShowActionRange();
+                    }
+                    break;
+                case ActionModes.Item:
+                    if (selectedItem != null)
+                    {
+                        ShowItemRange();
+                    }
+                    break;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error updating range displays: {e.Message}");
         }
     }
 
@@ -404,18 +457,25 @@ public class MouseHandler : MonoBehaviour
             return;
         }
 
-        bool moveSuccessful = selectedPlayer.MovePlayerToTile(clickedTile);
-
-        if (moveSuccessful)
+        try
         {
-            OnPlayerMoved?.Invoke(selectedPlayer, clickedTile);
-            UpdateCharacterPositionDisplays();
-            UpdateMovementRangeDisplay();
+            bool moveSuccessful = selectedPlayer.MovePlayerToTile(clickedTile);
 
-            if (selectedPlayer != null && !selectedPlayer.CanMove())
+            if (moveSuccessful)
             {
-                CancelSelection();
+                OnPlayerMoved?.Invoke(selectedPlayer, clickedTile);
+                UpdateCharacterPositionDisplays();
+                UpdateMovementRangeDisplay();
+
+                if (selectedPlayer != null && !selectedPlayer.CanMove())
+                {
+                    CancelSelection();
+                }
             }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error handling empty tile click: {e.Message}");
         }
     }
 
@@ -435,6 +495,12 @@ public class MouseHandler : MonoBehaviour
     // Action and Item Selection Methods
     public void SelectAction(ActionData action)
     {
+        if (action == null)
+        {
+            Debug.LogWarning("Trying to select null action!");
+            return;
+        }
+
         selectedAction = action;
         selectedItem = null; // Clear item selection
         UpdateActionRangeDisplay();
@@ -443,6 +509,12 @@ public class MouseHandler : MonoBehaviour
 
     public void SelectItem(ItemData item)
     {
+        if (item == null)
+        {
+            Debug.LogWarning("Trying to select null item!");
+            return;
+        }
+
         selectedItem = item;
         selectedAction = null; // Clear action selection
         UpdateActionRangeDisplay();
@@ -454,25 +526,36 @@ public class MouseHandler : MonoBehaviour
     {
         if (selectedPlayer == null) return;
 
-        ClearMovementRange();
-        List<HexTile> movementTiles = selectedPlayer.GetMovementRange();
-        currentMovementRange = new HashSet<HexTile>(movementTiles);
-
-        foreach (HexTile tile in currentMovementRange)
+        try
         {
-            if (tile != null && tile.IsWalkable && !tile.HasCharacter)
+            ClearMovementRange();
+            List<HexTile> movementTiles = selectedPlayer.GetMovementRange();
+
+            if (movementTiles != null)
             {
-                bool isNeighbor = IsNeighborOfSelected(tile);
-                if (isNeighbor)
+                currentMovementRange = new HashSet<HexTile>(movementTiles);
+
+                foreach (HexTile tile in currentMovementRange)
                 {
-                    tile.SetMovementDestination(true);
-                    highlightedNeighbors.Add(tile);
-                }
-                else
-                {
-                    tile.SetMovementRange(true);
+                    if (tile != null && tile.IsWalkable && !tile.HasCharacter)
+                    {
+                        bool isNeighbor = IsNeighborOfSelected(tile);
+                        if (isNeighbor)
+                        {
+                            tile.SetMovementDestination(true);
+                            highlightedNeighbors.Add(tile);
+                        }
+                        else
+                        {
+                            tile.SetMovementRange(true);
+                        }
+                    }
                 }
             }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error showing movement range: {e.Message}");
         }
     }
 
@@ -480,35 +563,46 @@ public class MouseHandler : MonoBehaviour
     {
         if (selectedPlayer == null || selectedAction == null || selectedPlayerActions == null) return;
 
-        ClearActionRange();
-        List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedAction);
-        currentActionRange = new HashSet<HexTile>(validTargets);
-
-        foreach (HexTile tile in currentActionRange)
+        try
         {
-            if (tile != null)
+            ClearActionRange();
+            List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedAction);
+
+            if (validTargets != null)
             {
-                // Use different colors for different target types
-                Char characterOnTile = GetCharacterOnTile(tile);
-                if (characterOnTile != null)
+                currentActionRange = new HashSet<HexTile>(validTargets);
+
+                foreach (HexTile tile in currentActionRange)
                 {
-                    if (characterOnTile.team != selectedPlayer.team)
+                    if (tile != null)
                     {
-                        // Enemy target - use attack color (red-ish)
-                        tile.SetAttackTarget(true);
+                        // Use different colors for different target types
+                        Char characterOnTile = GetCharacterOnTile(tile);
+                        if (characterOnTile != null)
+                        {
+                            if (characterOnTile.team != selectedPlayer.team)
+                            {
+                                // Enemy target - use attack color (red-ish)
+                                tile.SetAttackTarget(true);
+                            }
+                            else
+                            {
+                                // Ally target - use support color (blue-ish) 
+                                tile.SetSupportTarget(true);
+                            }
+                        }
+                        else
+                        {
+                            // Empty tile in range
+                            tile.SetMovementDestination(true);
+                        }
                     }
-                    else
-                    {
-                        // Ally target - use support color (blue-ish) 
-                        tile.SetSupportTarget(true);
-                    }
-                }
-                else
-                {
-                    // Empty tile in range
-                    tile.SetMovementDestination(true);
                 }
             }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error showing action range: {e.Message}");
         }
     }
 
@@ -516,29 +610,50 @@ public class MouseHandler : MonoBehaviour
     {
         if (selectedPlayer == null || selectedItem == null || selectedPlayerActions == null) return;
 
-        ClearActionRange();
-        List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedItem.actionEffect);
-        currentActionRange = new HashSet<HexTile>(validTargets);
-
-        foreach (HexTile tile in currentActionRange)
+        try
         {
-            if (tile != null)
+            ClearActionRange();
+            List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedItem.actionEffect);
+
+            if (validTargets != null)
             {
-                tile.SetMovementDestination(true); // Reuse this visual for item targets
+                currentActionRange = new HashSet<HexTile>(validTargets);
+
+                foreach (HexTile tile in currentActionRange)
+                {
+                    if (tile != null)
+                    {
+                        tile.SetMovementDestination(true); // Reuse this visual for item targets
+                    }
+                }
             }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error showing item range: {e.Message}");
         }
     }
 
     private bool IsNeighborOfSelected(HexTile tile)
     {
-        if (selectedTile == null) return false;
-        List<Vector2Int> neighborCoords = mapMaker.GetNeighbors(selectedTile.Coordinates);
-        return neighborCoords.Contains(tile.Coordinates);
+        if (selectedTile == null || tile == null || mapMaker == null) return false;
+
+        try
+        {
+            List<Vector2Int> neighborCoords = mapMaker.GetNeighbors(selectedTile.Coordinates);
+            return neighborCoords != null && neighborCoords.Contains(tile.Coordinates);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error checking if tile is neighbor: {e.Message}");
+            return false;
+        }
     }
 
     private void UpdateMovementRangeDisplay()
     {
         if (selectedPlayer == null) return;
+
         ClearMovementRange();
         if (selectedPlayer.movementSpeed > 0)
         {
@@ -569,56 +684,82 @@ public class MouseHandler : MonoBehaviour
 
     public void UpdateCharacterPositionDisplays()
     {
-        Char[] allCharacters = FindObjectsOfType<Char>();
-
-        foreach (var tile in mapMaker.GetAllTiles())
+        try
         {
-            tile.SetCharacterPresent(false);
-        }
+            if (mapMaker == null) return;
 
-        foreach (Char character in allCharacters)
-        {
-            if (character.currentHex != null)
+            Char[] allCharacters = FindObjectsOfType<Char>();
+
+            foreach (var tile in mapMaker.GetAllTiles())
             {
-                character.currentHex.SetCharacterPresent(true, character.team);
+                if (tile != null)
+                {
+                    tile.SetCharacterPresent(false);
+                }
             }
+
+            foreach (Char character in allCharacters)
+            {
+                if (character != null && character.currentHex != null)
+                {
+                    character.currentHex.SetCharacterPresent(true, character.team);
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error updating character position displays: {e.Message}");
         }
     }
 
     // Cleanup Methods
     private void ClearMovementRange()
     {
-        foreach (HexTile tile in currentMovementRange)
+        try
         {
-            if (tile != null)
+            foreach (HexTile tile in currentMovementRange)
             {
-                tile.SetMovementRange(false);
+                if (tile != null)
+                {
+                    tile.SetMovementRange(false);
+                }
             }
-        }
-        currentMovementRange.Clear();
+            currentMovementRange.Clear();
 
-        foreach (HexTile tile in highlightedNeighbors)
-        {
-            if (tile != null)
+            foreach (HexTile tile in highlightedNeighbors)
             {
-                tile.SetMovementDestination(false);
+                if (tile != null)
+                {
+                    tile.SetMovementDestination(false);
+                }
             }
+            highlightedNeighbors.Clear();
         }
-        highlightedNeighbors.Clear();
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error clearing movement range: {e.Message}");
+        }
     }
 
     private void ClearActionRange()
     {
-        foreach (HexTile tile in currentActionRange)
+        try
         {
-            if (tile != null)
+            foreach (HexTile tile in currentActionRange)
             {
-                tile.SetMovementDestination(false);
-                tile.SetAttackTarget(false);
-                tile.SetSupportTarget(false);
+                if (tile != null)
+                {
+                    tile.SetMovementDestination(false);
+                    tile.SetAttackTarget(false);
+                    tile.SetSupportTarget(false);
+                }
             }
+            currentActionRange.Clear();
         }
-        currentActionRange.Clear();
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error clearing action range: {e.Message}");
+        }
     }
 
     private void ClearAllRanges()
@@ -634,65 +775,142 @@ public class MouseHandler : MonoBehaviour
 
     public void CancelSelection()
     {
-        ClearAllRanges();
-
-        if (selectedTile != null)
+        try
         {
-            selectedTile.SetSelected(false);
-            selectedTile = null;
+            ClearAllRanges();
+
+            if (selectedTile != null)
+            {
+                selectedTile.SetSelected(false);
+                selectedTile = null;
+            }
+
+            selectedPlayer = null;
+            selectedPlayerActions = null;
+            selectedAction = null;
+            selectedItem = null;
+
+            if (CamMagger.instance != null)
+            {
+                CamMagger.instance.SetTarget(null);
+            }
+
+            OnSelectionCancelled?.Invoke();
         }
-
-        selectedPlayer = null;
-        selectedPlayerActions = null;
-        selectedAction = null;
-        selectedItem = null;
-
-        if (CamMagger.instance != null)
+        catch (System.Exception e)
         {
-            CamMagger.instance.SetTarget(null);
+            Debug.LogError($"Error cancelling selection: {e.Message}");
         }
-
-        OnSelectionCancelled?.Invoke();
     }
 
     public void SetActionMode(ActionModes mode)
     {
-        currentActionType = mode;
+        try
+        {
+            currentActionType = mode;
 
-        // Clear action/item selection when changing modes
-        if (mode != ActionModes.Actions)
-        {
-            selectedAction = null;
-        }
-        if (mode != ActionModes.Item)
-        {
-            selectedItem = null;
-        }
+            // Clear action/item selection when changing modes
+            if (mode != ActionModes.Actions)
+            {
+                selectedAction = null;
+            }
+            if (mode != ActionModes.Item)
+            {
+                selectedItem = null;
+            }
 
-        // Update range displays
-        ClearActionRange();
-        if (selectedPlayer != null)
+            // Update range displays
+            ClearActionRange();
+            if (selectedPlayer != null)
+            {
+                UpdateRangeDisplays();
+            }
+        }
+        catch (System.Exception e)
         {
-            UpdateRangeDisplays();
+            Debug.LogError($"Error setting action mode: {e.Message}");
         }
     }
 
-    // Auto-select basic attack when character is selected
+    private void AutoSelectSpecialAttack()
+    {
+        Debug.Log("Auto-selecting special attack - implement your logic here!");
+    }
+
+    public void AutoSelectItem()
+    {
+        if (selectedPlayer == null || selectedPlayerActions == null) return;
+
+        try
+        {
+            // Find the first usable item
+            if (selectedPlayerActions.inventory != null && selectedPlayerActions.inventory.Count > 0)
+            {
+                foreach (ItemData item in selectedPlayerActions.inventory)
+                {
+                    if (item != null && selectedPlayerActions.CanUseItem(item))
+                    {
+                        selectedItem = item;
+                        SetActionMode(ActionModes.Item);
+                        ShowItemRange();
+                        Debug.Log($"Auto-selected item: {item.itemName}");
+                        return;
+                    }
+                }
+            }
+            Debug.Log("No usable items found");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error auto-selecting item: {e.Message}");
+        }
+    }
+
+    public void AutoActionModeToMove()
+    {
+        if (selectedPlayer == null) return;
+
+        try
+        {
+            SetActionMode(ActionModes.Move);
+            ClearAllRanges();
+            if (selectedPlayer != null)
+            {
+                ShowMovementRange();
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error auto-selecting move mode: {e.Message}");
+        }
+    }
+
     public void AutoSelectBasicAttack()
     {
         if (selectedPlayer == null || selectedPlayerActions == null) return;
 
-        // Find the first attack action
-        foreach (ActionData action in selectedPlayerActions.availableActions)
+        try
         {
-            if (action.actionType == ActionType.Attack)
+            // Find the first attack action
+            if (selectedPlayerActions.availableActions != null)
             {
-                selectedAction = action;
-                SetActionMode(ActionModes.Actions);
-                ShowActionRange();
-                Debug.Log($"Auto-selected attack: {action.actionName}");
-                return;
+                foreach (ActionData action in selectedPlayerActions.availableActions)
+                {
+                    if (action != null && action.actionType == ActionType.Attack)
+                    {
+                        selectedAction = action;
+                        SetActionMode(ActionModes.Actions);
+                        ShowActionRange();
+                        Debug.Log($"Auto-selected attack: {action.actionName}");
+                        return;
+                    }
+                }
             }
+            Debug.Log("No attack actions found");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error auto-selecting basic attack: {e.Message}");
         }
     }
 
@@ -706,7 +924,6 @@ public class MouseHandler : MonoBehaviour
     {
         CancelSelection();
     }
-
 
     private void OnDestroy()
     {

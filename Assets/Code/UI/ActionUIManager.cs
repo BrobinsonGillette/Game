@@ -33,284 +33,537 @@ public class ActionUIManager : MonoBehaviour
 
     private void Start()
     {
-        mouseHandler = MouseHandler.instance;
-
-        if (mouseHandler != null)
+        // Initialize with safe null checking
+        try
         {
-            mouseHandler.OnPlayerSelected += OnPlayerSelected;
-            mouseHandler.OnSelectionCancelled += OnSelectionCancelled;
-        }
+            mouseHandler = MouseHandler.instance;
 
-        SetupModeButtons();
-        HideAllPanels();
+            if (mouseHandler != null)
+            {
+                mouseHandler.OnPlayerSelected += OnPlayerSelected;
+                mouseHandler.OnSelectionCancelled += OnSelectionCancelled;
+            }
+            else
+            {
+                Debug.LogWarning("MouseHandler instance not found during ActionUIManager initialization");
+            }
+
+            SetupModeButtons();
+            HideAllPanels();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error initializing ActionUIManager: {e.Message}");
+        }
     }
 
     private void SetupModeButtons()
     {
-        if (moveButton != null)
-            moveButton.onClick.AddListener(() => SetActionMode(ActionModes.Move));
+        try
+        {
+            if (moveButton != null)
+                moveButton.onClick.AddListener(() => SafeSetActionMode(ActionModes.Move));
 
-        if (actionsButton != null)
-            actionsButton.onClick.AddListener(() => SetActionMode(ActionModes.Actions));
+            if (actionsButton != null)
+                actionsButton.onClick.AddListener(() => SafeSetActionMode(ActionModes.Actions));
 
-        if (itemsButton != null)
-            itemsButton.onClick.AddListener(() => SetActionMode(ActionModes.Item));
+            if (itemsButton != null)
+                itemsButton.onClick.AddListener(() => SafeSetActionMode(ActionModes.Item));
 
-        if (specialButton != null)
-            specialButton.onClick.AddListener(() => SetActionMode(ActionModes.Special));
+            if (specialButton != null)
+                specialButton.onClick.AddListener(() => SafeSetActionMode(ActionModes.Special));
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error setting up mode buttons: {e.Message}");
+        }
     }
 
-    private void SetActionMode(ActionModes mode)
+    private void SafeSetActionMode(ActionModes mode)
     {
-        if (mouseHandler != null)
+        try
         {
-            mouseHandler.SetActionMode(mode);
+            if (mouseHandler != null)
+            {
+                mouseHandler.SetActionMode(mode);
+                UpdateUI();
+            }
+            else
+            {
+                Debug.LogWarning("MouseHandler is null when trying to set action mode");
+                // Try to find MouseHandler again
+                mouseHandler = MouseHandler.instance;
+                if (mouseHandler != null)
+                {
+                    mouseHandler.SetActionMode(mode);
+                    UpdateUI();
+                }
+            }
         }
-
-        UpdateUI();
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error setting action mode to {mode}: {e.Message}");
+        }
     }
 
     private void OnPlayerSelected(Char selectedCharacter)
     {
-        UpdateCharacterInfo(selectedCharacter);
-        UpdateActionButtons(selectedCharacter);
-        UpdateItemButtons(selectedCharacter);
-        UpdateUI();
+        try
+        {
+            if (selectedCharacter == null)
+            {
+                Debug.LogWarning("Selected character is null");
+                return;
+            }
+
+            UpdateCharacterInfo(selectedCharacter);
+            UpdateActionButtons(selectedCharacter);
+            UpdateItemButtons(selectedCharacter);
+            UpdateUI();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error handling player selection: {e.Message}");
+        }
     }
 
     private void OnSelectionCancelled()
     {
-        HideAllPanels();
-        ClearCharacterInfo();
+        try
+        {
+            HideAllPanels();
+            ClearCharacterInfo();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error handling selection cancellation: {e.Message}");
+        }
     }
 
     private void UpdateCharacterInfo(Char character)
     {
-        if (characterNameText != null)
-            characterNameText.text = character.name;
-
-        if (healthText != null)
-            healthText.text = $"HP: {character.Health:F0}/{character.MaxHp:F0}";
-
-        CharacterActions characterActions = character.GetComponent<CharacterActions>();
-        if (characterActions != null && actionPointsText != null)
+        try
         {
-            actionPointsText.text = $"AP: {characterActions.currentActionPoints}/{characterActions.maxActionPoints}";
+            if (character == null) return;
+
+            if (characterNameText != null)
+                characterNameText.text = character.name ?? "Unknown";
+
+            if (healthText != null)
+                healthText.text = $"HP: {character.Health:F0}/{character.MaxHp:F0}";
+
+            CharacterActions characterActions = character.GetComponent<CharacterActions>();
+            if (characterActions != null && actionPointsText != null)
+            {
+                actionPointsText.text = $"AP: {characterActions.currentActionPoints}/{characterActions.maxActionPoints}";
+            }
+            else if (actionPointsText != null)
+            {
+                actionPointsText.text = "AP: N/A";
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error updating character info: {e.Message}");
         }
     }
 
     private void ClearCharacterInfo()
     {
-        if (characterNameText != null)
-            characterNameText.text = "";
+        try
+        {
+            if (characterNameText != null)
+                characterNameText.text = "";
 
-        if (healthText != null)
-            healthText.text = "";
+            if (healthText != null)
+                healthText.text = "";
 
-        if (actionPointsText != null)
-            actionPointsText.text = "";
+            if (actionPointsText != null)
+                actionPointsText.text = "";
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error clearing character info: {e.Message}");
+        }
     }
 
     private void UpdateActionButtons(Char character)
     {
-        ClearActionButtons();
-
-        CharacterActions characterActions = character.GetComponent<CharacterActions>();
-        if (characterActions == null) return;
-
-        foreach (ActionData action in characterActions.availableActions)
+        try
         {
-            CreateActionButton(action, characterActions);
+            ClearActionButtons();
+
+            if (character == null) return;
+
+            CharacterActions characterActions = character.GetComponent<CharacterActions>();
+            if (characterActions == null || characterActions.availableActions == null) return;
+
+            foreach (ActionData action in characterActions.availableActions)
+            {
+                if (action != null)
+                {
+                    CreateActionButton(action, characterActions);
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error updating action buttons: {e.Message}");
         }
     }
 
     private void CreateActionButton(ActionData action, CharacterActions characterActions)
     {
-        if (actionButtonPrefab == null || actionButtonParent == null) return;
-
-        GameObject buttonObj = Instantiate(actionButtonPrefab, actionButtonParent);
-        Button button = buttonObj.GetComponent<Button>();
-
-        // Setup button text
-        TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
-        if (buttonText != null)
+        try
         {
-            buttonText.text = $"{action.actionName}\nAP: {action.actionPointCost}";
+            if (actionButtonPrefab == null || actionButtonParent == null || action == null || characterActions == null)
+            {
+                Debug.LogWarning("Missing references for creating action button");
+                return;
+            }
+
+            GameObject buttonObj = Instantiate(actionButtonPrefab, actionButtonParent);
+            if (buttonObj == null) return;
+
+            Button button = buttonObj.GetComponent<Button>();
+            if (button == null)
+            {
+                Debug.LogWarning("Action button prefab doesn't have a Button component");
+                Destroy(buttonObj);
+                return;
+            }
+
+            // Setup button text
+            TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
+            if (buttonText != null)
+            {
+                buttonText.text = $"{action.actionName ?? "Unknown"}\nAP: {action.actionPointCost}";
+            }
+
+            // Setup button functionality
+            button.onClick.AddListener(() => SafeSelectAction(action));
+
+            // Disable button if can't use action
+            button.interactable = characterActions.CanUseAction(action);
+
+            actionButtons.Add(button);
         }
-
-        // Setup button functionality
-        button.onClick.AddListener(() => SelectAction(action));
-
-        // Disable button if can't use action
-        button.interactable = characterActions.CanUseAction(action);
-
-        actionButtons.Add(button);
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error creating action button: {e.Message}");
+        }
     }
 
     private void UpdateItemButtons(Char character)
     {
-        ClearItemButtons();
-
-        CharacterActions characterActions = character.GetComponent<CharacterActions>();
-        if (characterActions == null) return;
-
-        foreach (ItemData item in characterActions.inventory)
+        try
         {
-            CreateItemButton(item, characterActions);
+            ClearItemButtons();
+
+            if (character == null) return;
+
+            CharacterActions characterActions = character.GetComponent<CharacterActions>();
+            if (characterActions == null || characterActions.inventory == null) return;
+
+            foreach (ItemData item in characterActions.inventory)
+            {
+                if (item != null)
+                {
+                    CreateItemButton(item, characterActions);
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error updating item buttons: {e.Message}");
         }
     }
 
     private void CreateItemButton(ItemData item, CharacterActions characterActions)
     {
-        if (itemButtonPrefab == null || itemButtonParent == null) return;
-
-        GameObject buttonObj = Instantiate(itemButtonPrefab, itemButtonParent);
-        Button button = buttonObj.GetComponent<Button>();
-
-        // Setup button text
-        TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
-        if (buttonText != null)
+        try
         {
-            buttonText.text = $"{item.itemName}\nAP: {item.actionEffect.actionPointCost}";
+            if (itemButtonPrefab == null || itemButtonParent == null || item == null || characterActions == null)
+            {
+                Debug.LogWarning("Missing references for creating item button");
+                return;
+            }
+
+            GameObject buttonObj = Instantiate(itemButtonPrefab, itemButtonParent);
+            if (buttonObj == null) return;
+
+            Button button = buttonObj.GetComponent<Button>();
+            if (button == null)
+            {
+                Debug.LogWarning("Item button prefab doesn't have a Button component");
+                Destroy(buttonObj);
+                return;
+            }
+
+            // Setup button text
+            TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
+            if (buttonText != null)
+            {
+                string itemName = item.itemName ?? "Unknown Item";
+                int actionCost = item.actionEffect?.actionPointCost ?? 0;
+                buttonText.text = $"{itemName}\nAP: {actionCost}";
+            }
+
+            // Setup button functionality
+            button.onClick.AddListener(() => SafeSelectItem(item));
+
+            // Disable button if can't use item
+            button.interactable = characterActions.CanUseItem(item);
+
+            itemButtons.Add(button);
         }
-
-        // Setup button functionality
-        button.onClick.AddListener(() => SelectItem(item));
-
-        // Disable button if can't use item
-        button.interactable = characterActions.CanUseItem(item);
-
-        itemButtons.Add(button);
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error creating item button: {e.Message}");
+        }
     }
 
-    private void SelectAction(ActionData action)
+    private void SafeSelectAction(ActionData action)
     {
-        if (mouseHandler != null)
+        try
         {
-            mouseHandler.SelectAction(action);
-            mouseHandler.SetActionMode(ActionModes.Actions);
-        }
+            if (action == null)
+            {
+                Debug.LogWarning("Trying to select null action");
+                return;
+            }
 
-        Debug.Log($"Selected action: {action.actionName}");
+            if (mouseHandler != null)
+            {
+                mouseHandler.SelectAction(action);
+                mouseHandler.SetActionMode(ActionModes.Actions);
+                Debug.Log($"Selected action: {action.actionName}");
+            }
+            else
+            {
+                Debug.LogWarning("MouseHandler is null when trying to select action");
+                // Try to find MouseHandler again
+                mouseHandler = MouseHandler.instance;
+                if (mouseHandler != null)
+                {
+                    mouseHandler.SelectAction(action);
+                    mouseHandler.SetActionMode(ActionModes.Actions);
+                    Debug.Log($"Selected action: {action.actionName}");
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error selecting action: {e.Message}");
+        }
     }
 
-    private void SelectItem(ItemData item)
+    private void SafeSelectItem(ItemData item)
     {
-        if (mouseHandler != null)
+        try
         {
-            mouseHandler.SelectItem(item);
-            mouseHandler.SetActionMode(ActionModes.Item);
-        }
+            if (item == null)
+            {
+                Debug.LogWarning("Trying to select null item");
+                return;
+            }
 
-        Debug.Log($"Selected item: {item.itemName}");
+            if (mouseHandler != null)
+            {
+                mouseHandler.SelectItem(item);
+                mouseHandler.SetActionMode(ActionModes.Item);
+                Debug.Log($"Selected item: {item.itemName}");
+            }
+            else
+            {
+                Debug.LogWarning("MouseHandler is null when trying to select item");
+                // Try to find MouseHandler again
+                mouseHandler = MouseHandler.instance;
+                if (mouseHandler != null)
+                {
+                    mouseHandler.SelectItem(item);
+                    mouseHandler.SetActionMode(ActionModes.Item);
+                    Debug.Log($"Selected item: {item.itemName}");
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error selecting item: {e.Message}");
+        }
     }
 
     private void UpdateUI()
     {
-        if (mouseHandler == null) return;
-
-        // Hide all panels first
-        HideAllPanels();
-
-        // Show appropriate panel based on current mode
-        switch (mouseHandler.currentActionType)
+        try
         {
-            case ActionModes.Actions:
-                if (actionPanel != null)
-                    actionPanel.SetActive(true);
-                break;
+            if (mouseHandler == null)
+            {
+                // Try to find MouseHandler again
+                mouseHandler = MouseHandler.instance;
+                if (mouseHandler == null)
+                {
+                    Debug.LogWarning("MouseHandler still null in UpdateUI");
+                    return;
+                }
+            }
 
-            case ActionModes.Item:
-                if (itemPanel != null)
-                    itemPanel.SetActive(true);
-                break;
+            // Hide all panels first
+            HideAllPanels();
+
+            // Show appropriate panel based on current mode
+            switch (mouseHandler.currentActionType)
+            {
+                case ActionModes.Actions:
+                    if (actionPanel != null)
+                        actionPanel.SetActive(true);
+                    break;
+
+                case ActionModes.Item:
+                    if (itemPanel != null)
+                        itemPanel.SetActive(true);
+                    break;
+            }
+
+            // Update button states
+            UpdateModeButtonStates();
         }
-
-        // Update button states
-        UpdateModeButtonStates();
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error updating UI: {e.Message}");
+        }
     }
 
     private void UpdateModeButtonStates()
     {
-        if (mouseHandler == null) return;
-
-        // Reset all button colors/states
-        ResetButtonState(moveButton);
-        ResetButtonState(actionsButton);
-        ResetButtonState(itemsButton);
-        ResetButtonState(specialButton);
-
-        // Highlight current mode button
-        switch (mouseHandler.currentActionType)
+        try
         {
-            case ActionModes.Move:
-                HighlightButton(moveButton);
-                break;
-            case ActionModes.Actions:
-                HighlightButton(actionsButton);
-                break;
-            case ActionModes.Item:
-                HighlightButton(itemsButton);
-                break;
-            case ActionModes.Special:
-                HighlightButton(specialButton);
-                break;
+            if (mouseHandler == null) return;
+
+            // Reset all button colors/states
+            ResetButtonState(moveButton);
+            ResetButtonState(actionsButton);
+            ResetButtonState(itemsButton);
+            ResetButtonState(specialButton);
+
+            // Highlight current mode button
+            switch (mouseHandler.currentActionType)
+            {
+                case ActionModes.Move:
+                    HighlightButton(moveButton);
+                    break;
+                case ActionModes.Actions:
+                    HighlightButton(actionsButton);
+                    break;
+                case ActionModes.Item:
+                    HighlightButton(itemsButton);
+                    break;
+                case ActionModes.Special:
+                    HighlightButton(specialButton);
+                    break;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error updating mode button states: {e.Message}");
         }
     }
 
     private void ResetButtonState(Button button)
     {
-        if (button == null) return;
+        try
+        {
+            if (button == null) return;
 
-        ColorBlock colors = button.colors;
-        colors.normalColor = Color.white;
-        button.colors = colors;
+            ColorBlock colors = button.colors;
+            colors.normalColor = Color.white;
+            button.colors = colors;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error resetting button state: {e.Message}");
+        }
     }
 
     private void HighlightButton(Button button)
     {
-        if (button == null) return;
+        try
+        {
+            if (button == null) return;
 
-        ColorBlock colors = button.colors;
-        colors.normalColor = Color.yellow;
-        button.colors = colors;
+            ColorBlock colors = button.colors;
+            colors.normalColor = Color.yellow;
+            button.colors = colors;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error highlighting button: {e.Message}");
+        }
     }
 
     private void HideAllPanels()
     {
-        if (actionPanel != null)
-            actionPanel.SetActive(false);
+        try
+        {
+            if (actionPanel != null)
+                actionPanel.SetActive(false);
 
-        if (itemPanel != null)
-            itemPanel.SetActive(false);
+            if (itemPanel != null)
+                itemPanel.SetActive(false);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error hiding panels: {e.Message}");
+        }
     }
 
     private void ClearActionButtons()
     {
-        foreach (Button button in actionButtons)
+        try
         {
-            if (button != null)
-                Destroy(button.gameObject);
+            foreach (Button button in actionButtons)
+            {
+                if (button != null && button.gameObject != null)
+                    Destroy(button.gameObject);
+            }
+            actionButtons.Clear();
         }
-        actionButtons.Clear();
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error clearing action buttons: {e.Message}");
+        }
     }
 
     private void ClearItemButtons()
     {
-        foreach (Button button in itemButtons)
+        try
         {
-            if (button != null)
-                Destroy(button.gameObject);
+            foreach (Button button in itemButtons)
+            {
+                if (button != null && button.gameObject != null)
+                    Destroy(button.gameObject);
+            }
+            itemButtons.Clear();
         }
-        itemButtons.Clear();
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error clearing item buttons: {e.Message}");
+        }
     }
 
     private void OnDestroy()
     {
-        if (mouseHandler != null)
+        try
         {
-            mouseHandler.OnPlayerSelected -= OnPlayerSelected;
-            mouseHandler.OnSelectionCancelled -= OnSelectionCancelled;
+            if (mouseHandler != null)
+            {
+                mouseHandler.OnPlayerSelected -= OnPlayerSelected;
+                mouseHandler.OnSelectionCancelled -= OnSelectionCancelled;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error during ActionUIManager destruction: {e.Message}");
         }
     }
 }
