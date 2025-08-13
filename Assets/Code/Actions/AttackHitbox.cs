@@ -17,6 +17,7 @@ public class AttackHitbox : MonoBehaviour
     public float previewAlpha = 0.5f;
     public float activeAlpha = 1f;
 
+    [SerializeField]Transform groundCheck;
     [SerializeField]private Renderer hitboxRenderer;
     private Collider hitboxCollider;
     private HashSet<Char> hitTargets = new HashSet<Char>();
@@ -59,6 +60,18 @@ public class AttackHitbox : MonoBehaviour
         {
             RotateTowardsMouseZAxis();
         }
+        getTileOnGround();
+    }
+    void getTileOnGround()
+    {
+        MapMaker mapMaker = MapMaker.instance;
+        if (mapMaker == null) return;
+        Vector3 position = groundCheck.position;
+        Vector2Int hexCoords = mapMaker.WorldToHexPosition(position);
+        if (mapMaker.hexTiles.TryGetValue(hexCoords, out HexTile tile))
+        {
+                transform.position = tile.transform.position;
+        }
     }
 
     private void RotateTowardsMouseZAxis()
@@ -71,6 +84,7 @@ public class AttackHitbox : MonoBehaviour
 
         // Apply only Z-axis rotation, keeping X and Y rotation unchanged
         rotationPoint.transform.rotation = Quaternion.Euler(0, 0, angle);
+        transform.localRotation = Quaternion.Euler(0, 0, -angle);
     }
     public void ActivateForDamage()
     {
