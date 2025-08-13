@@ -26,13 +26,13 @@ public class MouseHandler : MonoBehaviour
     // Current state tracking
     private HexTile currentHoveredTile = null;
     private HexTile selectedTile = null;
-    [SerializeField] private Char selectedPlayer = null;
+    private Char selectedPlayer = null;
     public ActionModes currentActionType = ActionModes.None; // Changed from Move to None
 
     // Action system state
-    [SerializeField] private ActionData selectedAction = null;
+    private ActionData selectedAction = null;
     private ItemData selectedItem = null;
-    [SerializeField] private CharacterActions selectedPlayerActions = null;
+    private CharacterActions selectedPlayerActions = null;
 
     // Movement and action visualization
     private HashSet<HexTile> currentMovementRange = new HashSet<HexTile>();

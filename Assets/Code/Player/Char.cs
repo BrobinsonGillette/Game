@@ -15,7 +15,7 @@ public class Char : AnimatorBrain, IDamable
     public HexTile currentHex { get; private set; }
     public bool isMoving { get; private set; }
     public float MaxHp;
-    public float Health { get ; set  ; }
+    public float Health;
     private bool movingLeft;
     private Vector2 CurrentPosition;
     SpriteRenderer spriteRenderer;
@@ -24,10 +24,15 @@ public class Char : AnimatorBrain, IDamable
         spriteRenderer= GetComponent<SpriteRenderer>();
         CurrentPosition = transform.position;
         Initialize(GetComponent<Animator>().layerCount, Animations.Idle, GetComponent<Animator>(), DefaultAnimation);
+        Health = MaxHp;
     }
     private void Update()
     {
-        getTileOnGround();
+        if (isAlive())
+        {
+            getTileOnGround();
+        }
+
         if(movingLeft)
         {
             spriteRenderer.flipX = false;
@@ -224,6 +229,16 @@ public class Char : AnimatorBrain, IDamable
     private void Die()
     {
         Play(Animations.Death, 0, true, true);
+        MapMaker mapMaker = MapMaker.instance;
+        if (mapMaker == null) return;
+        Vector3 position = transform.position;
+        Vector2Int hexCoords = mapMaker.WorldToHexPosition(position);
+        if (mapMaker.hexTiles.TryGetValue(hexCoords, out HexTile tile))
+        {
+            currentHex = tile;
+            currentHex.SetCharacterPresent(false, team);
+        }
+        Destroy(gameObject,2f);
     }
 
     public void PlayAttackAnimation()
@@ -235,5 +250,9 @@ public class Char : AnimatorBrain, IDamable
     {
        Debug.Log("PlayHealAnimation");
        Play(Animations.ATTACK_2, 0, false, false);
+    }
+    public bool isAlive()
+    {
+        return Health > 0;
     }
 }
