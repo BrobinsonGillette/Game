@@ -145,12 +145,13 @@ public class Char : AnimatorBrain, IDamable
             MouseHandler.instance.UpdateCharacterPositionDisplays();
         }
     }
+
     public List<HexTile> GetMovementRange()
     {
         return GetTilesInRange(currentHex, movementSpeed);
     }
 
-    private List<HexTile> GetTilesInRange(HexTile center, int range)
+    public List<HexTile> GetTilesInRange(HexTile center, int range)
     {
         if (center == null || range <= 0) return new List<HexTile>();
 
@@ -223,5 +224,16 @@ public class Char : AnimatorBrain, IDamable
     private void Die()
     {
         Play(Animations.Death, 0, true, true);
+    }
+
+    public void PlayAttackAnimation()
+    {
+        Play(Animations.ATTACK_1, 0, false, false);
+    }
+
+    public void PlayHealAnimation()
+    {
+       Debug.Log("PlayHealAnimation");
+       Play(Animations.ATTACK_2, 0, false, false);
     }
 }
