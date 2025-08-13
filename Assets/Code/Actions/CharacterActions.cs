@@ -61,7 +61,7 @@ public class CharacterActions : MonoBehaviour
         switch (action.actionType)
         {
             case ActionType.Attack:
-                ExecuteAttack(action, targetCharacter);
+                ExecuteAttack(action, targetTile, targetCharacter);
                 break;
 
             case ActionType.Heal:
@@ -86,12 +86,53 @@ public class CharacterActions : MonoBehaviour
         PlayActionAnimation(action.actionType);
     }
 
-    private void ExecuteAttack(ActionData action, Char target)
+    private void ExecuteAttack(ActionData action, HexTile targetTile, Char targetCharacter)
     {
-        if (target != null && target.GetComponent<IDamable>() != null)
+        // Spawn hitbox if prefab is assigned
+        if (action.hitboxPrefab != null)
         {
-            target.GetComponent<IDamable>().TakeDamage(action.damage);
-            Debug.Log($"{character.name} attacks {target.name} for {action.damage} damage!");
+            Vector3 spawnPosition;
+
+            // Determine spawn position based on action settings and target
+            if (action.spawnHitboxOnTarget)
+            {
+                if (targetCharacter != null)
+                {
+                    spawnPosition = targetCharacter.transform.position;
+                }
+                else if (targetTile != null)
+                {
+                    spawnPosition = targetTile.transform.position;
+                }
+                else
+                {
+                    spawnPosition = character.transform.position;
+                }
+            }
+            else
+            {
+                // Spawn at character's position (like a projectile origin)
+                spawnPosition = character.transform.position;
+            }
+
+            GameObject hitboxObj = Instantiate(action.hitboxPrefab, spawnPosition, Quaternion.identity);
+            AttackHitbox hitbox = hitboxObj.GetComponent<AttackHitbox>();
+
+            if (hitbox != null)
+            {
+                hitbox.Initialize(action.damage, character.team, action.hitboxLifetime);
+            }
+
+            Debug.Log($"{character.name} spawned attack hitbox at {spawnPosition}!");
+        }
+        else
+        {
+            // Fallback to direct damage if no hitbox prefab and we have a specific target
+            if (targetCharacter != null && targetCharacter.GetComponent<IDamable>() != null)
+            {
+                targetCharacter.GetComponent<IDamable>().TakeDamage(action.damage);
+                Debug.Log($"{character.name} attacks {targetCharacter.name} for {action.damage} damage!");
+            }
         }
     }
 
@@ -129,10 +170,10 @@ public class CharacterActions : MonoBehaviour
         switch (actionType)
         {
             case ActionType.Attack:
-                 character.PlayAttackAnimation();
+                character.PlayAttackAnimation();
                 break;
             case ActionType.Heal:
-                 character.PlayHealAnimation();
+                character.PlayHealAnimation();
                 break;
                 // Add more cases as needed
         }

@@ -15,7 +15,7 @@ MonoBehaviour:
   actionName: test
   description: 
   actionType: 0
-  targetType: 0
+  targetType: 1
   animation: 7
   range: 1
   areaOfEffect: 1
@@ -24,6 +24,9 @@ MonoBehaviour:
   damage: 25
   healing: 0
   duration: 1
+  hitboxPrefab: {fileID: 4421461090731367389, guid: f95aed58a42686f439f025c946c88345, type: 3}
+  hitboxLifetime: 1
+  spawnHitboxOnTarget: 1
   requiresLineOfSight: 1
   canTargetSelf: 0
   canTargetAllies: 1

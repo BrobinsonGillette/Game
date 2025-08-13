@@ -216,7 +216,7 @@ public class MouseHandler : MonoBehaviour
         {
             selectedPlayer = GetCharacterOnTile(clickedTile);
         }
-        if (selectedPlayerActions == null )
+        if (selectedPlayerActions == null)
         {
             SelectCharacter(selectedPlayer, clickedTile);
         }
@@ -225,10 +225,19 @@ public class MouseHandler : MonoBehaviour
             AutoSelectBasicAttack();
         }
 
-        if (IsValidActionTarget(clickedTile))
-        {
+      
             Char targetCharacter = GetCharacterOnTile(clickedTile);
-            selectedPlayerActions.UseAction(selectedAction, clickedTile, targetCharacter);
+
+            // For area attacks or attacks without specific targets, pass the tile position
+            if (selectedAction.targetType == TargetType.Area || targetCharacter == null)
+            {
+                selectedPlayerActions.UseAction(selectedAction, clickedTile, null);
+            }
+            else
+            {
+                selectedPlayerActions.UseAction(selectedAction, clickedTile, targetCharacter);
+            }
+
             OnActionUsed?.Invoke(selectedPlayer, selectedAction, clickedTile);
 
             // Clear action selection after use
@@ -236,11 +245,8 @@ public class MouseHandler : MonoBehaviour
             UpdateActionRangeDisplay();
 
             Debug.Log($"{selectedPlayer.name} used action on {clickedTile.coordinates}");
-        }
-        else
-        {
-            Debug.Log("Invalid target for this action!");
-        }
+        
+       
     }
 
     private void HandleItemMode(HexTile clickedTile)
@@ -268,7 +274,6 @@ public class MouseHandler : MonoBehaviour
             Debug.Log("Invalid target for this item!");
         }
     }
-
     private void HandleSpecialMode(HexTile clickedTile)
     {
         if (selectedPlayer == null || selectedPlayerActions == null)
@@ -279,23 +284,6 @@ public class MouseHandler : MonoBehaviour
 
         Debug.Log($"Special action at {clickedTile.coordinates} - implement your special logic here!");
     }
-
-    private bool IsValidActionTarget(HexTile tile)
-    {
-        if (selectedAction == null || selectedPlayerActions == null) return false;
-
-        try
-        {
-            List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedAction);
-            return validTargets != null && validTargets.Contains(tile);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error checking valid action targets: {e.Message}");
-            return false;
-        }
-    }
-
     private bool IsValidItemTarget(HexTile tile)
     {
         if (selectedItem == null || selectedPlayerActions == null) return false;

@@ -45,6 +45,11 @@ public class ActionData : ScriptableObject
     public float healing = 0f;
     public int duration = 0; // For buffs/debuffs
 
+    [Header("Hitbox/VFX")]
+    public GameObject hitboxPrefab; // The hitbox prefab to spawn
+    public float hitboxLifetime = 1f; // How long the hitbox stays active
+    public bool spawnHitboxOnTarget = true; // Spawn hitbox at target location
+
     [Header("Special Properties")]
     public bool requiresLineOfSight = true;
     public bool canTargetSelf = false;
@@ -66,4 +71,3 @@ public class ItemData : ScriptableObject
     public bool isConsumable = true;
     public int stackSize = 1;
 }
-
