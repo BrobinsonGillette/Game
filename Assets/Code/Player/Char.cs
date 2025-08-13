@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
 public enum Team { none, player, enemy , neutral , other };
-public class Char : AnimatorBrain, IDamable
+public class Char : AnimatorBrain, IDamage
 {
     [Header("Character Properties")]
     public Team team = Team.none;

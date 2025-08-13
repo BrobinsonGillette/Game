@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IDamable
+public interface IDamage
 {
-
     void TakeDamage(float damage);
   
 }

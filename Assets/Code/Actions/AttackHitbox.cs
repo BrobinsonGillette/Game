@@ -5,13 +5,11 @@ using UnityEngine;
 
 public class AttackHitbox : MonoBehaviour
 {
-
     private float damage = 10;
     private Team ownerTeam = Team.player;
     private float lifetime = 2f;
     private bool isActivated = false;
     private int Range = 1;
-    private int currentRange = 1;
     private bool hasHit = false;
     [Header("Visual Settings")]
     public Color previewColor = Color.yellow;
@@ -35,10 +33,10 @@ public class AttackHitbox : MonoBehaviour
         {
             hitboxCollider.enabled = false;
         }
-  
+
     }
 
-    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime,int range, GameObject hitboxPrefab, AttackHitMainbox Parent)
+    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime, int range, GameObject hitboxPrefab, AttackHitMainbox Parent, Vector3 direction, int segmentIndex = 1)
     {
         damage = hitboxDamage;
         ownerTeam = team;
@@ -47,32 +45,36 @@ public class AttackHitbox : MonoBehaviour
         Range = range;
         SetupVisual(previewColor, previewAlpha);
         hasHit = false;
+        parent = Parent;
+
         if (hitboxCollider != null)
         {
             hitboxCollider.enabled = false; // No collision in preview mode
         }
-        if(Range > 1)
-        {
-            // Always spawn at player's position when action is selected
-            Vector3 spawnPosition = transform.position;
 
-            GameObject SpawnAttack = Instantiate(hitboxPrefab, spawnPosition, Quaternion.identity);
+        if (Range > 1 && segmentIndex + 1 < Range)
+        {
+            // Calculate next position in the direction
+            Vector3 nextPosition = transform.position + direction.normalized;
+
+            GameObject SpawnAttack = Instantiate(hitboxPrefab, nextPosition, Quaternion.identity);
             AttackHitbox hitbox = SpawnAttack.GetComponentInChildren<AttackHitbox>();
-            currentRange -= Range - 1;
             SpawnAttack.transform.parent = transform;
+
             if (hitbox != null)
             {
-                // Initialize hitbox but don't activate damage yet
-                hitbox.InitializeForPreview(damage, team, hitboxLifetime, currentRange, hitboxPrefab, Parent);
+                // Initialize next hitbox with same direction and incremented segment index
+                hitbox.InitializeForPreview(damage, team, hitboxLifetime, Range, hitboxPrefab, Parent, direction, segmentIndex + 1);
             }
             Parent.hitboxes.Add(hitbox);
-            parent = Parent;
         }
     }
+
     private void Update()
     {
         getTileOnGround();
     }
+
     void getTileOnGround()
     {
         MapMaker mapMaker = MapMaker.instance;
@@ -84,6 +86,7 @@ public class AttackHitbox : MonoBehaviour
             transform.position = tile.transform.position;
         }
     }
+
     public void ActivateForDamage()
     {
         if (isActivated) return; // Already activated
@@ -131,7 +134,7 @@ public class AttackHitbox : MonoBehaviour
         Char character = other.GetComponent<Char>();
         if (character != null && character.team != ownerTeam && !hitTargets.Contains(character))
         {
-            IDamable damageable = character.GetComponent<IDamable>();
+            IDamage damageable = character.GetComponent<IDamage>();
             if (damageable != null || hasHit || parent.fistTargetHit)
             {
                 damageable.TakeDamage(damage);
@@ -152,9 +155,9 @@ public class AttackHitbox : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
     private void OnDestroy()
     {
-        // Clean up any references
         hitTargets.Clear();
     }
 }

@@ -86,9 +86,9 @@ public class CharacterActions : MonoBehaviour
         else
         {
             // Fallback to direct damage if no hitbox prefab and we have a specific target
-            if (targetCharacter != null && targetCharacter.GetComponent<IDamable>() != null)
+            if (targetCharacter != null && targetCharacter.GetComponent<IDamage>() != null)
             {
-                targetCharacter.GetComponent<IDamable>().TakeDamage(action.damage);
+                targetCharacter.GetComponent<IDamage>().TakeDamage(action.damage);
                 Debug.Log($"{character.name} attacks {targetCharacter.name} for {action.damage} damage!");
             }
         }
