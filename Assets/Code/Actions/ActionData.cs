@@ -16,7 +16,9 @@ public enum ActionType
 public enum TargetType
 {
     SingleTarget,
-    MultiTarget
+    MultiTarget,
+    Point,
+    AreaPointed
 }
 
 [CreateAssetMenu(fileName = "New Action", menuName = "Game/Action Data")]

@@ -10,6 +10,7 @@ public class AttackHitbox : MonoBehaviour
     private float lifetime = 2f;
     private bool isActivated = false;
     private AttackHitMainbox parentMainbox;
+    private TargetType targetType = TargetType.SingleTarget;
 
     [Header("Visual Settings")]
     public Color previewColor = Color.yellow;
@@ -34,13 +35,14 @@ public class AttackHitbox : MonoBehaviour
         mapMaker = MapMaker.instance;
     }
 
-    // Simplified initialization - no recursive spawning
-    public void InitializeSimple(float hitboxDamage, Team team, float hitboxLifetime, AttackHitMainbox parent)
+    // Updated initialization with target type
+    public void InitializeWithTargetType(float hitboxDamage, Team team, float hitboxLifetime, AttackHitMainbox parent, TargetType type)
     {
         damage = hitboxDamage;
         ownerTeam = team;
         lifetime = hitboxLifetime;
         parentMainbox = parent;
+        targetType = type;
         isActivated = false;
 
         SetupVisual(previewColor, previewAlpha);
@@ -52,6 +54,12 @@ public class AttackHitbox : MonoBehaviour
 
         // Snap to nearest tile
         SnapToNearestTile();
+    }
+
+    // Keep backward compatibility
+    public void InitializeSimple(float hitboxDamage, Team team, float hitboxLifetime, AttackHitMainbox parent)
+    {
+        InitializeWithTargetType(hitboxDamage, team, hitboxLifetime, parent, TargetType.SingleTarget);
     }
 
     private void Update()
@@ -124,18 +132,32 @@ public class AttackHitbox : MonoBehaviour
         {
             IDamage damageable = character.GetComponent<IDamage>();
 
-            // Check if parent already hit something (for single-target attacks)
-            if (damageable != null && (parentMainbox == null || !parentMainbox.fistTargetHit))
+            if (damageable != null)
             {
-                damageable.TakeDamage(damage);
-                hitTargets.Add(character);
-
-                if (parentMainbox != null)
+                // Handle based on target type
+                if (targetType == TargetType.SingleTarget)
                 {
-                    parentMainbox.fistTargetHit = true;
-                }
+                    // For single target, check if parent already hit something
+                    if (parentMainbox == null || !parentMainbox.fistTargetHit)
+                    {
+                        damageable.TakeDamage(damage);
+                        hitTargets.Add(character);
 
-                Debug.Log($"Hitbox hit {character.name} for {damage} damage!");
+                        if (parentMainbox != null)
+                        {
+                            parentMainbox.fistTargetHit = true;
+                        }
+
+                        Debug.Log($"Hitbox hit {character.name} for {damage} damage! (SingleTarget)");
+                    }
+                }
+                else if (targetType == TargetType.MultiTarget)
+                {
+                    // For multi-target, hit everyone in range
+                    damageable.TakeDamage(damage);
+                    hitTargets.Add(character);
+                    Debug.Log($"Hitbox hit {character.name} for {damage} damage! (MultiTarget)");
+                }
             }
         }
     }

@@ -534,6 +534,12 @@ public class MouseHandler : MonoBehaviour
 
         try
         {
+            // Destroy previous attack if exists
+            if (SpawnAttack != null)
+            {
+                Destroy(SpawnAttack);
+            }
+
             // Always spawn at player's position when action is selected
             Vector3 spawnPosition = selectedPlayer.transform.position;
 
@@ -542,11 +548,18 @@ public class MouseHandler : MonoBehaviour
 
             if (hitbox != null)
             {
-                // Initialize hitbox but don't activate damage yet
-                hitbox.InitializeForPreview(action.damage, selectedPlayer.team, action.hitboxLifetime,action.Length);
+                // Initialize hitbox with all parameters including width and target type
+                hitbox.InitializeForPreview(
+                    action.damage,
+                    selectedPlayer.team,
+                    action.hitboxLifetime,
+                    action.Length,
+                    action.Width,        // Pass the width parameter
+                    action.targetType    // Pass the target type
+                );
             }
 
-            Debug.Log($"Spawned action hitbox for {action.actionName} at player position!");
+            Debug.Log($"Spawned action hitbox for {action.actionName} at player position with Width: {action.Width}, Type: {action.targetType}");
         }
         catch (System.Exception e)
         {
