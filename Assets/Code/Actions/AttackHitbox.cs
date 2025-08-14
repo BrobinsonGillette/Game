@@ -9,6 +9,7 @@ public class AttackHitbox : MonoBehaviour
     private Team ownerTeam = Team.player;
     private float lifetime = 2f;
     private bool isActivated = false;
+    private bool HasHit = false;
     private AttackHitMainbox parentMainbox;
     private TargetType targetType = TargetType.SingleTarget;
 
@@ -44,7 +45,7 @@ public class AttackHitbox : MonoBehaviour
         parentMainbox = parent;
         targetType = type;
         isActivated = false;
-
+        HasHit = false;
         SetupVisual(previewColor, previewAlpha);
 
         if (hitboxCollider != null)
@@ -54,12 +55,6 @@ public class AttackHitbox : MonoBehaviour
 
         // Snap to nearest tile
         SnapToNearestTile();
-    }
-
-    // Keep backward compatibility
-    public void InitializeSimple(float hitboxDamage, Team team, float hitboxLifetime, AttackHitMainbox parent)
-    {
-        InitializeWithTargetType(hitboxDamage, team, hitboxLifetime, parent, TargetType.SingleTarget);
     }
 
     private void Update()
@@ -151,11 +146,12 @@ public class AttackHitbox : MonoBehaviour
                         Debug.Log($"Hitbox hit {character.name} for {damage} damage! (SingleTarget)");
                     }
                 }
-                else if (targetType == TargetType.MultiTarget)
+                else if (targetType == TargetType.MultiTarget && !HasHit)
                 {
                     // For multi-target, hit everyone in range
                     damageable.TakeDamage(damage);
                     hitTargets.Add(character);
+                    HasHit = true;
                     Debug.Log($"Hitbox hit {character.name} for {damage} damage! (MultiTarget)");
                 }
             }

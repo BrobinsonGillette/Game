@@ -462,11 +462,12 @@ public class AttackHitMainbox : MonoBehaviour
                     fistTargetHit = true;
                     Debug.Log($"Main hitbox hit {character.name} for {damage} damage! (SingleTarget)");
                 }
-                else if (targetType == TargetType.MultiTarget)
+                else if (targetType == TargetType.MultiTarget && !hasHit)
                 {
                     // Multi target: can hit multiple enemies
                     damageable.TakeDamage(damage);
                     hitTargets.Add(character);
+                    hasHit = true;
                     Debug.Log($"Main hitbox hit {character.name} for {damage} damage! (MultiTarget)");
                 }
             }
