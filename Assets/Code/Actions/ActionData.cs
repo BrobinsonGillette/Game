@@ -31,6 +31,8 @@ public class ActionData : ScriptableObject
 
     [Header("Range & Targeting")]
     public int range = 1;
+    public int Width = 1;
+    public int Length = 1;
     public int areaOfEffect = 0; // 0 = single target, 1+ = radius
 
     [Header("Costs")]

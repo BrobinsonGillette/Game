@@ -543,7 +543,7 @@ public class MouseHandler : MonoBehaviour
             if (hitbox != null)
             {
                 // Initialize hitbox but don't activate damage yet
-                hitbox.InitializeForPreview(action.damage, selectedPlayer.team, action.hitboxLifetime,action.range);
+                hitbox.InitializeForPreview(action.damage, selectedPlayer.team, action.hitboxLifetime,action.Length);
             }
 
             Debug.Log($"Spawned action hitbox for {action.actionName} at player position!");

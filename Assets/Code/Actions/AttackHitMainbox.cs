@@ -8,7 +8,7 @@ public class AttackHitMainbox : MonoBehaviour
     [Header("Hitbox Settings")]
     [SerializeField] GameObject hitboxPrefab;
     [SerializeField] GameObject rotationPoint;
-    private int Range = 1;
+    private int Length = 1;
     private float damage = 10;
     private Team ownerTeam = Team.player;
     private float lifetime = 2f;
@@ -51,13 +51,13 @@ public class AttackHitMainbox : MonoBehaviour
         mapMaker = MapMaker.instance;
     }
 
-    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime, int range)
+    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime, int Length)
     {
         damage = hitboxDamage;
         ownerTeam = team;
         lifetime = hitboxLifetime;
         isActivated = false;
-        Range = range;
+        this.Length = Length;
         SetupVisual(previewColor, previewAlpha);
         hasHit = false;
 
@@ -83,7 +83,7 @@ public class AttackHitMainbox : MonoBehaviour
         if (playerTile == null) return;
 
         // Get tiles in line towards mouse
-        targetTiles = GetTilesInLineToMouse(playerTile, Range);
+        targetTiles = GetTilesInLineToMouse(playerTile, Length);
 
         // Create hitbox for each tile (excluding player's tile)
         for (int i = 0; i < targetTiles.Count; i++)
@@ -103,7 +103,7 @@ public class AttackHitMainbox : MonoBehaviour
 
         // Get mouse tile
         Vector2Int mouseHexCoord = mapMaker.WorldToHexPosition(mouseHandler.worldMousePos);
-        HexTile mouseTile = mapMaker.GetHexTile(mouseHexCoord);
+        //HexTile mouseTile = mapMaker.GetHexTile(mouseHexCoord);
 
         // If mouse is not on a valid tile, get direction and project
         Vector2Int direction = GetHexDirection(startTile.coordinates, mouseHexCoord);
@@ -133,12 +133,6 @@ public class AttackHitMainbox : MonoBehaviour
     {
         // Calculate the difference
         Vector2Int diff = to - from;
-
-        // Convert to cube coordinates for easier direction calculation
-        Vector3 fromCube = AxialToCube(from);
-        Vector3 toCube = AxialToCube(to);
-        Vector3 cubeDiff = toCube - fromCube;
-
         // Hex has 6 main directions in axial coordinates
         Vector2Int[] hexDirections = new Vector2Int[]
         {
@@ -171,13 +165,6 @@ public class AttackHitMainbox : MonoBehaviour
         return bestDirection;
     }
 
-    private Vector3 AxialToCube(Vector2Int axial)
-    {
-        float x = axial.x;
-        float z = axial.y;
-        float y = -x - z;
-        return new Vector3(x, y, z);
-    }
 
     private void CreateHitboxAtTile(HexTile tile, int index)
     {
@@ -227,7 +214,7 @@ public class AttackHitMainbox : MonoBehaviour
         if (playerTile == null) return;
 
         // Get new target tiles
-        List<HexTile> newTargetTiles = GetTilesInLineToMouse(playerTile, Range);
+        List<HexTile> newTargetTiles = GetTilesInLineToMouse(playerTile, Length);
 
         // Check if tiles have changed
         bool tilesChanged = newTargetTiles.Count != targetTiles.Count;
@@ -373,7 +360,7 @@ public class AttackHitMainbox : MonoBehaviour
 
         if (gameObject != null)
         {
-            Destroy(gameObject);
+           Destroy(gameObject);
         }
     }
 

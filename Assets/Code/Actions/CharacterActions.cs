@@ -168,7 +168,7 @@ public class CharacterActions : MonoBehaviour
 
     public List<HexTile> GetActionRange(ActionData action)
     {
-        return character.GetTilesInRange(character.currentHex, action.range);
+        return character.GetTilesInRange(character.currentHex, action.Length);
     }
 
     public List<HexTile> GetValidTargets(ActionData action)
