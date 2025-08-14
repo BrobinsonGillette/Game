@@ -251,7 +251,7 @@ public class MouseHandler : MonoBehaviour
         Char targetCharacter = GetCharacterOnTile(clickedTile);
 
         // For area attacks or attacks without specific targets, pass the tile position
-        if (selectedAction.targetType == TargetType.MultiTarget || targetCharacter == null)
+        if (selectedAction.CanTargetMultipleTargets || targetCharacter == null)
         {
             selectedPlayerActions.UseAction(selectedAction, clickedTile, null);
         }
@@ -555,7 +555,7 @@ public class MouseHandler : MonoBehaviour
                     action.hitboxLifetime,
                     action.Length,
                     action.Width,        // Pass the width parameter
-                    action.targetType    // Pass the target type
+                    action    // Pass the target type
                 );
             }
 

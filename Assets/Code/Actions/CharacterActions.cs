@@ -200,11 +200,14 @@ public class CharacterActions : MonoBehaviour
                     return action.canTargetAllies;
                 else
                     return action.canTargetEnemies;
-
-            case TargetType.MultiTarget:
-                return true; // Area effects can target any tile
-            default:
-                return false;
+        }
+        if (action.CanTargetMultipleTargets)
+        {
+            return true; // Area effects can target any tile
+        }
+        else
+        {
+            return false;
         }
     }
 

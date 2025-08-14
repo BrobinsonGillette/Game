@@ -16,9 +16,7 @@ public enum ActionType
 public enum TargetType
 {
     SingleTarget,
-    MultiTarget,
-    Point,
-    AreaPointed
+    Point
 }
 
 [CreateAssetMenu(fileName = "New Action", menuName = "Game/Action Data")]
@@ -52,6 +50,7 @@ public class ActionData : ScriptableObject
     public bool spawnHitboxOnTarget = true; // Spawn hitbox at target location
 
     [Header("Special Properties")]
+    public bool CanTargetMultipleTargets = false;
     public bool requiresLineOfSight = true;
     public bool canTargetSelf = false;
     public bool canTargetAllies = true;

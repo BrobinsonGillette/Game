@@ -15,7 +15,7 @@ public class AttackHitMainbox : MonoBehaviour
     private float lifetime = 2f;
     private bool isActivated = false;
     public bool fistTargetHit = false;
-    private TargetType targetType = TargetType.SingleTarget;  // Added target type tracking
+    private ActionData targetType;
 
     [Header("Visual Settings")]
     public Color previewColor = Color.yellow;
@@ -54,7 +54,7 @@ public class AttackHitMainbox : MonoBehaviour
     }
 
     // Updated initialization to include width and target type
-    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime, int length, int width, TargetType type)
+    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime, int length, int width, ActionData type)
     {
         damage = hitboxDamage;
         ownerTeam = team;
@@ -381,8 +381,7 @@ public class AttackHitMainbox : MonoBehaviour
             hitboxCollider.enabled = true;
         }
 
-        // Reset hit tracking for MultiTarget
-        if (targetType == TargetType.MultiTarget)
+        if (targetType.CanTargetMultipleTargets)
         {
             fistTargetHit = false;
         }
@@ -453,7 +452,7 @@ public class AttackHitMainbox : MonoBehaviour
             // Handle based on target type
             if (damageable != null)
             {
-                if (targetType == TargetType.SingleTarget && !hasHit)
+                if (!targetType.CanTargetMultipleTargets && !hasHit)
                 {
                     // Single target: only hit once
                     damageable.TakeDamage(damage);
@@ -462,7 +461,7 @@ public class AttackHitMainbox : MonoBehaviour
                     fistTargetHit = true;
                     Debug.Log($"Main hitbox hit {character.name} for {damage} damage! (SingleTarget)");
                 }
-                else if (targetType == TargetType.MultiTarget && !hasHit)
+                else if (targetType.CanTargetMultipleTargets && !hasHit)
                 {
                     // Multi target: can hit multiple enemies
                     damageable.TakeDamage(damage);
