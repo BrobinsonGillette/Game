@@ -178,7 +178,7 @@ MonoBehaviour:
   hitboxPrefab: {fileID: 4421461090731367389, guid: 6eb64772b7174e140b22a0c786056c8e, type: 3}
   rotationPoint: {fileID: 4421461090731367389}
   fistTargetHit: 0
-  previewColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 0.5019608}
+  previewColor: {r: 1, g: 0.15126735, b: 0.015686274, a: 0.5019608}
   activeColor: {r: 1, g: 0, b: 0, a: 1}
   previewAlpha: 0.5
   activeAlpha: 1

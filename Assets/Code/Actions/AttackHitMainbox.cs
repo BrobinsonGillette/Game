@@ -9,7 +9,7 @@ public class AttackHitMainbox : MonoBehaviour
     [SerializeField] GameObject hitboxPrefab;
     [SerializeField] GameObject rotationPoint;
     private int Length = 1;
-    private int Width = 1;  // Added width parameter
+    private int Width = 1;
     private float damage = 10;
     private Team ownerTeam = Team.player;
     private float lifetime = 2f;
@@ -37,9 +37,21 @@ public class AttackHitMainbox : MonoBehaviour
     // Store the tiles in the attack area for visualization
     private List<HexTile> targetTiles = new List<HexTile>();
     private Vector2 startPos;
+
+    // Performance optimization variables
+    private int updateCounter = 0;
+    private const int UPDATE_FREQUENCY = 5; // Update every 5 frames
+    private Vector3 lastMousePosition;
+    private Vector3 lastPlayerPosition;
+
+    // Range checking cache
+    private HexTile playerTile;
+    private bool isWithinRange = true;
+
     // Properties for external access
     public Team OwnerTeam => ownerTeam;
     public bool IsActivated => isActivated;
+
     private void Awake()
     {
         hitboxCollider = GetComponent<Collider>();
@@ -50,10 +62,19 @@ public class AttackHitMainbox : MonoBehaviour
 
         mouseHandler = MouseHandler.instance;
         mapMaker = MapMaker.instance;
+
+        // Validate dependencies
+        if (mouseHandler == null)
+        {
+            Debug.LogError("MouseHandler instance not found!");
+        }
+        if (mapMaker == null)
+        {
+            Debug.LogError("MapMaker instance not found!");
+        }
     }
 
-    // Updated initialization to include width and target type
-    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime, int length, int width, ActionData type,Vector2 StartPos)
+    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime, int length, int width, ActionData type, Vector2 StartPos)
     {
         damage = hitboxDamage;
         ownerTeam = team;
@@ -66,13 +87,29 @@ public class AttackHitMainbox : MonoBehaviour
         hasHit = false;
         fistTargetHit = false;
         startPos = StartPos;
+
         if (hitboxCollider != null)
         {
             hitboxCollider.enabled = false;
         }
 
-        // Create hitboxes based on width and length
+        // Initialize position tracking
+        lastMousePosition = mouseHandler?.worldMousePos ?? Vector3.zero;
+        lastPlayerPosition = transform.position;
+
+        // Get initial player tile
+        UpdatePlayerTile();
+
+        // Create initial hitbox area
         CreateHitboxArea();
+    }
+
+    private void UpdatePlayerTile()
+    {
+        if (mapMaker == null) return;
+
+        Vector2Int playerHexCoord = mapMaker.WorldToHexPosition(transform.position);
+        playerTile = mapMaker.GetHexTile(playerHexCoord);
     }
 
     private void CreateHitboxArea()
@@ -80,12 +117,7 @@ public class AttackHitMainbox : MonoBehaviour
         // Clear existing hitboxes
         ClearHitboxes();
 
-        if (mapMaker == null || mouseHandler == null) return;
-
-        // Get player's current tile
-        Vector2Int playerHexCoord = mapMaker.WorldToHexPosition(transform.position);
-        HexTile playerTile = mapMaker.GetHexTile(playerHexCoord);
-        if (playerTile == null) return;
+        if (mapMaker == null || mouseHandler == null || playerTile == null) return;
 
         // Get tiles in the attack area (cone/line with width)
         targetTiles = GetAttackAreaTiles(playerTile, Length, Width);
@@ -104,7 +136,13 @@ public class AttackHitMainbox : MonoBehaviour
     {
         List<HexTile> tiles = new List<HexTile>();
 
-        if (mouseHandler == null || mapMaker == null) return tiles;
+        if (mouseHandler == null || mapMaker == null || startTile == null) return tiles;
+
+        // Check if we're within range first
+        if (!IsWithinActionRange())
+        {
+            return tiles; // Return empty list if out of range
+        }
 
         // Get the main direction towards mouse
         Vector2Int mouseHexCoord = mapMaker.WorldToHexPosition(mouseHandler.worldMousePos);
@@ -117,13 +155,11 @@ public class AttackHitMainbox : MonoBehaviour
         }
 
         // For width > 1, create a cone or wide area
-        // Get perpendicular directions for width
         Vector2Int[] perpendicularDirs = GetPerpendicularDirections(mainDirection);
 
         // For each distance along the length
         for (int dist = 1; dist <= length; dist++)
         {
-            // Calculate how wide the attack should be at this distance
             int currentWidth = width;
 
             // Center tile in the direction
@@ -138,7 +174,6 @@ public class AttackHitMainbox : MonoBehaviour
             // Add tiles to the sides based on width
             for (int w = 1; w <= (currentWidth - 1) / 2; w++)
             {
-                // Add tiles on both sides
                 foreach (Vector2Int perpDir in perpendicularDirs)
                 {
                     Vector2Int sideCoord = centerCoord + (perpDir * w);
@@ -155,9 +190,22 @@ public class AttackHitMainbox : MonoBehaviour
         return tiles;
     }
 
+    private bool IsWithinActionRange()
+    {
+        if (targetType == null || targetType.range <= 0 || mouseHandler == null)
+        {
+            return true; // No range limit or invalid data
+        }
+
+        Vector2 mousePos = new Vector2(Mathf.Floor(mouseHandler.worldMousePos.x), Mathf.Floor(mouseHandler.worldMousePos.y));
+        float distance = Vector2.Distance(mousePos, startPos.normalized);
+         distance = Mathf.Floor(distance);
+        isWithinRange = distance <= targetType.range*2f;
+        return isWithinRange;
+    }
+
     private Vector2Int[] GetPerpendicularDirections(Vector2Int mainDirection)
     {
-        // Hex directions in axial coordinates
         Vector2Int[] hexDirections = new Vector2Int[]
         {
             new Vector2Int(1, 0),   // East
@@ -168,52 +216,60 @@ public class AttackHitMainbox : MonoBehaviour
             new Vector2Int(0, 1)    // Northeast
         };
 
-        // Find the index of the main direction
-        int mainIndex = -1;
-        for (int i = 0; i < hexDirections.Length; i++)
-        {
-            if (hexDirections[i] == mainDirection)
-            {
-                mainIndex = i;
-                break;
-            }
-        }
+        int mainIndex = GetDirectionIndex(mainDirection, hexDirections);
 
-        if (mainIndex == -1)
-        {
-            // If exact match not found, find closest
-            float maxDot = float.MinValue;
-            for (int i = 0; i < hexDirections.Length; i++)
-            {
-                float dot = Vector2.Dot(mainDirection, hexDirections[i]);
-                if (dot > maxDot)
-                {
-                    maxDot = dot;
-                    mainIndex = i;
-                }
-            }
-        }
+        if (mainIndex == -1) return new Vector2Int[] { hexDirections[0], hexDirections[1] };
 
-        // Get the two perpendicular directions (roughly 60 degrees off)
         int perpIndex1 = (mainIndex + 2) % 6;
         int perpIndex2 = (mainIndex + 4) % 6;
 
         return new Vector2Int[] { hexDirections[perpIndex1], hexDirections[perpIndex2] };
     }
 
+    private int GetDirectionIndex(Vector2Int direction, Vector2Int[] directions)
+    {
+        for (int i = 0; i < directions.Length; i++)
+        {
+            if (directions[i] == direction)
+            {
+                return i;
+            }
+        }
+
+        // Find closest direction if exact match not found
+        float maxDot = float.MinValue;
+        int bestIndex = 0;
+        Vector2 normalizedDirection = new Vector2(direction.x, direction.y).normalized;
+
+        for (int i = 0; i < directions.Length; i++)
+        {
+            Vector2 dirNorm = new Vector2(directions[i].x, directions[i].y).normalized;
+            float dot = Vector2.Dot(normalizedDirection, dirNorm);
+
+            if (dot > maxDot)
+            {
+                maxDot = dot;
+                bestIndex = i;
+            }
+        }
+
+        return bestIndex;
+    }
+
     private List<HexTile> GetTilesInLineToMouse(HexTile startTile, int maxRange)
     {
         List<HexTile> tiles = new List<HexTile>();
 
-        if (mouseHandler == null || mapMaker == null) return tiles;
+        if (mouseHandler == null || mapMaker == null || startTile == null) return tiles;
 
-        // Get mouse tile
+        // Check range first
+        if (!IsWithinActionRange())
+        {
+            return tiles;
+        }
+
         Vector2Int mouseHexCoord = mapMaker.WorldToHexPosition(mouseHandler.worldMousePos);
-
-        // Get direction and project
         Vector2Int direction = GetHexDirection(startTile.coordinates, mouseHexCoord);
-
-        // Get tiles in that direction
         Vector2Int currentCoord = startTile.coordinates;
 
         for (int i = 0; i <= maxRange; i++)
@@ -223,7 +279,7 @@ public class AttackHitMainbox : MonoBehaviour
             {
                 tiles.Add(tile);
             }
-            else if (i > 0) // Stop if we hit an unwalkable tile (but include starting tile)
+            else if (i > 0)
             {
                 break;
             }
@@ -236,24 +292,15 @@ public class AttackHitMainbox : MonoBehaviour
 
     private Vector2Int GetHexDirection(Vector2Int from, Vector2Int to)
     {
-        // Calculate the difference
         Vector2Int diff = to - from;
-
-        // Hex has 6 main directions in axial coordinates
         Vector2Int[] hexDirections = new Vector2Int[]
         {
-            new Vector2Int(1, 0),   // East
-            new Vector2Int(1, -1),  // Southeast
-            new Vector2Int(0, -1),  // Southwest
-            new Vector2Int(-1, 0),  // West
-            new Vector2Int(-1, 1),  // Northwest
-            new Vector2Int(0, 1)    // Northeast
+            new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, -1),
+            new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, 1)
         };
 
-        // Find the closest matching direction
         float maxDot = float.MinValue;
         Vector2Int bestDirection = hexDirections[0];
-
         Vector2 normalizedDiff = new Vector2(diff.x, diff.y).normalized;
 
         foreach (Vector2Int dir in hexDirections)
@@ -275,7 +322,6 @@ public class AttackHitMainbox : MonoBehaviour
     {
         if (hitboxPrefab == null || tile == null) return;
 
-        // Spawn at tile position
         Vector3 spawnPosition = tile.transform.position;
         GameObject spawnedHitbox = Instantiate(hitboxPrefab, spawnPosition, Quaternion.identity);
         spawnedHitbox.transform.parent = transform;
@@ -283,7 +329,6 @@ public class AttackHitMainbox : MonoBehaviour
         AttackHitbox hitbox = spawnedHitbox.GetComponentInChildren<AttackHitbox>();
         if (hitbox != null)
         {
-            // Pass the target type to child hitboxes
             hitbox.InitializeWithTargetType(damage, ownerTeam, lifetime, this, targetType);
             hitboxes.Add(hitbox);
         }
@@ -293,63 +338,110 @@ public class AttackHitMainbox : MonoBehaviour
 
     private void Update()
     {
-        if (targetType.range > 0)
-        {
-            Vector2 mainpos= new Vector2(mouseHandler.worldMousePos.x, mouseHandler.worldMousePos.y);
-            float distance = Vector2.Distance(mainpos, startPos);
-            Debug.Log($"Distance: {(int)distance}  ,rotationPoint.transform.position: {mainpos} ,playerTile.transform.position: {startPos}");
-            if ((int)distance <= targetType.range)
-            {
-                rotationPoint.transform.position = mouseHandler.worldMousePos;
-            }
-        }
-        // Update rotation
-        if (rotationPoint != null && mouseHandler != null && !isActivated)
+        if (isActivated) return;
+
+        updateCounter++;
+        bool shouldUpdate = updateCounter % UPDATE_FREQUENCY == 0;
+
+        // Always update rotation point position if within range
+        UpdateRotationPointPosition();
+
+        // Always update rotation for smooth visual feedback
+        if (rotationPoint != null && mouseHandler != null)
         {
             RotateTowardsMouseZAxis();
         }
 
-        // Snap to player's tile
+        // Snap to player's tile every frame for smooth movement
         SnapToTile();
 
-        // Update hitbox area in preview mode
-        if (!isActivated && Time.frameCount % 5 == 0) // Update every 5 frames for performance
+        // Only update hitbox area periodically or when significant change detected
+        if (shouldUpdate || HasSignificantChange())
         {
             UpdateHitboxArea();
+            CacheCurrentPositions();
         }
+    }
+
+    private void UpdateRotationPointPosition()
+    {
+        if (rotationPoint == null || mouseHandler == null || targetType == null) return;
+
+        if (targetType.range > 0)
+        {
+            Vector2 mousePos = new Vector2(Mathf.Floor(mouseHandler.worldMousePos.x), Mathf.Floor(mouseHandler.worldMousePos.y));
+            float distance = Vector2.Distance(mousePos, startPos.normalized);
+            distance = Mathf.Floor(distance);
+            if (distance <= targetType.range  * 2f)
+            {
+                rotationPoint.transform.position = mouseHandler.worldMousePos;
+            }
+            else
+            {
+                mousePos = new Vector2(mouseHandler.worldMousePos.x,mouseHandler.worldMousePos.y);
+                Vector2 direction = (mousePos - startPos).normalized;
+                Vector2 clampedPos = startPos + direction * targetType.range;
+              //  rotationPoint.transform.position = new Vector3(clampedPos.x, clampedPos.y, rotationPoint.transform.position.z);
+            }
+        }
+        else
+        {
+            rotationPoint.transform.position = mouseHandler.worldMousePos;
+        }
+    }
+
+    private bool HasSignificantChange()
+    {
+        if (mouseHandler == null) return false;
+
+        bool mouseChanged = Vector3.Distance(lastMousePosition, mouseHandler.worldMousePos) > 0.1f;
+        bool playerChanged = Vector3.Distance(lastPlayerPosition, transform.position) > 0.1f;
+
+        return mouseChanged || playerChanged;
+    }
+
+    private void CacheCurrentPositions()
+    {
+        if (mouseHandler != null)
+        {
+            lastMousePosition = mouseHandler.worldMousePos;
+        }
+        lastPlayerPosition = transform.position;
     }
 
     private void UpdateHitboxArea()
     {
         if (mapMaker == null || mouseHandler == null) return;
 
-        // Get current player tile
-        Vector2Int playerHexCoord = mapMaker.WorldToHexPosition(transform.position);
-        HexTile playerTile = mapMaker.GetHexTile(playerHexCoord);
-        if (playerTile == null) return;
-
-        // Get new target tiles
-        List<HexTile> newTargetTiles = GetAttackAreaTiles(playerTile, Length, Width);
-
-        // Check if tiles have changed
-        bool tilesChanged = newTargetTiles.Count != targetTiles.Count;
-        if (!tilesChanged)
+        // Update player tile if position changed
+        if (Vector3.Distance(lastPlayerPosition, transform.position) > 0.1f)
         {
-            for (int i = 0; i < newTargetTiles.Count; i++)
-            {
-                if (i >= targetTiles.Count || newTargetTiles[i] != targetTiles[i])
-                {
-                    tilesChanged = true;
-                    break;
-                }
-            }
+            UpdatePlayerTile();
         }
 
-        // Recreate hitboxes if tiles changed
-        if (tilesChanged)
+        if (playerTile == null) return;
+
+        List<HexTile> newTargetTiles = GetAttackAreaTiles(playerTile, Length, Width);
+
+        if (HasTilesChanged(newTargetTiles))
         {
             CreateHitboxArea();
         }
+    }
+
+    private bool HasTilesChanged(List<HexTile> newTargetTiles)
+    {
+        if (newTargetTiles.Count != targetTiles.Count) return true;
+
+        for (int i = 0; i < newTargetTiles.Count; i++)
+        {
+            if (i >= targetTiles.Count || newTargetTiles[i] != targetTiles[i])
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void SnapToTile()
@@ -373,8 +465,6 @@ public class AttackHitMainbox : MonoBehaviour
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
         rotationPoint.transform.rotation = Quaternion.Euler(0, 0, angle);
-
-        // Counter-rotate this object to keep it upright
         transform.localRotation = Quaternion.Euler(0, 0, -angle);
     }
 
@@ -390,12 +480,11 @@ public class AttackHitMainbox : MonoBehaviour
             hitboxCollider.enabled = true;
         }
 
-        if (targetType.CanTargetMultipleTargets)
+        if (targetType != null && targetType.CanTargetMultipleTargets)
         {
             fistTargetHit = false;
         }
 
-        // Activate all child hitboxes
         foreach (AttackHitbox hitbox in hitboxes)
         {
             if (hitbox != null)
@@ -410,24 +499,24 @@ public class AttackHitMainbox : MonoBehaviour
 
     private void SetupVisual(Color color, float alpha)
     {
-        if (hitboxRenderer != null)
-        {
-            Material material = hitboxRenderer.material;
-            Color newColor = color;
-            newColor.a = alpha;
-            material.color = newColor;
+        if (hitboxRenderer == null) return;
 
-            if (alpha < 1f)
-            {
-                material.SetFloat("_Mode", 3);
-                material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                material.SetInt("_ZWrite", 0);
-                material.DisableKeyword("_ALPHATEST_ON");
-                material.EnableKeyword("_ALPHABLEND_ON");
-                material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                material.renderQueue = 3000;
-            }
+        Material material = hitboxRenderer.material;
+        Color newColor = color;
+        newColor.a = alpha;
+        material.color = newColor;
+
+        if (alpha < 1f)
+        {
+            // Setup transparent rendering
+            material.SetFloat("_Mode", 3);
+            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            material.SetInt("_ZWrite", 0);
+            material.DisableKeyword("_ALPHATEST_ON");
+            material.EnableKeyword("_ALPHABLEND_ON");
+            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            material.renderQueue = 3000;
         }
     }
 
@@ -458,24 +547,20 @@ public class AttackHitMainbox : MonoBehaviour
         {
             IDamage damageable = character.GetComponent<IDamage>();
 
-            // Handle based on target type
-            if (damageable != null)
+            if (damageable != null && targetType != null)
             {
                 if (!targetType.CanTargetMultipleTargets && !hasHit)
                 {
-                    // Single target: only hit once
                     damageable.TakeDamage(damage);
                     hitTargets.Add(character);
                     hasHit = true;
                     fistTargetHit = true;
                     Debug.Log($"Main hitbox hit {character.name} for {damage} damage! (SingleTarget)");
                 }
-                else if (targetType.CanTargetMultipleTargets && !hasHit)
+                else if (targetType.CanTargetMultipleTargets && !hitTargets.Contains(character))
                 {
-                    // Multi target: can hit multiple enemies
                     damageable.TakeDamage(damage);
                     hitTargets.Add(character);
-                    hasHit = true;
                     Debug.Log($"Main hitbox hit {character.name} for {damage} damage! (MultiTarget)");
                 }
             }

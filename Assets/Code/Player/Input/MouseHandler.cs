@@ -556,7 +556,7 @@ public class MouseHandler : MonoBehaviour
                     action.Length,
                     action.Width,        // Pass the width parameter
                     action ,   // Pass the target type
-                    spawnPosition
+                    new Vector2(selectedPlayer.transform.position.x, selectedPlayer.transform.position.y)
                 );
             }
 
