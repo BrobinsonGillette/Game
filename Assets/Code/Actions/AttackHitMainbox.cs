@@ -293,12 +293,12 @@ public class AttackHitMainbox : MonoBehaviour
 
     private void Update()
     {
-        if (targetType.range > 1)
+        if (targetType.range > 0)
         {
             Vector2 mainpos= new Vector2(mouseHandler.worldMousePos.x, mouseHandler.worldMousePos.y);
             float distance = Vector2.Distance(mainpos, startPos);
-            Debug.Log($"Distance: {distance}  ,rotationPoint.transform.position: {mainpos} ,playerTile.transform.position: {startPos}");
-            if (distance <= targetType.range+1)
+            Debug.Log($"Distance: {(int)distance}  ,rotationPoint.transform.position: {mainpos} ,playerTile.transform.position: {startPos}");
+            if ((int)distance <= targetType.range)
             {
                 rotationPoint.transform.position = mouseHandler.worldMousePos;
             }

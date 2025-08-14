@@ -18,7 +18,7 @@ MonoBehaviour:
   animation: 7
   range: 4
   Width: 0
-  Length: 1
+  Length: 0
   actionPointCost: 1
   manaCost: 0
   damage: 25
