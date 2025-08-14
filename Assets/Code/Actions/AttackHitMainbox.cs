@@ -36,11 +36,10 @@ public class AttackHitMainbox : MonoBehaviour
 
     // Store the tiles in the attack area for visualization
     private List<HexTile> targetTiles = new List<HexTile>();
-
+    private Vector2 startPos;
     // Properties for external access
     public Team OwnerTeam => ownerTeam;
     public bool IsActivated => isActivated;
-
     private void Awake()
     {
         hitboxCollider = GetComponent<Collider>();
@@ -54,7 +53,7 @@ public class AttackHitMainbox : MonoBehaviour
     }
 
     // Updated initialization to include width and target type
-    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime, int length, int width, ActionData type)
+    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime, int length, int width, ActionData type,Vector2 StartPos)
     {
         damage = hitboxDamage;
         ownerTeam = team;
@@ -66,7 +65,7 @@ public class AttackHitMainbox : MonoBehaviour
         SetupVisual(previewColor, previewAlpha);
         hasHit = false;
         fistTargetHit = false;
-
+        startPos = StartPos;
         if (hitboxCollider != null)
         {
             hitboxCollider.enabled = false;
@@ -294,6 +293,16 @@ public class AttackHitMainbox : MonoBehaviour
 
     private void Update()
     {
+        if (targetType.range > 1)
+        {
+            Vector2 mainpos= new Vector2(mouseHandler.worldMousePos.x, mouseHandler.worldMousePos.y);
+            float distance = Vector2.Distance(mainpos, startPos);
+            Debug.Log($"Distance: {distance}  ,rotationPoint.transform.position: {mainpos} ,playerTile.transform.position: {startPos}");
+            if (distance <= targetType.range+1)
+            {
+                rotationPoint.transform.position = mouseHandler.worldMousePos;
+            }
+        }
         // Update rotation
         if (rotationPoint != null && mouseHandler != null && !isActivated)
         {

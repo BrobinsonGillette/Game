@@ -555,11 +555,12 @@ public class MouseHandler : MonoBehaviour
                     action.hitboxLifetime,
                     action.Length,
                     action.Width,        // Pass the width parameter
-                    action    // Pass the target type
+                    action ,   // Pass the target type
+                    spawnPosition
                 );
             }
 
-            Debug.Log($"Spawned action hitbox for {action.actionName} at player position with Width: {action.Width}, Type: {action.targetType}");
+            Debug.Log($"Spawned action hitbox for {action.actionName} at player position with Width: {action.Width}");
         }
         catch (System.Exception e)
         {

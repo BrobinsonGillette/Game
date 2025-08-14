@@ -12,12 +12,7 @@ public enum ActionType
     Item
 }
 
-[System.Serializable]
-public enum TargetType
-{
-    SingleTarget,
-    Point
-}
+
 
 [CreateAssetMenu(fileName = "New Action", menuName = "Game/Action Data")]
 public class ActionData : ScriptableObject
@@ -26,14 +21,13 @@ public class ActionData : ScriptableObject
     public string actionName;
     public string description;
     public ActionType actionType;
-    public TargetType targetType;
     public Animations animation;
 
     [Header("Range & Targeting")]
     public int range = 1;
     public int Width = 1;
     public int Length = 1;
-    public int areaOfEffect = 0; // 0 = single target, 1+ = radius
+
 
     [Header("Costs")]
     public int actionPointCost = 1;
@@ -42,16 +36,15 @@ public class ActionData : ScriptableObject
     [Header("Effects")]
     public float damage = 0f;
     public float healing = 0f;
-    public int duration = 0; // For buffs/debuffs
+
 
     [Header("Hitbox/VFX")]
     public GameObject hitboxPrefab; // The hitbox prefab to spawn
     public float hitboxLifetime = 1f; // How long the hitbox stays active
-    public bool spawnHitboxOnTarget = true; // Spawn hitbox at target location
+
 
     [Header("Special Properties")]
     public bool CanTargetMultipleTargets = false;
-    public bool requiresLineOfSight = true;
     public bool canTargetSelf = false;
     public bool canTargetAllies = true;
     public bool canTargetEnemies = true;

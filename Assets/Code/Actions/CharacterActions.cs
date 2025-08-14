@@ -191,23 +191,19 @@ public class CharacterActions : MonoBehaviour
     {
         Char characterOnTile = GetCharacterOnTile(tile);
 
-        switch (action.targetType)
-        {
-            case TargetType.SingleTarget:
-                if (characterOnTile == null) return false;
 
-                if (characterOnTile.team == character.team)
-                    return action.canTargetAllies;
-                else
-                    return action.canTargetEnemies;
-        }
         if (action.CanTargetMultipleTargets)
         {
             return true; // Area effects can target any tile
         }
         else
         {
-            return false;
+            if (characterOnTile == null) return false;
+
+            if (characterOnTile.team == character.team)
+                return action.canTargetAllies;
+            else
+                return action.canTargetEnemies;
         }
     }
 
