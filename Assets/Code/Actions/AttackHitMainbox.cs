@@ -144,45 +144,45 @@ public class AttackHitMainbox : MonoBehaviour
             return tiles; // Return empty list if out of range
         }
 
-        // Get the main direction towards mouse
-        Vector2Int mouseHexCoord = mapMaker.WorldToHexPosition(mouseHandler.worldMousePos);
-        Vector2Int mainDirection = GetHexDirection(startTile.coordinates, mouseHexCoord);
-
-        // If width is 1, it's just a line
-        if (width <= 1)
+        // If width > 1, create a circular area around mouse position
+        if (width > 1)
         {
-            return GetTilesInLineToMouse(startTile, length);
+            return GetTilesInCircularArea(width);
         }
 
-        // For width > 1, create a cone or wide area
-        Vector2Int[] perpendicularDirs = GetPerpendicularDirections(mainDirection);
+        // For width = 1, it's just a line towards mouse
+        return GetTilesInLineToMouse(startTile, length);
+    }
 
-        // For each distance along the length
-        for (int dist = 1; dist <= length; dist++)
+    private List<HexTile> GetTilesInCircularArea(int radius)
+    {
+        List<HexTile> tiles = new List<HexTile>();
+
+        if (mouseHandler == null || mapMaker == null) return tiles;
+
+        // Get the center tile (where mouse is pointing)
+        Vector2Int mouseHexCoord = mapMaker.WorldToHexPosition(mouseHandler.worldMousePos);
+        HexTile centerTile = mapMaker.GetHexTile(mouseHexCoord);
+
+        if (centerTile == null) return tiles;
+
+        // Add center tile
+        if (centerTile.IsWalkable)
         {
-            int currentWidth = width;
+            tiles.Add(centerTile);
+        }
 
-            // Center tile in the direction
-            Vector2Int centerCoord = startTile.coordinates + (mainDirection * dist);
-            HexTile centerTile = mapMaker.GetHexTile(centerCoord);
+        // Add tiles in expanding rings around the center
+        for (int ring = 1; ring < radius; ring++)
+        {
+            List<Vector2Int> ringTiles = GetHexRing(mouseHexCoord, ring);
 
-            if (centerTile != null && centerTile.IsWalkable)
+            foreach (Vector2Int coord in ringTiles)
             {
-                tiles.Add(centerTile);
-            }
-
-            // Add tiles to the sides based on width
-            for (int w = 1; w <= (currentWidth - 1) / 2; w++)
-            {
-                foreach (Vector2Int perpDir in perpendicularDirs)
+                HexTile tile = mapMaker.GetHexTile(coord);
+                if (tile != null && tile.IsWalkable)
                 {
-                    Vector2Int sideCoord = centerCoord + (perpDir * w);
-                    HexTile sideTile = mapMaker.GetHexTile(sideCoord);
-
-                    if (sideTile != null && sideTile.IsWalkable)
-                    {
-                        tiles.Add(sideTile);
-                    }
+                    tiles.Add(tile);
                 }
             }
         }
@@ -190,18 +190,73 @@ public class AttackHitMainbox : MonoBehaviour
         return tiles;
     }
 
+    private List<Vector2Int> GetHexRing(Vector2Int center, int radius)
+    {
+        List<Vector2Int> ring = new List<Vector2Int>();
+
+        if (radius == 0)
+        {
+            ring.Add(center);
+            return ring;
+        }
+
+        // Hex directions for ring calculation
+        Vector2Int[] directions = new Vector2Int[]
+        {
+            new Vector2Int(1, 0),   // East
+            new Vector2Int(1, -1),  // Southeast  
+            new Vector2Int(0, -1),  // Southwest
+            new Vector2Int(-1, 0),  // West
+            new Vector2Int(-1, 1),  // Northwest
+            new Vector2Int(0, 1)    // Northeast
+        };
+
+        // Start at one edge of the ring
+        Vector2Int current = center + directions[4] * radius; // Start northwest
+
+        // Walk around the ring
+        for (int direction = 0; direction < 6; direction++)
+        {
+            for (int step = 0; step < radius; step++)
+            {
+                ring.Add(current);
+                current += directions[direction];
+            }
+        }
+
+        return ring;
+    }
+
     private bool IsWithinActionRange()
     {
-        if (targetType == null || targetType.range <= 0 || mouseHandler == null)
+        if (targetType == null || targetType.range <= 0 || mouseHandler == null || playerTile == null)
         {
             return true; // No range limit or invalid data
         }
 
-        Vector2 mousePos = new Vector2(Mathf.Floor(mouseHandler.worldMousePos.x), Mathf.Floor(mouseHandler.worldMousePos.y));
-        float distance = Vector2.Distance(mousePos, startPos.normalized);
-         distance = Mathf.Floor(distance);
-        isWithinRange = distance <= targetType.range*2f;
+        // Use hex distance calculation for accurate range checking
+        Vector2Int mouseHexCoord = mapMaker.WorldToHexPosition(mouseHandler.worldMousePos);
+        int hexDistance = GetHexDistance(playerTile.coordinates, mouseHexCoord);
+
+        isWithinRange = hexDistance <= targetType.range;
         return isWithinRange;
+    }
+
+    private int GetHexDistance(Vector2Int a, Vector2Int b)
+    {
+        // Convert axial coordinates to cube coordinates for distance calculation
+        Vector3 cubeA = AxialToCube(a);
+        Vector3 cubeB = AxialToCube(b);
+
+        return (int)((Mathf.Abs(cubeA.x - cubeB.x) + Mathf.Abs(cubeA.y - cubeB.y) + Mathf.Abs(cubeA.z - cubeB.z)) / 2);
+    }
+
+    private Vector3 AxialToCube(Vector2Int axial)
+    {
+        float x = axial.x;
+        float z = axial.y;
+        float y = -x - z;
+        return new Vector3(x, y, z);
     }
 
     private Vector2Int[] GetPerpendicularDirections(Vector2Int mainDirection)
@@ -369,19 +424,21 @@ public class AttackHitMainbox : MonoBehaviour
 
         if (targetType.range > 0)
         {
-            Vector2 mousePos = new Vector2(Mathf.Floor(mouseHandler.worldMousePos.x), Mathf.Floor(mouseHandler.worldMousePos.y));
-            float distance = Vector2.Distance(mousePos, startPos.normalized);
-            distance = Mathf.Floor(distance);
-            if (distance <= targetType.range  * 2f)
+            Vector2Int mouseHexCoord = mapMaker.WorldToHexPosition(mouseHandler.worldMousePos);
+            int hexDistance = GetHexDistance(playerTile?.coordinates ?? Vector2Int.zero, mouseHexCoord);
+
+            if (hexDistance <= targetType.range)
             {
                 rotationPoint.transform.position = mouseHandler.worldMousePos;
             }
             else
             {
-                mousePos = new Vector2(mouseHandler.worldMousePos.x,mouseHandler.worldMousePos.y);
-                Vector2 direction = (mousePos - startPos).normalized;
-                Vector2 clampedPos = startPos + direction * targetType.range;
-              //  rotationPoint.transform.position = new Vector3(clampedPos.x, clampedPos.y, rotationPoint.transform.position.z);
+                // Clamp to maximum range
+                Vector2 playerPos = new Vector2(transform.position.x, transform.position.y);
+                Vector2 mousePos = new Vector2(mouseHandler.worldMousePos.x, mouseHandler.worldMousePos.y);
+                Vector2 direction = (mousePos - playerPos).normalized;
+                Vector2 clampedPos = playerPos + direction * (targetType.range * mapMaker.HexSize * 1.5f);
+                rotationPoint.transform.position = new Vector3(clampedPos.x, clampedPos.y, rotationPoint.transform.position.z);
             }
         }
         else

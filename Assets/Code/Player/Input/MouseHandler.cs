@@ -247,28 +247,94 @@ public class MouseHandler : MonoBehaviour
             return;
         }
 
- 
+        // Check if the player can use this action (including action points)
+        if (!selectedPlayerActions.CanUseAction(selectedAction))
+        {
+            Debug.Log($"Cannot use {selectedAction.actionName}! Not enough action points or other requirements not met.");
+            return;
+        }
+
+        // Check if the target is within range
+        if (!IsTargetWithinActionRange(clickedTile))
+        {
+            Debug.Log($"Target is out of range for {selectedAction.actionName}!");
+            return;
+        }
+
         Char targetCharacter = GetCharacterOnTile(clickedTile);
 
-        // For area attacks or attacks without specific targets, pass the tile position
-        if (selectedAction.CanTargetMultipleTargets || targetCharacter == null)
-        {
-            selectedPlayerActions.UseAction(selectedAction, clickedTile, null);
-        }
-        else if (targetCharacter != selectedPlayer)
-        {
-            selectedPlayerActions.UseAction(selectedAction, clickedTile, targetCharacter);
-        }
+        // Store action points before using action
+        int actionPointsBefore = selectedPlayer.charClass.currentActionPoints;
 
+        // Use the action through CharacterActions (this will handle action point deduction)
+        selectedPlayerActions.UseAction(selectedAction, clickedTile, targetCharacter);
+
+        // Fire the event for external systems
         OnActionUsed?.Invoke(selectedPlayer, selectedAction, clickedTile);
+
+        Debug.Log($"{selectedPlayer.name} used {selectedAction.actionName} on {clickedTile.coordinates}. AP: {actionPointsBefore} -> {selectedPlayer.charClass.currentActionPoints}");
 
         // Clear action selection after use
         selectedAction = null;
-   
 
-        Debug.Log($"{selectedPlayer.name} used action on {clickedTile.coordinates}");
+        // Destroy the preview hitbox since action is used
+        if (SpawnAttack != null)
+        {
+            Destroy(SpawnAttack);
+            SpawnAttack = null;
+        }
+
+        // Force UI update by calling an event that UI can listen to
+        StartCoroutine(DelayedUIUpdate());
+
+        // If no action points left, cancel selection
+        if (selectedPlayer.charClass.currentActionPoints <= 0)
+        {
+            Debug.Log($"{selectedPlayer.name} has no action points left!");
+            StartCoroutine(DelayedCancelSelection());
+        }
+    }
+    private IEnumerator DelayedUIUpdate()
+    {
+        yield return new WaitForEndOfFrame();
+        // Force another event to trigger UI refresh
+        OnPlayerSelected?.Invoke(selectedPlayer);
+    }
+    private IEnumerator DelayedCancelSelection()
+    {
+        yield return new WaitForSeconds(1f); // Give player time to see the result
+        CancelSelection();
     }
 
+    private bool IsTargetWithinActionRange(HexTile targetTile)
+    {
+        if (selectedAction == null || selectedPlayer == null || targetTile == null)
+            return false;
+
+        if (selectedAction.range <= 0)
+            return true; // No range limit
+
+        // Calculate hex distance between player and target
+        Vector2Int playerCoord = selectedPlayer.currentHex.coordinates;
+        Vector2Int targetCoord = targetTile.coordinates;
+
+        int distance = GetHexDistance(playerCoord, targetCoord);
+        return distance <= selectedAction.range;
+    }
+    private int GetHexDistance(Vector2Int a, Vector2Int b)
+    {
+        Vector3 cubeA = AxialToCube(a);
+        Vector3 cubeB = AxialToCube(b);
+
+        return (int)((Mathf.Abs(cubeA.x - cubeB.x) + Mathf.Abs(cubeA.y - cubeB.y) + Mathf.Abs(cubeA.z - cubeB.z)) / 2);
+    }
+    private Vector3 AxialToCube(Vector2Int axial)
+    {
+        float x = axial.x;
+        float z = axial.y;
+        float y = -x - z;
+        return new Vector3(x, y, z);
+    }
     private void HandleItemMode(HexTile clickedTile)
     {
         if (selectedPlayer == null || selectedPlayerActions == null || selectedItem == null)

@@ -74,10 +74,7 @@ public class CharacterActions : MonoBehaviour
 
     private void ExecuteAttack(ActionData action, HexTile targetTile, Char targetCharacter)
     {
-        // For the new workflow, we don't spawn hitbox here anymore
-        // The hitbox is already spawned when action is selected
-        // Instead, we activate existing hitboxes or trigger damage directly
-
+ 
         if (action.hitboxPrefab != null)
         {
             // Find existing hitboxes spawned by this character and activate them
@@ -98,24 +95,21 @@ public class CharacterActions : MonoBehaviour
     {
         try
         {
-            // Find all AttackHitbox components in the scene
             AttackHitMainbox[] allHitboxes = FindObjectsOfType<AttackHitMainbox>();
-
             foreach (AttackHitMainbox hitbox in allHitboxes)
             {
-                // Check if this hitbox belongs to our character and matches the action
+           
                 if (hitbox != null && hitbox.OwnerTeam == character.team && !hitbox.IsActivated)
                 {
-                    // Activate the hitbox for actual damage
                     hitbox.ActivateForDamage();
-                    Debug.Log($"{character.name} activated attack hitbox!");
-                    break; // Only activate one hitbox per action
+                    //Debug.Log($"{character.name} activated attack hitbox!");
+                    break; 
                 }
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Error activating existing hitboxes: {e.Message}");
+            //Debug.LogError($"Error activating existing hitboxes: {e.Message}");
         }
     }
 
