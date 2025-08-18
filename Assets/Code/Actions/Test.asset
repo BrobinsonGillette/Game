@@ -25,7 +25,7 @@ MonoBehaviour:
   healing: 0
   hitboxPrefab: {fileID: 4421461090731367389, guid: f95aed58a42686f439f025c946c88345, type: 3}
   hitboxLifetime: 1
-  CanTargetMultipleTargets: 0
-  canTargetSelf: 0
+  CanTargetMultipleTargets: 1
+  canTargetSelf: 1
   canTargetAllies: 1
   canTargetEnemies: 1

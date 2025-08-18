@@ -228,12 +228,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   followSpeed: 2.5
-  freeMovementSpeed: 0.3
+  freeMovementSpeed: 2.5
   movementDamping: 0.9
   zoomSpeed: 3
   minZoom: 0.98
   maxZoom: 7
   zoomDamping: 0.85
+  freeCamTransitionSpeed: 10
   maxCamBounds: {x: 53, y: 53}
 --- !u!1 &888355587
 GameObject:
@@ -337,6 +338,18 @@ MonoBehaviour:
       m_SingletonActionBindings: []
       m_Flags: 0
     m_Reference: {fileID: -3679570933039243683, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
+  FreeCam:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Free Cam
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 70d4743d-bb1b-4621-8d08-b021e6593541
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: -2545051169893827967, guid: 87f14790d18500b47863c0ee168b43a9, type: 3}
 --- !u!114 &888355589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -656,6 +669,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enablePathPreview: 1
   enableRightClickToCancel: 1
+  currentHoveredTile: {fileID: 0}
   currentActionType: 1
   SpawnAttack: {fileID: 0}
 --- !u!1660057539 &9223372036854775807

@@ -22,7 +22,11 @@ public class CamMagger : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float zoomDamping = 0.85f;
 
+    [Header("Free Cam Settings")]
+    [SerializeField] private float freeCamTransitionSpeed = 5f;
+
     public Vector3 WorldMousePosition => mainCamera.ScreenToWorldPoint(Input.mousePosition);
+    public bool IsFreeCamMode { get; private set; } = false;
 
     private Transform target; // Player transform
     private Vector3 offset = new Vector3(0, 0, -10);
@@ -40,6 +44,10 @@ public class CamMagger : MonoBehaviour
     private float camHeight;
     private float camWidth;
     private bool needsBoundsRecalculation = true;
+
+    // Free cam state
+    private Vector3 freeCamPosition;
+    private bool wasFreeCamLastFrame = false;
 
     private void Awake()
     {
@@ -59,6 +67,7 @@ public class CamMagger : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         mainCamera = Camera.main;
         targetOrthographicSize = mainCamera.orthographicSize;
+        freeCamPosition = transform.position;
 
         // Initialize bounds
         SetCamBounds(-maxCamBounds, maxCamBounds);
@@ -66,10 +75,34 @@ public class CamMagger : MonoBehaviour
 
     private void Update()
     {
+        HandleFreeCamInput();
         HandleZoom();
         HandleMovement();
         ApplyCameraBounds();
+    }
 
+    private void HandleFreeCamInput()
+    {
+        bool freeCamInput = InputManager.instance.IsFreeCamMode;
+
+        // Toggle free cam mode based on input
+        bool previousFreeCamMode = IsFreeCamMode;
+        IsFreeCamMode = freeCamInput;
+
+        // Handle transitions
+        if (IsFreeCamMode && !wasFreeCamLastFrame)
+        {
+            // Just entered free cam mode - store current position
+            freeCamPosition = transform.position;
+            velocity = Vector3.zero; // Reset velocity for smooth transition
+        }
+        else if (!IsFreeCamMode && wasFreeCamLastFrame)
+        {
+            // Just exited free cam mode - reset velocity for smooth return to player
+            velocity = Vector3.zero;
+        }
+
+        wasFreeCamLastFrame = IsFreeCamMode;
     }
 
     private void HandleZoom()
@@ -105,41 +138,45 @@ public class CamMagger : MonoBehaviour
     {
         Vector3 targetPosition;
 
-        if (target == null)
+        if (IsFreeCamMode)
         {
-            // Free camera movement - scale speed by zoom level for consistent feel
+            // Free camera movement - direct and responsive
             Vector2 input = InputManager.instance.MovementInput;
 
             // Scale movement speed by current orthographic size to maintain consistent feel
             float zoomScaledSpeed = freeMovementSpeed * mainCamera.orthographicSize;
 
-            // Add to velocity instead of direct position change
-            velocity.x += input.x * zoomScaledSpeed * Time.deltaTime;
-            velocity.y += input.y * zoomScaledSpeed * Time.deltaTime;
+            // Direct movement - much more responsive than velocity-based
+            Vector3 movement = new Vector3(input.x, input.y, 0) * zoomScaledSpeed * Time.deltaTime;
+            freeCamPosition += movement;
+            freeCamPosition.z = offset.z;
 
-            // Apply damping
-            velocity *= movementDamping;
+            targetPosition = freeCamPosition;
+        }
+        else if (target != null)
+        {
+            // Follow target with bounds consideration
+            Vector3 idealPosition = target.position + offset;
 
-            targetPosition = transform.position + velocity;
-            targetPosition.z = offset.z;
+            // Apply bounds to the ideal position before moving camera
+            Vector3 boundedIdealPosition = ApplyBoundsToPosition(idealPosition);
+
+            // Use SmoothDamp for better following behavior
+            targetPosition = Vector3.SmoothDamp(transform.position, boundedIdealPosition, ref velocity, 1f / followSpeed);
         }
         else
         {
-            // Follow target - much more responsive
-            targetPosition = target.position + offset;
-
-            // Use SmoothDamp for better following behavior
-            transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 1f / followSpeed);
-            return; // Exit early to avoid the lerp below
+            // No target and not in free cam - stay where we are
+            targetPosition = transform.position;
         }
 
         // Apply movement
         transform.position = targetPosition;
     }
 
-    private void ApplyCameraBounds()
+    private Vector3 ApplyBoundsToPosition(Vector3 position)
     {
-        if (!boundsSet) return;
+        if (!boundsSet) return position;
 
         // Only recalculate camera dimensions when zoom changes
         if (needsBoundsRecalculation)
@@ -159,11 +196,26 @@ public class CamMagger : MonoBehaviour
         if (minX > maxX) minX = maxX = (minBounds.x + maxBounds.x) * 0.5f;
         if (minY > maxY) minY = maxY = (minBounds.y + maxBounds.y) * 0.5f;
 
-        // Clamp camera position
-        Vector3 pos = transform.position;
-        pos.x = Mathf.Clamp(pos.x, minX, maxX);
-        pos.y = Mathf.Clamp(pos.y, minY, maxY);
-        transform.position = pos;
+        // Clamp position
+        Vector3 clampedPos = position;
+        clampedPos.x = Mathf.Clamp(clampedPos.x, minX, maxX);
+        clampedPos.y = Mathf.Clamp(clampedPos.y, minY, maxY);
+
+        return clampedPos;
+    }
+
+    private void ApplyCameraBounds()
+    {
+        if (!boundsSet) return;
+
+        // Apply bounds to current position (this handles any edge cases)
+        transform.position = ApplyBoundsToPosition(transform.position);
+
+        // Update free cam position to match if we're in free cam mode
+        if (IsFreeCamMode)
+        {
+            freeCamPosition = transform.position;
+        }
     }
 
     public void SetCamBounds(Vector2 min, Vector2 max)
@@ -181,7 +233,11 @@ public class CamMagger : MonoBehaviour
         // Reset velocity when switching targets to prevent jarring movement
         velocity = Vector3.zero;
         zoomVelocity = 0f;
-    }
 
-  
+        // If not in free cam mode, immediately update free cam position to current camera position
+        if (!IsFreeCamMode)
+        {
+            freeCamPosition = transform.position;
+        }
+    }
 }

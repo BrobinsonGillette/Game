@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class InputManager : MonoBehaviour
 {
     public static InputManager instance { get; private set; }
-
+    public bool IsFreeCamMode { get; private set; }
     public Vector2 MovementInput { get; private set; }
     public float ZoomInput { get; private set; }
 
@@ -18,7 +18,7 @@ public class InputManager : MonoBehaviour
     public InputActionProperty Interact;
     public InputActionProperty Select;
     public InputActionProperty Inventory;
-
+    public InputActionProperty FreeCam;
 
 
     private void Awake()
@@ -34,18 +34,6 @@ public class InputManager : MonoBehaviour
         StartUp();
         KeyBindSetUP();
     }
-    private void Update()
-    {
-        //if(Zoom.action.triggered)
-        //{
-        //    ZoomInput = Zoom.action.ReadValue<float>();
-        //}
-        //else
-        //{
-        //    ZoomInput = 0f;
-        //}
-    }
-
     public void StartUp()
     {
         Zoom.action.Enable();
@@ -55,6 +43,7 @@ public class InputManager : MonoBehaviour
         Select.action.Enable();
         Inventory.action.Enable();
         Select.action.Enable();
+        FreeCam.action.Enable();
     }
     public void KeyBindSetUP()
     {
@@ -62,6 +51,7 @@ public class InputManager : MonoBehaviour
         Movement.action.canceled += ctx => MovementInput = Vector2.zero;
         Zoom.action.performed += ctx => ZoomInput = ctx.ReadValue<float>();
         Zoom.action.canceled += ctx => ZoomInput = 0f;
+        FreeCam.action.performed += ctx => IsFreeCamMode = !IsFreeCamMode;
     }
     public void DeSetUp()
     {
@@ -72,6 +62,6 @@ public class InputManager : MonoBehaviour
         Select.action.Disable();
         Inventory.action.Disable();
         Select.action.Disable();
-
+        FreeCam.action.Disable();
     }
 }
