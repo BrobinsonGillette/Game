@@ -111,7 +111,7 @@ Transform:
   m_GameObject: {fileID: 2095252463474031247}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.733, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -178,10 +178,12 @@ MonoBehaviour:
   hitboxPrefab: {fileID: 4421461090731367389, guid: 6eb64772b7174e140b22a0c786056c8e, type: 3}
   rotationPoint: {fileID: 4421461090731367389}
   fistTargetHit: 0
-  previewColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 0.5019608}
+  previewColor: {r: 1, g: 0.15126735, b: 0.015686274, a: 0.5019608}
   activeColor: {r: 1, g: 0, b: 0, a: 1}
   previewAlpha: 0.5
   activeAlpha: 1
+  outOfRangeColor: {r: 1, g: 0.74655265, b: 0, a: 1}
+  outOfRangeAlpha: 0.3
   groundCheck: {fileID: 2872458995193862595}
   hitboxRenderer: {fileID: 1647285881423744081}
 --- !u!1 &4421461090731367389
@@ -242,7 +244,7 @@ Transform:
   m_GameObject: {fileID: 6336658163993362797}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.733, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

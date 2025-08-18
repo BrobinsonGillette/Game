@@ -30,6 +30,11 @@ public class ActionUIManager : MonoBehaviour
     private MouseHandler mouseHandler;
     private List<Button> actionButtons = new List<Button>();
     private List<Button> itemButtons = new List<Button>();
+    private Char currentSelectedCharacter;
+
+    // Update frequency for UI refresh
+    private float uiUpdateInterval = 0.1f;
+    private float lastUpdateTime;
 
     private void Start()
     {
@@ -41,6 +46,8 @@ public class ActionUIManager : MonoBehaviour
             {
                 mouseHandler.OnPlayerSelected += OnPlayerSelected;
                 mouseHandler.OnSelectionCancelled += OnSelectionCancelled;
+                mouseHandler.OnActionUsed += OnActionUsed; // Subscribe to action used event
+                mouseHandler.OnPlayerMoved += OnPlayerMoved; // Subscribe to movement event
             }
             else
             {
@@ -49,11 +56,95 @@ public class ActionUIManager : MonoBehaviour
 
             SetupModeButtons();
             HideAllPanels();
-            HideModeButtons(); // Hide mode buttons initially
+            HideModeButtons();
         }
         catch (System.Exception e)
         {
             Debug.LogError($"Error initializing ActionUIManager: {e.Message}");
+        }
+    }
+
+    private void Update()
+    {
+        // Periodically update UI to catch any changes
+        if (Time.time - lastUpdateTime > uiUpdateInterval && currentSelectedCharacter != null)
+        {
+            RefreshCharacterInfo();
+            RefreshButtonStates();
+            lastUpdateTime = Time.time;
+        }
+    }
+
+    // New event handlers for action and movement
+    private void OnActionUsed(Char character, ActionData action, HexTile tile)
+    {
+        if (character == currentSelectedCharacter)
+        {
+            RefreshUI();
+        }
+    }
+
+    private void OnPlayerMoved(Char character, HexTile tile)
+    {
+        if (character == currentSelectedCharacter)
+        {
+            RefreshUI();
+        }
+    }
+
+    private void RefreshUI()
+    {
+        if (currentSelectedCharacter != null)
+        {
+            RefreshCharacterInfo();
+            RefreshButtonStates();
+        }
+    }
+
+    private void RefreshCharacterInfo()
+    {
+        if (currentSelectedCharacter != null)
+        {
+            UpdateCharacterInfo(currentSelectedCharacter);
+        }
+    }
+
+    private void RefreshButtonStates()
+    {
+        if (currentSelectedCharacter == null) return;
+
+        CharacterActions characterActions = currentSelectedCharacter.GetComponent<CharacterActions>();
+        if (characterActions == null) return;
+
+        // Update action button states
+        for (int i = 0; i < actionButtons.Count && i < characterActions.character.charClass.availableActions.Count; i++)
+        {
+            ActionData action = characterActions.character.charClass.availableActions[i];
+            Button button = actionButtons[i];
+
+            if (button != null && action != null)
+            {
+                button.interactable = characterActions.CanUseAction(action);
+
+                // Update ActionButton component if it exists
+                ActionButton actionButton = button.GetComponent<ActionButton>();
+                if (actionButton != null)
+                {
+                    actionButton.SetInteractable(characterActions.CanUseAction(action));
+                }
+            }
+        }
+
+        // Update item button states
+        for (int i = 0; i < itemButtons.Count && i < characterActions.character.charClass.inventory.Count; i++)
+        {
+            ItemData item = characterActions.character.charClass.inventory[i];
+            Button button = itemButtons[i];
+
+            if (button != null && item != null)
+            {
+                button.interactable = characterActions.CanUseItem(item);
+            }
         }
     }
 
@@ -115,10 +206,11 @@ public class ActionUIManager : MonoBehaviour
                 return;
             }
 
+            currentSelectedCharacter = selectedCharacter;
             UpdateCharacterInfo(selectedCharacter);
             UpdateActionButtons(selectedCharacter);
             UpdateItemButtons(selectedCharacter);
-            ShowModeButtons(); // Show mode buttons when a player is selected
+            ShowModeButtons();
             UpdateUI();
         }
         catch (System.Exception e)
@@ -131,8 +223,9 @@ public class ActionUIManager : MonoBehaviour
     {
         try
         {
+            currentSelectedCharacter = null;
             HideAllPanels();
-            HideModeButtons(); // Hide mode buttons when selection is cancelled
+            HideModeButtons();
             ClearCharacterInfo();
         }
         catch (System.Exception e)
@@ -191,14 +284,10 @@ public class ActionUIManager : MonoBehaviour
             if (healthText != null)
                 healthText.text = $"HP: {character.charClass.Health:F0}/{character.charClass.MaxHp:F0}";
 
-            CharacterActions characterActions = character.GetComponent<CharacterActions>();
-            if (characterActions != null && actionPointsText != null)
+            // Always update action points display
+            if (actionPointsText != null)
             {
-                actionPointsText.text = $"AP: {characterActions.character.charClass.currentActionPoints}/{characterActions.character.charClass.maxActionPoints}";
-            }
-            else if (actionPointsText != null)
-            {
-                actionPointsText.text = "AP: N/A";
+                actionPointsText.text = $"AP: {character.charClass.currentActionPoints}/{character.charClass.maxActionPoints}";
             }
         }
         catch (System.Exception e)
@@ -264,11 +353,9 @@ public class ActionUIManager : MonoBehaviour
             GameObject buttonObj = Instantiate(actionButtonPrefab, actionButtonParent);
             if (buttonObj == null) return;
 
-            // Try to get ActionButton component first
             ActionButton actionButton = buttonObj.GetComponent<ActionButton>();
             if (actionButton != null)
             {
-                // Use the ActionButton's Setup method for actions
                 actionButton.Setup(action, SafeSelectAction);
                 actionButton.SetInteractable(characterActions.CanUseAction(action));
 
@@ -280,7 +367,6 @@ public class ActionUIManager : MonoBehaviour
             }
             else
             {
-                // Fallback to regular button if ActionButton component not found
                 Button button = buttonObj.GetComponent<Button>();
                 if (button == null)
                 {
@@ -289,19 +375,14 @@ public class ActionUIManager : MonoBehaviour
                     return;
                 }
 
-                // Setup button text
                 TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
                 if (buttonText != null)
                 {
                     buttonText.text = $"{action.actionName ?? "Unknown"}\nAP: {action.actionPointCost}";
                 }
 
-                // Setup button functionality
                 button.onClick.AddListener(() => SafeSelectAction(action));
-
-                // Disable button if can't use action
                 button.interactable = characterActions.CanUseAction(action);
-
                 actionButtons.Add(button);
             }
         }
@@ -357,7 +438,6 @@ public class ActionUIManager : MonoBehaviour
                 return;
             }
 
-            // Setup button text
             TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
             if (buttonText != null)
             {
@@ -366,12 +446,8 @@ public class ActionUIManager : MonoBehaviour
                 buttonText.text = $"{itemName}\nAP: {actionCost}";
             }
 
-            // Setup button functionality
             button.onClick.AddListener(() => SafeSelectItem(item));
-
-            // Disable button if can't use item
             button.interactable = characterActions.CanUseItem(item);
-
             itemButtons.Add(button);
         }
         catch (System.Exception e)
@@ -395,14 +471,11 @@ public class ActionUIManager : MonoBehaviour
                 mouseHandler.SelectAction(action);
                 mouseHandler.SetActionMode(ActionModes.Actions);
                 Debug.Log($"Selected action: {action.actionName}");
-
-                // Force update the UI to show action ranges
                 UpdateUI();
             }
             else
             {
                 Debug.LogWarning("MouseHandler is null when trying to select action");
-                // Try to find MouseHandler again
                 mouseHandler = MouseHandler.instance;
                 if (mouseHandler != null)
                 {
@@ -434,17 +507,18 @@ public class ActionUIManager : MonoBehaviour
                 mouseHandler.SelectItem(item);
                 mouseHandler.SetActionMode(ActionModes.Item);
                 Debug.Log($"Selected item: {item.itemName}");
+                RefreshUI(); // Immediately refresh UI
             }
             else
             {
                 Debug.LogWarning("MouseHandler is null when trying to select item");
-                // Try to find MouseHandler again
                 mouseHandler = MouseHandler.instance;
                 if (mouseHandler != null)
                 {
                     mouseHandler.SelectItem(item);
                     mouseHandler.SetActionMode(ActionModes.Item);
                     Debug.Log($"Selected item: {item.itemName}");
+                    RefreshUI();
                 }
             }
         }
@@ -460,7 +534,6 @@ public class ActionUIManager : MonoBehaviour
         {
             if (mouseHandler == null)
             {
-                // Try to find MouseHandler again
                 mouseHandler = MouseHandler.instance;
                 if (mouseHandler == null)
                 {
@@ -469,13 +542,10 @@ public class ActionUIManager : MonoBehaviour
                 }
             }
 
-            // Hide all panels first
             HideAllPanels();
 
-            // Only show panels if we're not in None mode and have a selected player
             if (mouseHandler.GetSelectedPlayer() != null && mouseHandler.currentActionType != ActionModes.None)
             {
-                // Show appropriate panel based on current mode
                 switch (mouseHandler.currentActionType)
                 {
                     case ActionModes.Actions:
@@ -490,7 +560,6 @@ public class ActionUIManager : MonoBehaviour
                 }
             }
 
-            // Update button states
             UpdateModeButtonStates();
         }
         catch (System.Exception e)
@@ -505,13 +574,11 @@ public class ActionUIManager : MonoBehaviour
         {
             if (mouseHandler == null) return;
 
-            // Reset all button colors/states
             ResetButtonState(moveButton);
             ResetButtonState(actionsButton);
             ResetButtonState(itemsButton);
             ResetButtonState(specialButton);
 
-            // Highlight current mode button
             switch (mouseHandler.currentActionType)
             {
                 case ActionModes.Move:
@@ -624,6 +691,8 @@ public class ActionUIManager : MonoBehaviour
             {
                 mouseHandler.OnPlayerSelected -= OnPlayerSelected;
                 mouseHandler.OnSelectionCancelled -= OnSelectionCancelled;
+                mouseHandler.OnActionUsed -= OnActionUsed;
+                mouseHandler.OnPlayerMoved -= OnPlayerMoved;
             }
         }
         catch (System.Exception e)

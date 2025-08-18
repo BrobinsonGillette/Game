@@ -11,7 +11,7 @@ public class AttackHitbox : MonoBehaviour
     private bool isActivated = false;
     private bool HasHit = false;
     private AttackHitMainbox parentMainbox;
-    private TargetType targetType = TargetType.SingleTarget;
+    private ActionData targetType;
 
     [Header("Visual Settings")]
     public Color previewColor = Color.yellow;
@@ -37,7 +37,7 @@ public class AttackHitbox : MonoBehaviour
     }
 
     // Updated initialization with target type
-    public void InitializeWithTargetType(float hitboxDamage, Team team, float hitboxLifetime, AttackHitMainbox parent, TargetType type)
+    public void InitializeWithTargetType(float hitboxDamage, Team team, float hitboxLifetime, AttackHitMainbox parent, ActionData type)
     {
         damage = hitboxDamage;
         ownerTeam = team;
@@ -95,7 +95,7 @@ public class AttackHitbox : MonoBehaviour
         StartCoroutine(DestroyAfterTime());
     }
 
-    private void SetupVisual(Color color, float alpha)
+    public void SetupVisual(Color color, float alpha)
     {
         if (hitboxRenderer != null)
         {
@@ -130,7 +130,7 @@ public class AttackHitbox : MonoBehaviour
             if (damageable != null)
             {
                 // Handle based on target type
-                if (targetType == TargetType.SingleTarget)
+                if (!targetType.CanTargetMultipleTargets)
                 {
                     // For single target, check if parent already hit something
                     if (parentMainbox == null || !parentMainbox.fistTargetHit)
@@ -146,7 +146,7 @@ public class AttackHitbox : MonoBehaviour
                         Debug.Log($"Hitbox hit {character.name} for {damage} damage! (SingleTarget)");
                     }
                 }
-                else if (targetType == TargetType.MultiTarget && !HasHit)
+                else if (targetType.CanTargetMultipleTargets && !HasHit)
                 {
                     // For multi-target, hit everyone in range
                     damageable.TakeDamage(damage);
