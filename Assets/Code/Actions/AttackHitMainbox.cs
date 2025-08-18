@@ -36,7 +36,7 @@ public class AttackHitMainbox : MonoBehaviour
 
     // Store the tiles in the attack area for visualization
     private List<HexTile> targetTiles = new List<HexTile>();
-    private Vector2 startPos;
+
 
     // Performance optimization variables
     private int updateCounter = 0;
@@ -74,7 +74,7 @@ public class AttackHitMainbox : MonoBehaviour
         }
     }
 
-    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime, int length, int width, ActionData type, Vector2 StartPos)
+    public void InitializeForPreview(float hitboxDamage, Team team, float hitboxLifetime, int length, int width, ActionData type)
     {
         damage = hitboxDamage;
         ownerTeam = team;
@@ -86,7 +86,7 @@ public class AttackHitMainbox : MonoBehaviour
         SetupVisual(previewColor, previewAlpha);
         hasHit = false;
         fistTargetHit = false;
-        startPos = StartPos;
+
 
         if (hitboxCollider != null)
         {
@@ -119,7 +119,7 @@ public class AttackHitMainbox : MonoBehaviour
 
         if (mapMaker == null || mouseHandler == null || playerTile == null) return;
 
-        // Get tiles in the attack area (cone/line with width)
+        // Get tiles in the attack area
         targetTiles = GetAttackAreaTiles(playerTile, Length, Width);
 
         // Create hitbox for each tile
@@ -132,27 +132,30 @@ public class AttackHitMainbox : MonoBehaviour
         }
     }
 
+
     private List<HexTile> GetAttackAreaTiles(HexTile startTile, int length, int width)
     {
         List<HexTile> tiles = new List<HexTile>();
 
         if (mouseHandler == null || mapMaker == null || startTile == null) return tiles;
 
-        // Check if we're within range first
-        if (!IsWithinActionRange())
+        // Check if we're within range
+        bool inRange = IsWithinActionRange();
+
+        // If out of range, don't show any tiles
+        if (!inRange)
         {
-            return tiles; // Return empty list if out of range
+            return tiles; // Return empty list - no hitbox visualization when out of range
         }
 
-        // If width > 1, create a circular area around mouse position
+        // Normal behavior when in range
         if (width > 1)
         {
             return GetTilesInCircularArea(width);
         }
-
-        // For width = 1, it's just a line towards mouse
         return GetTilesInLineToMouse(startTile, length);
     }
+
 
     private List<HexTile> GetTilesInCircularArea(int radius)
     {
@@ -229,86 +232,7 @@ public class AttackHitMainbox : MonoBehaviour
 
     private bool IsWithinActionRange()
     {
-        if (targetType == null || targetType.range <= 0 || mouseHandler == null || playerTile == null)
-        {
-            return true; // No range limit or invalid data
-        }
-
-        // Use hex distance calculation for accurate range checking
-        Vector2Int mouseHexCoord = mapMaker.WorldToHexPosition(mouseHandler.worldMousePos);
-        int hexDistance = GetHexDistance(playerTile.coordinates, mouseHexCoord);
-
-        isWithinRange = hexDistance <= targetType.range;
-        return isWithinRange;
-    }
-
-    private int GetHexDistance(Vector2Int a, Vector2Int b)
-    {
-        // Convert axial coordinates to cube coordinates for distance calculation
-        Vector3 cubeA = AxialToCube(a);
-        Vector3 cubeB = AxialToCube(b);
-
-        return (int)((Mathf.Abs(cubeA.x - cubeB.x) + Mathf.Abs(cubeA.y - cubeB.y) + Mathf.Abs(cubeA.z - cubeB.z)) / 2);
-    }
-
-    private Vector3 AxialToCube(Vector2Int axial)
-    {
-        float x = axial.x;
-        float z = axial.y;
-        float y = -x - z;
-        return new Vector3(x, y, z);
-    }
-
-    private Vector2Int[] GetPerpendicularDirections(Vector2Int mainDirection)
-    {
-        Vector2Int[] hexDirections = new Vector2Int[]
-        {
-            new Vector2Int(1, 0),   // East
-            new Vector2Int(1, -1),  // Southeast
-            new Vector2Int(0, -1),  // Southwest
-            new Vector2Int(-1, 0),  // West
-            new Vector2Int(-1, 1),  // Northwest
-            new Vector2Int(0, 1)    // Northeast
-        };
-
-        int mainIndex = GetDirectionIndex(mainDirection, hexDirections);
-
-        if (mainIndex == -1) return new Vector2Int[] { hexDirections[0], hexDirections[1] };
-
-        int perpIndex1 = (mainIndex + 2) % 6;
-        int perpIndex2 = (mainIndex + 4) % 6;
-
-        return new Vector2Int[] { hexDirections[perpIndex1], hexDirections[perpIndex2] };
-    }
-
-    private int GetDirectionIndex(Vector2Int direction, Vector2Int[] directions)
-    {
-        for (int i = 0; i < directions.Length; i++)
-        {
-            if (directions[i] == direction)
-            {
-                return i;
-            }
-        }
-
-        // Find closest direction if exact match not found
-        float maxDot = float.MinValue;
-        int bestIndex = 0;
-        Vector2 normalizedDirection = new Vector2(direction.x, direction.y).normalized;
-
-        for (int i = 0; i < directions.Length; i++)
-        {
-            Vector2 dirNorm = new Vector2(directions[i].x, directions[i].y).normalized;
-            float dot = Vector2.Dot(normalizedDirection, dirNorm);
-
-            if (dot > maxDot)
-            {
-                maxDot = dot;
-                bestIndex = i;
-            }
-        }
-
-        return bestIndex;
+        return mouseHandler.IsTargetWithinActionRange(mouseHandler.currentHoveredTile);
     }
 
     private List<HexTile> GetTilesInLineToMouse(HexTile startTile, int maxRange)
@@ -316,12 +240,6 @@ public class AttackHitMainbox : MonoBehaviour
         List<HexTile> tiles = new List<HexTile>();
 
         if (mouseHandler == null || mapMaker == null || startTile == null) return tiles;
-
-        // Check range first
-        if (!IsWithinActionRange())
-        {
-            return tiles;
-        }
 
         Vector2Int mouseHexCoord = mapMaker.WorldToHexPosition(mouseHandler.worldMousePos);
         Vector2Int direction = GetHexDirection(startTile.coordinates, mouseHexCoord);
@@ -398,53 +316,47 @@ public class AttackHitMainbox : MonoBehaviour
         updateCounter++;
         bool shouldUpdate = updateCounter % UPDATE_FREQUENCY == 0;
 
-        // Always update rotation point position if within range
-        UpdateRotationPointPosition();
+        // Check if within range
+        bool currentlyInRange = IsWithinActionRange();
 
-        // Always update rotation for smooth visual feedback
-        if (rotationPoint != null && mouseHandler != null)
+        // Only update positions and rotations if within range
+        if (currentlyInRange)
         {
-            RotateTowardsMouseZAxis();
-        }
+            // Update rotation point position
+            UpdateRotationPointPosition();
 
-        // Snap to player's tile every frame for smooth movement
-        SnapToTile();
-
-        // Only update hitbox area periodically or when significant change detected
-        if (shouldUpdate || HasSignificantChange())
-        {
-            UpdateHitboxArea();
-            CacheCurrentPositions();
-        }
-    }
-
-    private void UpdateRotationPointPosition()
-    {
-        if (rotationPoint == null || mouseHandler == null || targetType == null) return;
-
-        if (targetType.range > 0)
-        {
-            Vector2Int mouseHexCoord = mapMaker.WorldToHexPosition(mouseHandler.worldMousePos);
-            int hexDistance = GetHexDistance(playerTile?.coordinates ?? Vector2Int.zero, mouseHexCoord);
-
-            if (hexDistance <= targetType.range)
+            // Rotate towards mouse
+            if (rotationPoint != null && mouseHandler != null)
             {
-                rotationPoint.transform.position = mouseHandler.worldMousePos;
+                RotateTowardsMouseZAxis();
             }
-            else
+
+            // Update hitbox area periodically or when there's significant change
+            if (shouldUpdate || HasSignificantChange())
             {
-                // Clamp to maximum range
-                Vector2 playerPos = new Vector2(transform.position.x, transform.position.y);
-                Vector2 mousePos = new Vector2(mouseHandler.worldMousePos.x, mouseHandler.worldMousePos.y);
-                Vector2 direction = (mousePos - playerPos).normalized;
-                Vector2 clampedPos = playerPos + direction * (targetType.range * mapMaker.HexSize * 1.5f);
-                rotationPoint.transform.position = new Vector3(clampedPos.x, clampedPos.y, rotationPoint.transform.position.z);
+                UpdateHitboxArea();
+                CacheCurrentPositions();
             }
         }
         else
         {
-            rotationPoint.transform.position = mouseHandler.worldMousePos;
+            // When out of range, clear all hitboxes
+            if (hitboxObjects.Count > 0)
+            {
+                ClearHitboxes();
+            }
         }
+
+        // Always snap to player's tile for smooth movement
+        SnapToTile();
+    }
+
+    private void UpdateRotationPointPosition()
+    {
+        if (rotationPoint == null || mouseHandler == null) return;
+
+        // Always follow mouse when in range (no clamping needed since we won't show anything when out of range)
+        rotationPoint.transform.position = mouseHandler.worldMousePos;
     }
 
     private bool HasSignificantChange()
@@ -453,7 +365,6 @@ public class AttackHitMainbox : MonoBehaviour
 
         bool mouseChanged = Vector3.Distance(lastMousePosition, mouseHandler.worldMousePos) > 0.1f;
         bool playerChanged = Vector3.Distance(lastPlayerPosition, transform.position) > 0.1f;
-
         return mouseChanged || playerChanged;
     }
 

@@ -24,7 +24,7 @@ public class MouseHandler : MonoBehaviour
     private Camera mainCamera;
 
     // Current state tracking
-    private HexTile currentHoveredTile = null;
+    public HexTile currentHoveredTile = null;
     private HexTile selectedTile = null;
     private Char selectedPlayer = null;
     public ActionModes currentActionType = ActionModes.None; // Changed from Move to None
@@ -257,9 +257,10 @@ public class MouseHandler : MonoBehaviour
         // Check if the target is within range
         if (!IsTargetWithinActionRange(clickedTile))
         {
-            Debug.Log($"Target is out of range for {selectedAction.actionName}!");
+           Debug.Log($"Cannot use {selectedAction.actionName} on {clickedTile.coordinates}! Target is out of range.");
             return;
         }
+
 
         Char targetCharacter = GetCharacterOnTile(clickedTile);
 
@@ -306,7 +307,7 @@ public class MouseHandler : MonoBehaviour
         CancelSelection();
     }
 
-    private bool IsTargetWithinActionRange(HexTile targetTile)
+    public bool IsTargetWithinActionRange(HexTile targetTile)
     {
         if (selectedAction == null || selectedPlayer == null || targetTile == null)
             return false;
@@ -621,8 +622,7 @@ public class MouseHandler : MonoBehaviour
                     action.hitboxLifetime,
                     action.Length,
                     action.Width,        // Pass the width parameter
-                    action ,   // Pass the target type
-                    new Vector2(selectedPlayer.transform.position.x, selectedPlayer.transform.position.y)
+                    action 
                 );
             }
 

@@ -16,7 +16,7 @@ MonoBehaviour:
   description: 
   actionType: 0
   animation: 7
-  range: 4
+  range: 1
   Width: 0
   Length: 0
   actionPointCost: 1

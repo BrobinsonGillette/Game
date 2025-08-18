@@ -182,6 +182,8 @@ MonoBehaviour:
   activeColor: {r: 1, g: 0, b: 0, a: 1}
   previewAlpha: 0.5
   activeAlpha: 1
+  outOfRangeColor: {r: 1, g: 0.74655265, b: 0, a: 1}
+  outOfRangeAlpha: 0.3
   groundCheck: {fileID: 2872458995193862595}
   hitboxRenderer: {fileID: 1647285881423744081}
 --- !u!1 &4421461090731367389

@@ -95,7 +95,7 @@ public class AttackHitbox : MonoBehaviour
         StartCoroutine(DestroyAfterTime());
     }
 
-    private void SetupVisual(Color color, float alpha)
+    public void SetupVisual(Color color, float alpha)
     {
         if (hitboxRenderer != null)
         {
