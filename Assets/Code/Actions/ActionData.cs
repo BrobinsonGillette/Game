@@ -2,12 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public enum ActionType
-{
-    Attack,
-    Heal
-}
+
 
 
 
@@ -18,7 +13,6 @@ public class ActionData : ScriptableObject
     [Header("Basic Info")]
     public string actionName;
     public string description;
-    public ActionType actionType;
     public Animations animation;
 
     [Header("Range & Targeting")]
@@ -32,9 +26,8 @@ public class ActionData : ScriptableObject
     public int manaCost = 0;
     public int StaminaCost = 0;
 
-    [Header("Effects")]
     public float damage = 0f;
-    public float healing = 0f;
+
 
 
     [Header("Hitbox/VFX")]

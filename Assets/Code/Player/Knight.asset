@@ -17,4 +17,3 @@ MonoBehaviour:
   _maxActionPoints: 3
   availableActions:
   - {fileID: 11400000, guid: f761cc81bdb77564fb81e1289e2c3f85, type: 2}
-  - {fileID: 11400000, guid: dd94b53507388ac44bafcef20723972a, type: 2}

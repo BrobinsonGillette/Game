@@ -20,25 +20,16 @@ public class CharacterActions : MonoBehaviour
         if (!CanUseAction(action)) return;
 
         character.CurrentActionPoints -= action.actionPointCost;
+        Debug.Log($"{character.name} uses {action.actionName} for {action.actionPointCost} action points.");
         ExecuteAction(action, targetTile, targetCharacter);
     }
     private void ExecuteAction(ActionData action, HexTile targetTile, Char targetCharacter)
     {
         // Handle different action types
-        switch (action.actionType)
-        {
-            case ActionType.Attack:
-                ExecuteAttack(action, targetTile, targetCharacter);
-                break;
-
-            case ActionType.Heal:
-                ExecuteHeal(action, targetCharacter);
-                break;
-
-        }
-
+        ExecuteAttack(action, targetTile, targetCharacter);
         // Play animation based on action type
-        PlayActionAnimation(action.actionType);
+        Debug.Log($"{character.name} uses {action.actionName}!");
+        PlayActionAnimation(action.animation);
     }
 
     private void ExecuteAttack(ActionData action, HexTile targetTile, Char targetCharacter)
@@ -82,28 +73,11 @@ public class CharacterActions : MonoBehaviour
         }
     }
 
-    private void ExecuteHeal(ActionData action, Char target)
-    {
-        if (target != null)
-        {
-            target.Health = Mathf.Min(target.charClass.MaxHp, target.Health + action.healing);
-        }
-    }
 
-
-    private void PlayActionAnimation(ActionType actionType)
+    private void PlayActionAnimation(Animations animations)
     {
-        // You can expand this to play different animations
-        switch (actionType)
-        {
-            case ActionType.Attack:
-                character.PlayAttackAnimation();
-                break;
-            case ActionType.Heal:
-                character.PlayHealAnimation();
-                break;
-                // Add more cases as needed
-        }
+        Debug.Log("Playing attack animation");
+        character.PlayAttackAnimation(animations,false,false);
     }
 
     public void RestoreActionPoints()

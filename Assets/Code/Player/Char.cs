@@ -23,7 +23,7 @@ public class Char : AnimatorBrain, IDamage
     {
         spriteRenderer= GetComponent<SpriteRenderer>();
         CurrentPosition = transform.position;
-        Initialize(GetComponent<Animator>().layerCount, Animations.Idle, GetComponent<Animator>(), DefaultAnimation);
+        Initialize( Animations.Idle, GetComponent<Animator>(), DefaultAnimation);
         charClass.onStart();
         Health= charClass.getHealth();
         CurrentActionPoints= charClass.getActionPoints();
@@ -111,7 +111,7 @@ public class Char : AnimatorBrain, IDamage
     private IEnumerator AnimateMovement(HexTile targetTile)
     {
         isMoving = true;
-        Play(Animations.Walk, 0, false, false);
+        Play(Animations.Walk, false, false);
         // Clear current hex - both logically and visually
         if (currentHex != null)
         {
@@ -143,7 +143,7 @@ public class Char : AnimatorBrain, IDamage
 
         // Update visual display
         targetTile.SetCharacterPresent(true, team);
-        Play(Animations.Idle, 0, false, false);
+        Play(Animations.Idle, false, false);
         CurrentPosition = transform.position;
         isMoving = false;
         // Update MouseHandler's character position displays
@@ -207,22 +207,22 @@ public class Char : AnimatorBrain, IDamage
     {
         return !isMoving && (charClass.movementSpeed > 0);
     }
-    void DefaultAnimation(int layer) 
+    void DefaultAnimation() 
     {
         if (isMoving)
         {
-            Play(Animations.Walk, layer, false, false);
+            Play(Animations.Walk, false, false);
         }
         else
         {
-            Play(Animations.Idle, layer, false, false);
+           Play(Animations.Idle, false, false);
         }
     }
 
     public void TakeDamage(float damage)
     {
         Health -= damage;
-        Play(Animations.Hurt, 0, true, true);
+        Play(Animations.Hurt, true, true);
         if (Health <= 0)
         {
             Die();
@@ -231,7 +231,7 @@ public class Char : AnimatorBrain, IDamage
 
     private void Die()
     {
-        Play(Animations.Death, 0, true, true);
+        Play(Animations.Death, true, true);
         MapMaker mapMaker = MapMaker.instance;
         if (mapMaker == null) return;
         Vector3 position = transform.position;
@@ -244,16 +244,12 @@ public class Char : AnimatorBrain, IDamage
         Destroy(gameObject,2f);
     }
 
-    public void PlayAttackAnimation()
+    public void PlayAttackAnimation(Animations animation, bool lockeLayer, bool byPassLock)
     {
-        Play(Animations.ATTACK_1, 0, false, false);
+        Debug.Log($"Playing attack animation: {animation}");
+        Play(animation, lockeLayer, byPassLock);
     }
 
-    public void PlayHealAnimation()
-    {
-       Debug.Log("PlayHealAnimation");
-       Play(Animations.ATTACK_2, 0, false, false);
-    }
     public bool isAlive()
     {
         return Health > 0;

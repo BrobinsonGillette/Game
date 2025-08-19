@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
+
 
 public enum Animations
 {
@@ -30,54 +30,49 @@ public class AnimatorBrain : MonoBehaviour
         Animator.StringToHash("Hurt"),
         Animator.StringToHash("Death"),
         Animator.StringToHash("Defend"),
-        Animator.StringToHash("ATTACK_1"),
-        Animator.StringToHash("ATTACK_2"),
-        Animator.StringToHash("ATTACK_3")
+        Animator.StringToHash("Attack_1"),
+        Animator.StringToHash("Attack_2"),
+        Animator.StringToHash("Attack_3")
     };
 
     private Animator animator;
-    private Animations[] CurrentAnimation;
-    private bool[] LayerLocked;
-    private Action<int> DefaultAnimation;
-    protected void Initialize(int Layers,Animations StartAnimation,Animator animator,Action<int> DefaultAnimation)
+    private Animations CurrentAnimation;
+    private bool LayerLocked;
+    private Action DefaultAnimation;
+    protected void Initialize(Animations StartAnimation,Animator animator,Action DefaultAnimation)
     {
-        LayerLocked = new bool[Layers];
-        CurrentAnimation = new Animations[Layers];
+        LayerLocked = new bool();
+        CurrentAnimation = new Animations();
         this.DefaultAnimation = DefaultAnimation;
         this.animator = animator;
 
-        for (int i = 0; i < Layers; i++)
-        {
-            LayerLocked[i] = false;
-            CurrentAnimation[i] = StartAnimation;
-        }
-
-    }
-    public Animations GetCurrentAnimation(int Layer)
-    {
-        return CurrentAnimation[Layer];
+        CurrentAnimation = StartAnimation;
     }
 
-    public void SetLocked(bool Locked, int Layer)
-    {
-        LayerLocked[Layer] = Locked;
-    }
-    public void Play(Animations animation, int Layer, bool lockeLayer, bool byPassLock, float crossfadeTime = 0.2f)
+
+
+    public void Play(Animations animation, bool lockeLayer, bool byPassLock, float crossfadeTime = 0.2f)
     {
         if (animation == global::Animations.None)
         {
-            DefaultAnimation(Layer);
+            Debug.LogWarning("Trying to play None animation!");
+            DefaultAnimation();
             return;
         }
-        if (LayerLocked[Layer] && !byPassLock) return;
+        if (LayerLocked && !byPassLock)
+        {
+            Debug.LogWarning("Trying to play animation while layer is locked!");
+            return;
+        }
         //https://www.youtube.com/watch?v=Db88Bo8sZpA&ab_channel=SmallHedgeGames
-        //if(byPassLock)
-        //    foreach(var item in animator.GetBehaviours<OnExit>())
-        //        if(item.layer == Layer)
-        //            item.cancel= true;
-        if (CurrentAnimation[Layer] == animation) return;
-        LayerLocked[Layer] = lockeLayer;
-        CurrentAnimation[Layer] = animation;
-        animator.CrossFade(AnimationArray[(int)CurrentAnimation[Layer]], crossfadeTime, Layer);
+        if (CurrentAnimation == animation)
+        {
+            Debug.LogWarning("Trying to play same animation!");
+            return;
+        }
+        LayerLocked = lockeLayer;
+        CurrentAnimation = animation;
+        animator.CrossFade(AnimationArray[(int)CurrentAnimation], crossfadeTime);
+        Debug.Log($"Playing animation: {CurrentAnimation}");
     }
 }
