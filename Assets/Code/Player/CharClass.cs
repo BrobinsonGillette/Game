@@ -12,7 +12,6 @@ public class CharClass : ScriptableObject
     public int movementSpeed { get; set; }
     public int maxActionPoints { get; set; }
     public List<ActionData> availableActions = new List<ActionData>();
-    public List<ItemData> inventory = new List<ItemData>();
     public void onStart()
     {
         MaxHp = _MaxHp;

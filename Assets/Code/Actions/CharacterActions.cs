@@ -13,12 +13,7 @@ public class CharacterActions : MonoBehaviour
                !character.isMoving;
     }
 
-    public bool CanUseItem(ItemData item)
-    {
-        return character.charClass.inventory.Contains(item) &&
-               character.CurrentActionPoints >= item.actionEffect.actionPointCost &&
-               !character.isMoving;
-    }
+
 
     public void UseAction(ActionData action, HexTile targetTile, Char targetCharacter = null)
     {
@@ -40,18 +35,6 @@ public class CharacterActions : MonoBehaviour
                 ExecuteHeal(action, targetCharacter);
                 break;
 
-            case ActionType.Buff:
-            case ActionType.Debuff:
-                ExecuteBuff(action, targetCharacter);
-                break;
-
-            case ActionType.Special:
-                ExecuteSpecial(action, targetTile, targetCharacter);
-                break;
-
-            case ActionType.Item:
-                ExecuteItem(action, targetCharacter);
-                break;
         }
 
         // Play animation based on action type
@@ -107,24 +90,6 @@ public class CharacterActions : MonoBehaviour
         }
     }
 
-    private void ExecuteBuff(ActionData action, Char target)
-    {
-        // Simplified buff system - you can expand this
-        Debug.Log($"{character.name} applies {action.actionName} to {target.name}!");
-        // Add your buff/debuff logic here
-    }
-
-    private void ExecuteSpecial(ActionData action, HexTile targetTile, Char targetCharacter)
-    {
-        Debug.Log($"{character.name} uses special action: {action.actionName}!");
-        // Add your special action logic here
-    }
-
-    private void ExecuteItem(ActionData action, Char target)
-    {
-        Debug.Log($"{character.name} uses item with effect: {action.actionName}!");
-        // Item effects are handled the same as regular actions
-    }
 
     private void PlayActionAnimation(ActionType actionType)
     {
@@ -151,52 +116,8 @@ public class CharacterActions : MonoBehaviour
         return character.GetTilesInRange(character.currentHex, action.Length);
     }
 
-    public List<HexTile> GetValidTargets(ActionData action)
-    {
-        List<HexTile> validTargets = new List<HexTile>();
-        List<HexTile> tilesInRange = GetActionRange(action);
+ 
 
-        foreach (HexTile tile in tilesInRange)
-        {
-            if (IsValidTarget(action, tile))
-            {
-                validTargets.Add(tile);
-            }
-        }
+  
 
-        return validTargets;
-    }
-
-    private bool IsValidTarget(ActionData action, HexTile tile)
-    {
-        Char characterOnTile = GetCharacterOnTile(tile);
-
-
-        if (action.CanTargetMultipleTargets)
-        {
-            return true; // Area effects can target any tile
-        }
-        else
-        {
-            if (characterOnTile == null) return false;
-
-            if (characterOnTile.team == character.team)
-                return action.canTargetAllies;
-            else
-                return action.canTargetEnemies;
-        }
-    }
-
-    private Char GetCharacterOnTile(HexTile tile)
-    {
-        Char[] allCharacters = FindObjectsOfType<Char>();
-        foreach (Char character in allCharacters)
-        {
-            if (character.currentHex == tile)
-            {
-                return character;
-            }
-        }
-        return null;
-    }
 }

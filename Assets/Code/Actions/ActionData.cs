@@ -1,16 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 [System.Serializable]
 public enum ActionType
 {
     Attack,
-    Heal,
-    Buff,
-    Debuff,
-    Special,
-    Item
+    Heal
 }
+
 
 
 
@@ -32,6 +30,7 @@ public class ActionData : ScriptableObject
     [Header("Costs")]
     public int actionPointCost = 1;
     public int manaCost = 0;
+    public int StaminaCost = 0;
 
     [Header("Effects")]
     public float damage = 0f;
@@ -45,22 +44,7 @@ public class ActionData : ScriptableObject
 
     [Header("Special Properties")]
     public bool CanTargetMultipleTargets = false;
-    public bool canTargetSelf = false;
-    public bool canTargetAllies = true;
-    public bool canTargetEnemies = true;
+    public Team targetType = Team.none;
+
 }
 
-// ItemData.cs - For consumable items
-[CreateAssetMenu(fileName = "New Item", menuName = "Game/Item Data")]
-public class ItemData : ScriptableObject
-{
-    [Header("Item Info")]
-    public string itemName;
-    public string description;
-    public Sprite icon;
-
-    [Header("Usage")]
-    public ActionData actionEffect; // What happens when used
-    public bool isConsumable = true;
-    public int stackSize = 1;
-}

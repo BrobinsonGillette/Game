@@ -6,7 +6,7 @@ using UnityEngine;
 public class AttackHitbox : MonoBehaviour
 {
     private float damage = 10;
-    private Team ownerTeam = Team.player;
+    private Team ownerTeam = Team.none;
     private float lifetime = 2f;
     private bool isActivated = false;
     private bool HasHit = false;
@@ -123,11 +123,11 @@ public class AttackHitbox : MonoBehaviour
         if (!isActivated) return;
 
         Char character = other.GetComponent<Char>();
-        if (character != null && character.team != ownerTeam && !hitTargets.Contains(character))
+        if (character != null && !hitTargets.Contains(character))
         {
             IDamage damageable = character.GetComponent<IDamage>();
 
-            if (damageable != null)
+            if (damageable != null && CheckTeam(character))
             {
                 // Handle based on target type
                 if (!targetType.CanTargetMultipleTargets)
@@ -154,7 +154,22 @@ public class AttackHitbox : MonoBehaviour
             }
         }
     }
-
+    private bool CheckTeam(Char character)
+    {
+        switch (targetType.targetType)
+        {
+            case Team.none:
+                return false;
+            case Team.Heros:
+                return character.team == Team.Heros;
+            case Team.Enemy:
+                return character.team == Team.Enemy;
+            case Team.Other:
+                return true;
+            default:
+                return false;
+        }
+    }
     private IEnumerator DestroyAfterTime()
     {
         yield return new WaitForSeconds(lifetime);

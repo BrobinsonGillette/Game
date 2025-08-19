@@ -8,8 +8,6 @@ public enum ActionModes
     None,
     Move,
     Actions,
-    Item,
-    Special
 }
 public class MouseHandler : MonoBehaviour
 {
@@ -32,7 +30,6 @@ public class MouseHandler : MonoBehaviour
 
     // Action system state
     private ActionData selectedAction = null;
-    private ItemData selectedItem = null;
     private CharacterActions selectedPlayerActions = null;
 
     // Movement and action visualization
@@ -45,7 +42,7 @@ public class MouseHandler : MonoBehaviour
     public System.Action OnSelectionCancelled;
     public System.Action<Char, HexTile> OnPlayerMoved;
     public System.Action<Char, ActionData, HexTile> OnActionUsed;
-    public System.Action<Char, ItemData, HexTile> OnItemUsed;
+
 
     private void Awake()
     {
@@ -193,12 +190,6 @@ public class MouseHandler : MonoBehaviour
             case ActionModes.Actions:
                 HandleActionMode(clickedTile);
                 break;
-            case ActionModes.Item:
-                HandleItemMode(clickedTile);
-                break;
-            case ActionModes.Special:
-                HandleSpecialMode(clickedTile);
-                break;
         }
     }
 
@@ -208,7 +199,7 @@ public class MouseHandler : MonoBehaviour
         Char characterOnTile = GetCharacterOnTile(clickedTile);
 
         // Only allow selection of player team characters
-        if (characterOnTile != null && characterOnTile.team == Team.player)
+        if (characterOnTile != null && characterOnTile.team == Team.Heros)
         {
             SelectCharacter(characterOnTile, clickedTile);
             // Don't auto-set any mode - wait for user to choose
@@ -219,7 +210,7 @@ public class MouseHandler : MonoBehaviour
     {
         Char characterOnTile = GetCharacterOnTile(clickedTile);
 
-        if (characterOnTile != null && characterOnTile.team == Team.player)
+        if (characterOnTile != null && characterOnTile.team == Team.Heros )
         {
             HandleClickOnCharacter(clickedTile, characterOnTile);
         }
@@ -234,7 +225,7 @@ public class MouseHandler : MonoBehaviour
         if (selectedPlayer == null)
         {
             Char characterOnTile = GetCharacterOnTile(clickedTile);
-            if (characterOnTile == null || characterOnTile.team != Team.player) return;
+            if (characterOnTile == null || characterOnTile.team != Team.Heros) return;
             selectedPlayer = characterOnTile;
         }
 
@@ -331,58 +322,8 @@ public class MouseHandler : MonoBehaviour
         float y = -x - z;
         return new Vector3(x, y, z);
     }
-    private void HandleItemMode(HexTile clickedTile)
-    {
-        if (selectedPlayer == null || selectedPlayerActions == null || selectedItem == null)
-        {
-            Debug.Log("Select a character and item first!");
-            return;
-        }
+ 
 
-        if (IsValidItemTarget(clickedTile))
-        {
-            Char targetCharacter = GetCharacterOnTile(clickedTile);
-            //todo
-            // selectedPlayerActions.UseItem(selectedItem, clickedTile, targetCharacter);
-            OnItemUsed?.Invoke(selectedPlayer, selectedItem, clickedTile);
-
-            // Clear item selection after use
-            selectedItem = null;
-
-            Debug.Log($"{selectedPlayer.name} used item on {clickedTile.coordinates}");
-        }
-        else
-        {
-            Debug.Log("Invalid target for this item!");
-        }
-    }
-
-    private void HandleSpecialMode(HexTile clickedTile)
-    {
-        if (selectedPlayer == null || selectedPlayerActions == null)
-        {
-            Debug.Log("Select a character first!");
-            return;
-        }
-
-        Debug.Log($"Special action at {clickedTile.coordinates} - implement your special logic here!");
-    }
-
-    private bool IsValidItemTarget(HexTile tile)
-    {
-        if (selectedItem == null || selectedPlayerActions == null) return false;
-
-        try
-        {
-            List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedItem.actionEffect);
-            return validTargets != null && validTargets.Contains(tile);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error checking valid item targets: {e.Message}");
-            return false;
-        }
-    }
 
     private Char GetCharacterOnTile(HexTile tile)
     {
@@ -419,19 +360,15 @@ public class MouseHandler : MonoBehaviour
             SelectCharacter(character, clickedTile);
         }
         // In action/item modes, clicking on characters can be targeting them
-        else if (currentActionType == ActionModes.Actions || currentActionType == ActionModes.Item)
+        else if (currentActionType == ActionModes.Actions)
         {
             SelectCharacter(character, clickedTile);
             // If we have a selected player and action/item, try to target this character
-            if (selectedPlayer != null && (selectedAction != null || selectedItem != null))
+            if (selectedPlayer != null && (selectedAction != null ))
             {
                 if (currentActionType == ActionModes.Actions)
                 {
                     HandleActionMode(clickedTile);
-                }
-                else if (currentActionType == ActionModes.Item)
-                {
-                    HandleItemMode(clickedTile);
                 }
                 return;
             }
@@ -467,26 +404,7 @@ public class MouseHandler : MonoBehaviour
             selectedPlayerActions = character.GetComponent<CharacterActions>();
             tile.SetSelected(true);
 
-            // Only auto-select based on current mode if we're not in None mode
-            switch (currentActionType)
-            {
-                case ActionModes.Move:
-                    ShowMovementRange();
-                    break;
-                case ActionModes.Actions:
-                    // Don't auto-select action anymore
-                    break;
-                case ActionModes.Item:
-                    // Don't auto-select item anymore
-                    break;
-                case ActionModes.Special:
-                    // Don't auto-select special anymore
-                    break;
-                case ActionModes.None:
-                    // Don't show any ranges in None mode
-                    break;
-            }
-
+     
             // Set camera target
             if (CamMagger.instance != null)
             {
@@ -514,12 +432,6 @@ public class MouseHandler : MonoBehaviour
                     if (selectedPlayer.charClass.movementSpeed > 0)
                     {
                         ShowMovementRange();
-                    }
-                    break;
-                case ActionModes.Item:
-                    if (selectedItem != null)
-                    {
-                        ShowItemRange();
                     }
                     break;
             }
@@ -584,8 +496,6 @@ public class MouseHandler : MonoBehaviour
         }
 
         selectedAction = action;
-        selectedItem = null; // Clear item selection
-
         // Spawn hitbox immediately at player's position when action is selected
         SpawnActionHitbox(action);
 
@@ -621,8 +531,6 @@ public class MouseHandler : MonoBehaviour
                     action 
                 );
             }
-
-           // Debug.Log($"Spawned action hitbox for {action.actionName} at player position with Width: {action.Width}");
         }
         catch (System.Exception e)
         {
@@ -630,20 +538,7 @@ public class MouseHandler : MonoBehaviour
         }
     }
 
-    public void SelectItem(ItemData item)
-    {
-        if (item == null)
-        {
-            Debug.LogWarning("Trying to select null item!");
-            return;
-        }
 
-        selectedItem = item;
-        selectedAction = null; // Clear action selection
-        Debug.Log($"Selected item: {item.itemName}");
-    }
-
-    // Range Display Methods
     private void ShowMovementRange()
     {
         if (selectedPlayer == null) return;
@@ -678,33 +573,6 @@ public class MouseHandler : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError($"Error showing movement range: {e.Message}");
-        }
-    }
-    private void ShowItemRange()
-    {
-        if (selectedPlayer == null || selectedItem == null || selectedPlayerActions == null) return;
-
-        try
-        {
-            ClearActionRange();
-            List<HexTile> validTargets = selectedPlayerActions.GetValidTargets(selectedItem.actionEffect);
-
-            if (validTargets != null)
-            {
-                currentActionRange = new HashSet<HexTile>(validTargets);
-
-                foreach (HexTile tile in currentActionRange)
-                {
-                    if (tile != null)
-                    {
-                        tile.SetMovementDestination(true); // Reuse this visual for item targets
-                    }
-                }
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error showing item range: {e.Message}");
         }
     }
 
@@ -839,7 +707,6 @@ public class MouseHandler : MonoBehaviour
             selectedPlayer = null;
             selectedPlayerActions = null;
             selectedAction = null;
-            selectedItem = null;
             currentActionType = ActionModes.None; // Reset to None
             if (CamMagger.instance != null)
             {
@@ -865,11 +732,6 @@ public class MouseHandler : MonoBehaviour
             {
                 selectedAction = null;
             }
-            if (mode != ActionModes.Item)
-            {
-                selectedItem = null;
-            }
-
             // Update range displays
             ClearActionRange();
             if (selectedPlayer != null)

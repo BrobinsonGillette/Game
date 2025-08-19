@@ -163,8 +163,10 @@ public class HexTile : MonoBehaviour
         {
             return currentCharacterTeam switch
             {
-                Team.player => playerPositionColor,
-                Team.enemy => enemyPositionColor,
+                Team.Heros => playerPositionColor,
+                Team.Alley => playerPositionColor,
+                Team.Enemy => enemyPositionColor,
+                Team.Other => normalColor,
                 _ => normalColor
             };
         }

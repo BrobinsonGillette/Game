@@ -8,19 +8,15 @@ public class ActionUIManager : MonoBehaviour
 {
     [Header("UI References")]
     public GameObject actionPanel;
-    public GameObject itemPanel;
     public Button moveButton;
     public Button actionsButton;
-    public Button itemsButton;
-    public Button specialButton;
+
+
 
     [Header("Action UI")]
     public Transform actionButtonParent;
     public GameObject actionButtonPrefab;
 
-    [Header("Item UI")]
-    public Transform itemButtonParent;
-    public GameObject itemButtonPrefab;
 
     [Header("Character Info")]
     public TextMeshProUGUI characterNameText;
@@ -29,7 +25,6 @@ public class ActionUIManager : MonoBehaviour
 
     private MouseHandler mouseHandler;
     private List<Button> actionButtons = new List<Button>();
-    private List<Button> itemButtons = new List<Button>();
     private Char currentSelectedCharacter;
 
     // Update frequency for UI refresh
@@ -135,17 +130,7 @@ public class ActionUIManager : MonoBehaviour
             }
         }
 
-        // Update item button states
-        for (int i = 0; i < itemButtons.Count && i < characterActions.character.charClass.inventory.Count; i++)
-        {
-            ItemData item = characterActions.character.charClass.inventory[i];
-            Button button = itemButtons[i];
-
-            if (button != null && item != null)
-            {
-                button.interactable = characterActions.CanUseItem(item);
-            }
-        }
+   
     }
 
     private void SetupModeButtons()
@@ -158,11 +143,6 @@ public class ActionUIManager : MonoBehaviour
             if (actionsButton != null)
                 actionsButton.onClick.AddListener(() => SafeSetActionMode(ActionModes.Actions));
 
-            if (itemsButton != null)
-                itemsButton.onClick.AddListener(() => SafeSetActionMode(ActionModes.Item));
-
-            if (specialButton != null)
-                specialButton.onClick.AddListener(() => SafeSetActionMode(ActionModes.Special));
         }
         catch (System.Exception e)
         {
@@ -209,7 +189,6 @@ public class ActionUIManager : MonoBehaviour
             currentSelectedCharacter = selectedCharacter;
             UpdateCharacterInfo(selectedCharacter);
             UpdateActionButtons(selectedCharacter);
-            UpdateItemButtons(selectedCharacter);
             ShowModeButtons();
             UpdateUI();
         }
@@ -242,10 +221,6 @@ public class ActionUIManager : MonoBehaviour
                 moveButton.gameObject.SetActive(true);
             if (actionsButton != null)
                 actionsButton.gameObject.SetActive(true);
-            if (itemsButton != null)
-                itemsButton.gameObject.SetActive(true);
-            if (specialButton != null)
-                specialButton.gameObject.SetActive(true);
         }
         catch (System.Exception e)
         {
@@ -261,10 +236,6 @@ public class ActionUIManager : MonoBehaviour
                 moveButton.gameObject.SetActive(false);
             if (actionsButton != null)
                 actionsButton.gameObject.SetActive(false);
-            if (itemsButton != null)
-                itemsButton.gameObject.SetActive(false);
-            if (specialButton != null)
-                specialButton.gameObject.SetActive(false);
         }
         catch (System.Exception e)
         {
@@ -392,69 +363,9 @@ public class ActionUIManager : MonoBehaviour
         }
     }
 
-    private void UpdateItemButtons(Char character)
-    {
-        try
-        {
-            ClearItemButtons();
+ 
 
-            if (character == null) return;
 
-            CharacterActions characterActions = character.GetComponent<CharacterActions>();
-            if (characterActions == null || characterActions.character.charClass.inventory == null) return;
-
-            foreach (ItemData item in characterActions.character.charClass.inventory)
-            {
-                if (item != null)
-                {
-                    CreateItemButton(item, characterActions);
-                }
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error updating item buttons: {e.Message}");
-        }
-    }
-
-    private void CreateItemButton(ItemData item, CharacterActions characterActions)
-    {
-        try
-        {
-            if (itemButtonPrefab == null || itemButtonParent == null || item == null || characterActions == null)
-            {
-                Debug.LogWarning("Missing references for creating item button");
-                return;
-            }
-
-            GameObject buttonObj = Instantiate(itemButtonPrefab, itemButtonParent);
-            if (buttonObj == null) return;
-
-            Button button = buttonObj.GetComponent<Button>();
-            if (button == null)
-            {
-                Debug.LogWarning("Item button prefab doesn't have a Button component");
-                Destroy(buttonObj);
-                return;
-            }
-
-            TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
-            if (buttonText != null)
-            {
-                string itemName = item.itemName ?? "Unknown Item";
-                int actionCost = item.actionEffect?.actionPointCost ?? 0;
-                buttonText.text = $"{itemName}\nAP: {actionCost}";
-            }
-
-            button.onClick.AddListener(() => SafeSelectItem(item));
-            button.interactable = characterActions.CanUseItem(item);
-            itemButtons.Add(button);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error creating item button: {e.Message}");
-        }
-    }
 
     private void SafeSelectAction(ActionData action)
     {
@@ -490,41 +401,7 @@ public class ActionUIManager : MonoBehaviour
         }
     }
 
-    private void SafeSelectItem(ItemData item)
-    {
-        try
-        {
-            if (item == null)
-            {
-                Debug.LogWarning("Trying to select null item");
-                return;
-            }
 
-            if (mouseHandler != null)
-            {
-                mouseHandler.SelectItem(item);
-                mouseHandler.SetActionMode(ActionModes.Item);
-                Debug.Log($"Selected item: {item.itemName}");
-                RefreshUI(); // Immediately refresh UI
-            }
-            else
-            {
-                Debug.LogWarning("MouseHandler is null when trying to select item");
-                mouseHandler = MouseHandler.instance;
-                if (mouseHandler != null)
-                {
-                    mouseHandler.SelectItem(item);
-                    mouseHandler.SetActionMode(ActionModes.Item);
-                    Debug.Log($"Selected item: {item.itemName}");
-                    RefreshUI();
-                }
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error selecting item: {e.Message}");
-        }
-    }
 
     private void UpdateUI()
     {
@@ -550,11 +427,6 @@ public class ActionUIManager : MonoBehaviour
                         if (actionPanel != null)
                             actionPanel.SetActive(true);
                         break;
-
-                    case ActionModes.Item:
-                        if (itemPanel != null)
-                            itemPanel.SetActive(true);
-                        break;
                 }
             }
 
@@ -574,9 +446,6 @@ public class ActionUIManager : MonoBehaviour
 
             ResetButtonState(moveButton);
             ResetButtonState(actionsButton);
-            ResetButtonState(itemsButton);
-            ResetButtonState(specialButton);
-
             switch (mouseHandler.currentActionType)
             {
                 case ActionModes.Move:
@@ -584,12 +453,6 @@ public class ActionUIManager : MonoBehaviour
                     break;
                 case ActionModes.Actions:
                     HighlightButton(actionsButton);
-                    break;
-                case ActionModes.Item:
-                    HighlightButton(itemsButton);
-                    break;
-                case ActionModes.Special:
-                    HighlightButton(specialButton);
                     break;
             }
         }
@@ -637,9 +500,6 @@ public class ActionUIManager : MonoBehaviour
         {
             if (actionPanel != null)
                 actionPanel.SetActive(false);
-
-            if (itemPanel != null)
-                itemPanel.SetActive(false);
         }
         catch (System.Exception e)
         {
@@ -664,22 +524,7 @@ public class ActionUIManager : MonoBehaviour
         }
     }
 
-    private void ClearItemButtons()
-    {
-        try
-        {
-            foreach (Button button in itemButtons)
-            {
-                if (button != null && button.gameObject != null)
-                    Destroy(button.gameObject);
-            }
-            itemButtons.Clear();
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Error clearing item buttons: {e.Message}");
-        }
-    }
+  
 
     private void OnDestroy()
     {

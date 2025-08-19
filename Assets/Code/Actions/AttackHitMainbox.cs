@@ -11,7 +11,7 @@ public class AttackHitMainbox : MonoBehaviour
     private int Length = 1;
     private int Width = 1;
     private float damage = 10;
-    private Team ownerTeam = Team.player;
+    private Team ownerTeam = Team.none;
     private float lifetime = 2f;
     public bool fistTargetHit = false;
     private ActionData targetType;
@@ -45,10 +45,6 @@ public class AttackHitMainbox : MonoBehaviour
 
     // Range checking cache
     private HexTile playerTile;
-
-
-    // Properties for external access
-    public Team OwnerTeam => ownerTeam;
     public bool IsActivated;
 
     private void Awake()
@@ -507,11 +503,11 @@ public class AttackHitMainbox : MonoBehaviour
         if (!IsActivated) return;
 
         Char character = other.GetComponent<Char>();
-        if (character != null && character.team != ownerTeam && !hitTargets.Contains(character))
+        if (character != null && !hitTargets.Contains(character))
         {
             IDamage damageable = character.GetComponent<IDamage>();
 
-            if (damageable != null && targetType != null)
+            if (damageable != null && CheckTeam(character))
             {
                 if (!targetType.CanTargetMultipleTargets && !hasHit)
                 {
@@ -528,7 +524,22 @@ public class AttackHitMainbox : MonoBehaviour
             }
         }
     }
-
+    private bool CheckTeam(Char character)
+    {
+        switch (targetType.targetType)
+        {
+            case Team.none:
+                return false;
+            case Team.Heros:
+                return character.team == Team.Heros;
+            case Team.Enemy:
+                return character.team == Team.Enemy;
+            case Team.Other:
+                return true;
+            default:
+                return false;
+        }
+    }
     private IEnumerator DestroyAfterTime()
     {
         yield return new WaitForSeconds(lifetime);

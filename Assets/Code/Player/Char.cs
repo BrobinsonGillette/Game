@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
-public enum Team { none, player, enemy , neutral , other };
+public enum Team { none, Heros, Enemy ,Alley,Other };
 public class Char : AnimatorBrain, IDamage
 {
     [Header("Character Properties")]
