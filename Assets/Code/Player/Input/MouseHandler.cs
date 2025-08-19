@@ -265,7 +265,7 @@ public class MouseHandler : MonoBehaviour
         Char targetCharacter = GetCharacterOnTile(clickedTile);
 
         // Store action points before using action
-        int actionPointsBefore = selectedPlayer.charClass.currentActionPoints;
+        int actionPointsBefore = selectedPlayer.CurrentActionPoints;
 
         // Use the action through CharacterActions (this will handle action point deduction)
         selectedPlayerActions.UseAction(selectedAction, clickedTile, targetCharacter);
@@ -273,7 +273,7 @@ public class MouseHandler : MonoBehaviour
         // Fire the event for external systems
         OnActionUsed?.Invoke(selectedPlayer, selectedAction, clickedTile);
 
-        Debug.Log($"{selectedPlayer.name} used {selectedAction.actionName} on {clickedTile.coordinates}. AP: {actionPointsBefore} -> {selectedPlayer.charClass.currentActionPoints}");
+        Debug.Log($"{selectedPlayer.name} used {selectedAction.actionName} on {clickedTile.coordinates}. AP: {actionPointsBefore} -> {selectedPlayer.CurrentActionPoints}");
 
         // Clear action selection after use
         selectedAction = null;
@@ -289,7 +289,7 @@ public class MouseHandler : MonoBehaviour
         StartCoroutine(DelayedUIUpdate());
 
         // If no action points left, cancel selection
-        if (selectedPlayer.charClass.currentActionPoints <= 0)
+        if (selectedPlayer.CurrentActionPoints <= 0)
         {
             Debug.Log($"{selectedPlayer.name} has no action points left!");
             StartCoroutine(DelayedCancelSelection());

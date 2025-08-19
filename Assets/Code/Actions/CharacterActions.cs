@@ -9,14 +9,14 @@ public class CharacterActions : MonoBehaviour
 
     public bool CanUseAction(ActionData action)
     {
-        return character.charClass.currentActionPoints >= action.actionPointCost &&
+        return character.CurrentActionPoints >= action.actionPointCost &&
                !character.isMoving;
     }
 
     public bool CanUseItem(ItemData item)
     {
         return character.charClass.inventory.Contains(item) &&
-               character.charClass.currentActionPoints >= item.actionEffect.actionPointCost &&
+               character.CurrentActionPoints >= item.actionEffect.actionPointCost &&
                !character.isMoving;
     }
 
@@ -24,23 +24,9 @@ public class CharacterActions : MonoBehaviour
     {
         if (!CanUseAction(action)) return;
 
-        character.charClass.currentActionPoints -= action.actionPointCost;
+        character.CurrentActionPoints -= action.actionPointCost;
         ExecuteAction(action, targetTile, targetCharacter);
     }
-    //todo fix
-    //public void UseItem(ItemData item, HexTile targetTile, Char targetCharacter = null)
-    //{
-    //    if (!CanUseItem(item)) return;
-
-    //    currentActionPoints -= item.actionEffect.actionPointCost;
-    //    ExecuteAction(item.actionEffect, targetTile, targetCharacter);
-
-    //    if (item.isConsumable)
-    //    {
-    //        inventory.Remove(item);
-    //    }
-    //}
-
     private void ExecuteAction(ActionData action, HexTile targetTile, Char targetCharacter)
     {
         // Handle different action types
@@ -102,14 +88,14 @@ public class CharacterActions : MonoBehaviour
                 if (hitbox != null && hitbox.OwnerTeam == character.team && !hitbox.IsActivated)
                 {
                     hitbox.ActivateForDamage();
-                    //Debug.Log($"{character.name} activated attack hitbox!");
+                    
                     break; 
                 }
             }
         }
-        catch (System.Exception e)
+        catch (System.Exception ex)
         {
-            //Debug.LogError($"Error activating existing hitboxes: {e.Message}");
+            Debug.Log(ex.Message);
         }
     }
 
@@ -117,7 +103,7 @@ public class CharacterActions : MonoBehaviour
     {
         if (target != null)
         {
-            target.charClass.Health = Mathf.Min(target.charClass.MaxHp, target.charClass.Health + action.healing);
+            target.Health = Mathf.Min(target.charClass.MaxHp, target.Health + action.healing);
         }
     }
 
@@ -157,7 +143,7 @@ public class CharacterActions : MonoBehaviour
 
     public void RestoreActionPoints()
     {
-        character.charClass.currentActionPoints = character.charClass.maxActionPoints;
+        character.CurrentActionPoints = character.charClass.maxActionPoints;
     }
 
     public List<HexTile> GetActionRange(ActionData action)

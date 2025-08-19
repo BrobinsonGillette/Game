@@ -282,12 +282,12 @@ public class ActionUIManager : MonoBehaviour
                 characterNameText.text = character.name ?? "Unknown";
 
             if (healthText != null)
-                healthText.text = $"HP: {character.charClass.Health:F0}/{character.charClass.MaxHp:F0}";
+                healthText.text = $"HP: {character.Health:F0}/{character.charClass.MaxHp:F0}";
 
             // Always update action points display
             if (actionPointsText != null)
             {
-                actionPointsText.text = $"AP: {character.charClass.currentActionPoints}/{character.charClass.maxActionPoints}";
+                actionPointsText.text = $"AP: {character.CurrentActionPoints}/{character.charClass.maxActionPoints}";
             }
         }
         catch (System.Exception e)

@@ -13,6 +13,8 @@ public class Char : AnimatorBrain, IDamage
     private float movementAnimationSpeed = 1f;
     public HexTile currentHex { get; private set; }
     public CharClass charClass;
+    public float Health = 0f;
+    public int CurrentActionPoints = 0;
     public bool isMoving { get; private set; }
     private bool movingLeft;
     private Vector2 CurrentPosition;
@@ -23,10 +25,12 @@ public class Char : AnimatorBrain, IDamage
         CurrentPosition = transform.position;
         Initialize(GetComponent<Animator>().layerCount, Animations.Idle, GetComponent<Animator>(), DefaultAnimation);
         charClass.onStart();
+        Health= charClass.getHealth();
+        CurrentActionPoints= charClass.getActionPoints();
     }
     private void Update()
     {
-        if (isAlive())
+        if (isAlive() && !isMoving)
         {
             getTileOnGround();
         }
@@ -54,6 +58,7 @@ public class Char : AnimatorBrain, IDamage
                 currentHex = tile;
                 currentHex.SetCharacterPresent(true, team);
             }
+            transform.position = currentHex.transform.position;
         }
     }
 
@@ -216,9 +221,9 @@ public class Char : AnimatorBrain, IDamage
 
     public void TakeDamage(float damage)
     {
-        charClass.Health -= damage;
+        Health -= damage;
         Play(Animations.Hurt, 0, true, true);
-        if (charClass.Health <= 0)
+        if (Health <= 0)
         {
             Die();
         }
@@ -251,6 +256,6 @@ public class Char : AnimatorBrain, IDamage
     }
     public bool isAlive()
     {
-        return charClass.Health > 0;
+        return Health > 0;
     }
 }

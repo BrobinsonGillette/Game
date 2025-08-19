@@ -46,7 +46,7 @@ public class AttackHitMainbox : MonoBehaviour
 
     // Range checking cache
     private HexTile playerTile;
-    private bool isWithinRange = true;
+
 
     // Properties for external access
     public Team OwnerTeam => ownerTeam;
@@ -338,14 +338,14 @@ public class AttackHitMainbox : MonoBehaviour
                 CacheCurrentPositions();
             }
         }
-        else
-        {
-            // When out of range, clear all hitboxes
-            if (hitboxObjects.Count > 0)
-            {
-                ClearHitboxes();
-            }
-        }
+        //else
+        //{
+        //    // When out of range, clear all hitboxes
+        //    if (hitboxObjects.Count > 0)
+        //    {
+        //        ClearHitboxes();
+        //    }
+        //}
 
         // Always snap to player's tile for smooth movement
         SnapToTile();
