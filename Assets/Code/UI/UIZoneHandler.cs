@@ -146,8 +146,6 @@ public class UIZoneHandler : MonoBehaviour
                 }
             }
         }
-
-        Debug.Log($"UIZoneHandler: Auto-detected {uiZoneRects.Count} UI zones");
     }
 
     /// <summary>

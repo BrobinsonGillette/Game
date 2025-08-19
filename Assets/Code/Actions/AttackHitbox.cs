@@ -118,7 +118,7 @@ public class AttackHitbox : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerStay(Collider other)
     {
         if (!isActivated) return;
 
@@ -142,8 +142,6 @@ public class AttackHitbox : MonoBehaviour
                         {
                             parentMainbox.fistTargetHit = true;
                         }
-
-                        Debug.Log($"Hitbox hit {character.name} for {damage} damage! (SingleTarget)");
                     }
                 }
                 else if (targetType.CanTargetMultipleTargets && !HasHit)
@@ -152,7 +150,6 @@ public class AttackHitbox : MonoBehaviour
                     damageable.TakeDamage(damage);
                     hitTargets.Add(character);
                     HasHit = true;
-                    Debug.Log($"Hitbox hit {character.name} for {damage} damage! (MultiTarget)");
                 }
             }
         }

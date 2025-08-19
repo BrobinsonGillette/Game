@@ -85,7 +85,7 @@ public class CharacterActions : MonoBehaviour
             foreach (AttackHitMainbox hitbox in allHitboxes)
             {
            
-                if (hitbox != null && hitbox.OwnerTeam == character.team && !hitbox.IsActivated)
+                if (hitbox != null && !hitbox.IsActivated)
                 {
                     hitbox.ActivateForDamage();
                     

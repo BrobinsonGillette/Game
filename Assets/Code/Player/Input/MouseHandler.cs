@@ -94,6 +94,8 @@ public class MouseHandler : MonoBehaviour
     private void OnMapGenerated()
     {
         CancelSelection();
+        if (SpawnAttack != null)
+            DestroySpawnPrefab();
     }
 
     private void Update()
@@ -257,10 +259,9 @@ public class MouseHandler : MonoBehaviour
         // Check if the target is within range
         if (!IsTargetWithinActionRange(clickedTile))
         {
-           Debug.Log($"Cannot use {selectedAction.actionName} on {clickedTile.coordinates}! Target is out of range.");
+            Debug.Log($"Cannot use {selectedAction.actionName} on {clickedTile.coordinates}! Target is out of range.");
             return;
         }
-
 
         Char targetCharacter = GetCharacterOnTile(clickedTile);
 
@@ -278,13 +279,7 @@ public class MouseHandler : MonoBehaviour
         // Clear action selection after use
         selectedAction = null;
 
-        // Destroy the preview hitbox since action is used
-        if (SpawnAttack != null)
-        {
-            Destroy(SpawnAttack);
-            SpawnAttack = null;
-        }
-
+    
         // Force UI update by calling an event that UI can listen to
         StartCoroutine(DelayedUIUpdate());
 
@@ -567,6 +562,8 @@ public class MouseHandler : MonoBehaviour
     private void HandleRightClick()
     {
         CancelSelection();
+        if (SpawnAttack != null)
+            DestroySpawnPrefab();
     }
 
     private bool IsValidMoveTarget(HexTile tile)
@@ -592,7 +589,6 @@ public class MouseHandler : MonoBehaviour
         // Spawn hitbox immediately at player's position when action is selected
         SpawnActionHitbox(action);
 
-        Debug.Log($"Selected action: {action.actionName}");
     }
 
     private void SpawnActionHitbox(ActionData action)
@@ -604,7 +600,7 @@ public class MouseHandler : MonoBehaviour
             // Destroy previous attack if exists
             if (SpawnAttack != null)
             {
-                Destroy(SpawnAttack);
+                DestroySpawnPrefab(0f);
             }
 
             // Always spawn at player's position when action is selected
@@ -626,7 +622,7 @@ public class MouseHandler : MonoBehaviour
                 );
             }
 
-            Debug.Log($"Spawned action hitbox for {action.actionName} at player position with Width: {action.Width}");
+           // Debug.Log($"Spawned action hitbox for {action.actionName} at player position with Width: {action.Width}");
         }
         catch (System.Exception e)
         {
@@ -845,8 +841,6 @@ public class MouseHandler : MonoBehaviour
             selectedAction = null;
             selectedItem = null;
             currentActionType = ActionModes.None; // Reset to None
-            if(SpawnAttack != null)
-                Destroy(SpawnAttack);
             if (CamMagger.instance != null)
             {
                 CamMagger.instance.SetTarget(null);
@@ -891,11 +885,13 @@ public class MouseHandler : MonoBehaviour
 
 
     public Char GetSelectedPlayer() => selectedPlayer;
-
+    public void DestroySpawnPrefab(float time = 0.5f) => Destroy(SpawnAttack, time);
 
     private void OnDisable()
     {
         CancelSelection();
+        if (SpawnAttack != null)
+            DestroySpawnPrefab();
     }
 
     private void OnDestroy()

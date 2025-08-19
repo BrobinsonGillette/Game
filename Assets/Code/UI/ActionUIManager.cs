@@ -470,7 +470,6 @@ public class ActionUIManager : MonoBehaviour
             {
                 mouseHandler.SelectAction(action);
                 mouseHandler.SetActionMode(ActionModes.Actions);
-                Debug.Log($"Selected action: {action.actionName}");
                 UpdateUI();
             }
             else
@@ -481,7 +480,6 @@ public class ActionUIManager : MonoBehaviour
                 {
                     mouseHandler.SelectAction(action);
                     mouseHandler.SetActionMode(ActionModes.Actions);
-                    Debug.Log($"Selected action: {action.actionName}");
                     UpdateUI();
                 }
             }

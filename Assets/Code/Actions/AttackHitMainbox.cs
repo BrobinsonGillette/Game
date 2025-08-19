@@ -13,7 +13,6 @@ public class AttackHitMainbox : MonoBehaviour
     private float damage = 10;
     private Team ownerTeam = Team.player;
     private float lifetime = 2f;
-    private bool isActivated = false;
     public bool fistTargetHit = false;
     private ActionData targetType;
 
@@ -50,7 +49,7 @@ public class AttackHitMainbox : MonoBehaviour
 
     // Properties for external access
     public Team OwnerTeam => ownerTeam;
-    public bool IsActivated => isActivated;
+    public bool IsActivated;
 
     private void Awake()
     {
@@ -79,7 +78,7 @@ public class AttackHitMainbox : MonoBehaviour
         damage = hitboxDamage;
         ownerTeam = team;
         lifetime = hitboxLifetime;
-        isActivated = false;
+        IsActivated = false;
         this.Length = length;
         this.Width = width;
         this.targetType = type;
@@ -311,7 +310,7 @@ public class AttackHitMainbox : MonoBehaviour
 
     private void Update()
     {
-        if (isActivated) return;
+        if (IsActivated) return;
 
         updateCounter++;
         bool shouldUpdate = updateCounter % UPDATE_FREQUENCY == 0;
@@ -338,14 +337,14 @@ public class AttackHitMainbox : MonoBehaviour
                 CacheCurrentPositions();
             }
         }
-        //else
-        //{
-        //    // When out of range, clear all hitboxes
-        //    if (hitboxObjects.Count > 0)
-        //    {
-        //        ClearHitboxes();
-        //    }
-        //}
+        else
+        {
+            // When out of range, clear all hitboxes
+            if (hitboxObjects.Count > 0)
+            {
+                ClearHitboxes();
+            }
+        }
 
         // Always snap to player's tile for smooth movement
         SnapToTile();
@@ -438,9 +437,7 @@ public class AttackHitMainbox : MonoBehaviour
 
     public void ActivateForDamage()
     {
-        if (isActivated) return;
-
-        isActivated = true;
+        IsActivated = true;
         SetupVisual(activeColor, activeAlpha);
 
         if (hitboxCollider != null)
@@ -462,7 +459,6 @@ public class AttackHitMainbox : MonoBehaviour
         }
 
         StartCoroutine(DestroyAfterTime());
-        Debug.Log($"Attack hitbox activated: {hitboxes.Count} tiles, Width: {Width}, Type: {targetType}");
     }
 
     private void SetupVisual(Color color, float alpha)
@@ -506,9 +502,9 @@ public class AttackHitMainbox : MonoBehaviour
         targetTiles.Clear();
     }
 
-    private void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerStay(Collider other)
     {
-        if (!isActivated) return;
+        if (!IsActivated) return;
 
         Char character = other.GetComponent<Char>();
         if (character != null && character.team != ownerTeam && !hitTargets.Contains(character))
@@ -523,13 +519,11 @@ public class AttackHitMainbox : MonoBehaviour
                     hitTargets.Add(character);
                     hasHit = true;
                     fistTargetHit = true;
-                    Debug.Log($"Main hitbox hit {character.name} for {damage} damage! (SingleTarget)");
                 }
                 else if (targetType.CanTargetMultipleTargets && !hitTargets.Contains(character))
                 {
                     damageable.TakeDamage(damage);
                     hitTargets.Add(character);
-                    Debug.Log($"Main hitbox hit {character.name} for {damage} damage! (MultiTarget)");
                 }
             }
         }
